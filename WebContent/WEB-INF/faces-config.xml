@@ -195,6 +195,12 @@
 			<to-view-id>/ui/system/manageRole.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		
+			<navigation-case>
+			<from-outcome>employeeForm</from-outcome>
+			<to-view-id>/ui/system/manageEmployee.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 
 
 		<!-- Transaction Entry -->

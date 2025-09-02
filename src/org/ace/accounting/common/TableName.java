@@ -20,6 +20,8 @@ public class TableName {
 	 */
 	public static final String BRANCH = "BRANCH";
 
+	public static final String EMPLOYEE = "EMPLOYEE";
+
 	/**
 	 * Chart Of Account Table Name
 	 */
