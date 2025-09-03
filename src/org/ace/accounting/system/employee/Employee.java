@@ -9,12 +9,16 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
+import org.ace.accountig.system.leaverequest.LeaveRequest;
 import org.ace.accounting.common.BasicEntity;
 import org.ace.accounting.common.TableName;
+import org.ace.accounting.system.employeeattendenceenum.Department;
+import org.ace.accounting.system.employeeattendenceenum.Position;
 import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
@@ -32,13 +36,29 @@ public class Employee implements Serializable {
 
 	private String fullName;
 
-	private String department;
-
-	private String position;
-
 	private Date hireDate;
 
 	private String status;
+	
+	private Date dateOfBirth;
+	
+	private String gender;
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 
 	@Version
 	private int version;
@@ -46,10 +66,33 @@ public class Employee implements Serializable {
 	@Embedded
 	private BasicEntity basicEntity;
 
+	private Department department;
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	private Position position;
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
 	public String getId() {
 		return id;
 	}
 
+	/*
+	 * @OneToMany private LeaveRequest leaveRequest;
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -60,22 +103,6 @@ public class Employee implements Serializable {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
-	}
-
-	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
-	}
-
-	public String getPosition() {
-		return position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
 	}
 
 	public Date getHireDate() {
