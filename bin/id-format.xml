@@ -15,7 +15,13 @@
     <class prefix="ISSYS012" name="org.ace.accounting.student.Student" /> 
     <class prefix="ISSYS013" name="org.ace.accounting.occupation.Occupation" />
     <class prefix="ISSYS014" name="org.ace.accounting.customer.Customer" /> 
-    <class prefix="ISSYS015" name="org.ace.accounting.excelUpload.Proposal" />
+    
+    
+    <class prefix="EMP015" name="org.ace.accounting.system.employee.Employee" />
+     <class prefix="ATF015" name="org.ace.accounting.system.attachfile.AttachFile" />
+      <class prefix="ADE015" name="org.ace.accounting.system.attendance.Attendance" />
+       <class prefix="LRT015" name="org.ace.accounting.system.leaverequest.LeaveRequest" />
+       
     
     <!-- Chart Of Account -->
     <class prefix="ISCOA001" name="org.ace.accounting.system.chartaccount.ChartOfAccount" />
