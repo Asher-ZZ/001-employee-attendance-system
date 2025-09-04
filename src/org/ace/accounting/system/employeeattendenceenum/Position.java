@@ -3,7 +3,7 @@ package org.ace.accounting.system.employeeattendenceenum;
 public enum Position {
 	
 	INTERN("INTERN"),
-	JUNIOT("JUNIOR STAFF"),
+	JUNIOR("JUNIOR STAFF"),
 	SENIOR("ENIOT STAFF"),
 	LEADER("TEAM LEADER"),
 	MANAGER("MANAGER"),

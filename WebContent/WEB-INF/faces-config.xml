@@ -208,6 +208,11 @@
 			<redirect />
 		</navigation-case>
 
+			<navigation-case>
+			<from-outcome>leaveForm</from-outcome>
+			<to-view-id>/ui/system/manageLeaveRequest.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 
 		<!-- Transaction Entry -->
 		<navigation-case>

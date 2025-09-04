@@ -24,7 +24,7 @@ public class EmployeeDAO extends BasicDAO implements IEmployeeDAO {
 			throw translate("Fail To Insert Employee", pe);
 		}	
 	}
-	
+ 	
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void update (Employee employee)throws DAOException{
 		try {
@@ -52,7 +52,5 @@ public class EmployeeDAO extends BasicDAO implements IEmployeeDAO {
 	    } catch (PersistenceException pe) {
 	        throw translate("Failed to retrieve employees", pe);
 	    }
-	}
-
-	
+	}	
 }
