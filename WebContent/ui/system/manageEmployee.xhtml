@@ -1,177 +1,205 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:p="http://primefaces.org/ui"
-    template="/common/commonLayout.xhtml">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+	<!-- 
+	<ui:param name="header" value="Employee Management" />
+	<ui:param name="headerRendered" value="true"/>
+	<ui:define name="content">
+	
+	<h:form id="employeeForm">
+	<p:growl escape="false" globalOnly="true" life="5000" showSummary="true"/>
+	
+			<p:panel>
+				<p:panelGrid id="panelDept" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+	
+	
+	
+	
+	
+	
+	</h:form>
+	</ui:define>
+	</ui:composition> -->
 
-    <ui:define name="title">Employee Management</ui:define>
+	<ui:define name="title">Employee Management</ui:define>
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-        <!-- Employee Form -->
-        <h:form id="employeeForm">
-            <p:growl id="msgs" escape="false" globalOnly="true" life="5000" showDetail="true" />
+		Global Growl inside a form
+		<h:form id="globalMessageForm">
+			<p:growl id="msgs" escape="false" globalOnly="true" life="5000"
+				showDetail="true" />
+		</h:form>
 
-            <p:panel header="Employee Information" style="margin-bottom:20px;">
+		Employee Form
+		<h:form id="employeeForm">
 
-                <!-- Two-column layout for form fields -->
-                <p:panelGrid columns="4" columnClasses="label,value,label,value"
-                    style="margin-top:10px;" layout="grid">
 
-                    <!-- Full Name -->
-                    <p:message display="text" for="fullName" />
-                    <h:outputLabel for="fullName" value="Full Name:" />
-                    <p:inputText id="fullName"
-                        value="#{ManageEmployeeActionBean.employee.fullName}"
-                        styleClass="input-label mandatory" required="true"
-                        placeholder="Enter full name" />
-                    <p:message for="fullName" display="icon" />
 
-                    <!-- Department -->
-                    <p:message display="text" for="department" />
-                    <h:outputLabel for="department" value="Department:" />
-                    <p:selectOneMenu id="department"
-                        value="#{ManageEmployeeActionBean.employee.department}"
-                        required="true">
-                        <f:selectItem itemLabel="-- Select Department --" itemValue="" />
-                        <f:selectItems value="#{ManageEmployeeActionBean.departmentValues}"
-                            var="dept" itemLabel="#{dept.department}" itemValue="#{dept}" />
-                    </p:selectOneMenu>
-                    <p:message for="department" display="icon" />
+			<p:panel header="Employee Entry" style="margin-bottom:20px;">
 
-                    <!-- Position -->
-                    <p:message display="text" for="position" />
-                    <h:outputLabel for="position" value="Position:" />
-                    <p:selectOneMenu id="position"
-                        value="#{ManageEmployeeActionBean.employee.position}"
-                        required="true">
-                        <f:selectItem itemLabel="-- Select Position --" itemValue="" />
-                        <f:selectItems value="#{ManageEmployeeActionBean.positionValues}"
-                            var="pos" itemLabel="#{pos.position}" itemValue="#{pos}" />
-                    </p:selectOneMenu>
-                    <p:message for="position" display="icon" />
+				<p:panelGrid id="panelDept" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:panelGrid columns="2">
 
-                    <!-- Hire Date -->
-                    <p:message display="text" for="hireDate" />
-                    <h:outputLabel for="hireDate" value="Hire Date:" />
-                    <p:datePicker id="hireDate"
-                        value="#{ManageEmployeeActionBean.employee.hireDate}"
-                        pattern="dd-MM-yyyy" placeholder="Select hire date"
-                        showIcon="true" />
-                    <p:message for="hireDate" display="icon" />
+						<h:outputText value="" />
+						<p:message display="text" for="fullName" />
+						<h:outputLabel for="fullName" value="Full Name:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:inputText id="fullName"
+							value="#{ManageEmployeeActionBean.employee.fullName}"
+							required="true" placeholder="Enter full name"
+							requiredMessage="Name is required!" />
 
-                    <!-- Date of Birth -->
-                    <p:message display="text" for="dateOfBirth" />
-                    <h:outputLabel for="dateOfBirth" value="Date of Birth:" />
-                    <p:datePicker id="dateOfBirth"
-                        value="#{ManageEmployeeActionBean.employee.dateOfBirth}"
-                        pattern="dd-MM-yyyy" placeholder="Select date of birth"
-                        showIcon="true" />
-                    <p:message for="dateOfBirth" display="icon" />
+						<h:outputText value="" />
+						<p:message display="text" for="department" />
+						<h:outputLabel for="department" value="Department:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="department"
+							value="#{ManageEmployeeActionBean.employee.department}"
+							required="true" requiredMessage="Department is required!">
+							<f:selectItem itemLabel="-- Select Department --" itemValue="" />
+							<f:selectItems
+								value="#{ManageEmployeeActionBean.departmentValues}" var="dept"
+								itemLabel="#{dept.department}" itemValue="#{dept}" />
+						</p:selectOneMenu>
 
-                    <!-- Gender -->
-                    <p:message display="text" for="gender" />
-                    <h:outputLabel for="gender" value="Gender:" />
-                    <p:selectOneRadio id="gender" layout="lineDirection"
-                        value="#{ManageEmployeeActionBean.employee.gender}">
-                        <f:selectItem itemLabel="Male" itemValue="Male" />
-                        <f:selectItem itemLabel="Female" itemValue="Female" />
-                    </p:selectOneRadio>
-                    <p:message for="gender" display="icon" />
+						<h:outputText value="" />
+						<p:message display="text" for="position" />
+						<h:outputLabel for="position" value="Position:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="position"
+							value="#{ManageEmployeeActionBean.employee.position}"
+							required="true" requiredMessage="Position is required!">
+							<f:selectItem itemLabel="-- Select Position --" itemValue="" />
+							<f:selectItems value="#{ManageEmployeeActionBean.positionValues}"
+								var="pos" itemLabel="#{pos.position}" itemValue="#{pos}" />
+						</p:selectOneMenu>
 
-                    <!-- Status -->
-                    <p:message display="text" for="status" />
-                    <h:outputLabel for="status" value="Status:" />
-                    <p:selectOneMenu id="status"
-                        value="#{ManageEmployeeActionBean.employee.status}">
-                        <f:selectItem itemLabel="-- Select Status --" itemValue="" />
-                        <f:selectItem itemLabel="Active" itemValue="Active" />
-                        <f:selectItem itemLabel="Inactive" itemValue="Inactive" />
-                    </p:selectOneMenu>
-                    <p:message for="status" display="icon" />
+						<h:outputText value="" />
+						<p:message display="text" for="hireDate" />
+						<h:outputLabel for="hireDate" value="Hire Date:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:datePicker id="hireDate"
+							value="#{ManageEmployeeActionBean.employee.hireDate}"
+							required="true" requiredMessage="Hire Date is required!"
+							pattern="dd-MM-yyyy" placeholder="Select hire date"
+							showIcon="true" />
 
-                </p:panelGrid>
+						<h:outputText value="" />
+						<p:message display="text" for="dateOfBirth" />
+						<h:outputLabel for="dateOfBirth" value="Date of Birth:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:datePicker id="dateOfBirth"
+							value="#{ManageEmployeeActionBean.employee.dateOfBirth}"
+							required="true" requiredMessage="Date Of Birth is required!"
+							pattern="dd-MM-yyyy" placeholder="Select date of birth"
+							showIcon="true" />
 
-                <!-- Action Buttons -->
-                <div class="form-buttons"
-                    style="margin-top: 20px; display: flex; gap: 10px;">
-                    <p:commandButton value="Save" icon="pi pi-check"
-                        action="#{ManageEmployeeActionBean.save}"
-                        update=":employeeForm :employeeTableForm:employeeTable :employeeForm:msgs"
-                        styleClass="p-button-success p-button-raised" />
 
-                    <p:commandButton value="Reset" icon="pi pi-refresh"
-                        action="#{ManageEmployeeActionBean.createNewEmployee}"
-                        update=":employeeForm :employeeForm:msgs"
-                        styleClass="p-button-secondary p-button-raised" />
-                </div>
+						<h:outputText value="" />
+						<p:message display="text" for="gender" />
+						<h:outputLabel for="gender" value="Gender:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneRadio id="gender" layout="lineDirection"
+							value="#{ManageEmployeeActionBean.employee.gender}"
+							required="true" requiredMessage="Gender is required!">
+							<f:selectItem itemLabel="Male" itemValue="Male" />
+							<f:selectItem itemLabel="Female" itemValue="Female" />
+						</p:selectOneRadio>
 
-            </p:panel>
-        </h:form>
+						<h:outputText value="" />
+						<p:message display="text" for="status" />
+						<h:outputLabel for="status" value="Status:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="status"
+							value="#{ManageEmployeeActionBean.employee.status}"
+							required="true" requiredMessage="Status is required!">
+							<f:selectItem itemLabel="-- Select Status --" itemValue="" />
+							<f:selectItem itemLabel="Active" itemValue="Active" />
+							<f:selectItem itemLabel="Inactive" itemValue="Inactive" />
+						</p:selectOneMenu>
 
-        <!-- Employee List -->
-        <h:form id="employeeTableForm">
-            <p:panel header="Employee List">
-                <p:dataTable id="employeeTable"
-                    value="#{ManageEmployeeActionBean.employees}" var="emp"
-                    paginator="true" rows="5" responsiveLayout="scroll" rowHover="true"
-                    styleClass="p-datatable-striped p-datatable-gridlines"
-                    filterDelay="500">
+					</p:panelGrid>
+				</p:panelGrid>
 
-                    <!-- Columns with filtering -->
-                    <p:column headerText="Full Name" filterBy="#{emp.fullName}"
-                        filterMatchMode="contains">
-                        <h:outputText value="#{emp.fullName}" />
-                    </p:column>
 
-                    <p:column headerText="Department" filterBy="#{emp.department}"
-                        filterMatchMode="contains">
-                        <h:outputText value="#{emp.department}" />
-                    </p:column>
+				<p:commandButton value="Save" icon="pi pi-check"
+					action="#{ManageEmployeeActionBean.save}"
+					update=":employeeForm :employeeTableForm :globalMessageForm:msgs"
+					styleClass="p-button-success p-button-raised" />
+				<p:commandButton value="Reset" icon="pi pi-refresh"
+					action="#{ManageEmployeeActionBean.createNewEmployee}"
+					process="@this" update="employeeForm"
+					styleClass="p-button-secondary p-button-raised" />
+			</p:panel>
+		</h:form>
 
-                    <p:column headerText="Position" filterBy="#{emp.position}"
-                        filterMatchMode="contains">
-                        <h:outputText value="#{emp.position}" />
-                    </p:column>
 
-                    <p:column headerText="Hire Date">
-                        <h:outputText value="#{emp.hireDate}">
-                            <f:convertDateTime pattern="dd-MM-yyyy" />
-                        </h:outputText>
-                    </p:column>
-                    
-                     <p:column headerText="Date Of Birth">
-                        <h:outputText value="#{emp.dateOfBirth}">
-                            <f:convertDateTime pattern="dd-MM-yyyy" />
-                        </h:outputText>
-                    </p:column>
-                    
-                     <p:column headerText="Gender" >
-                        <h:outputText value="#{emp.gender}" />
-                    </p:column>
+		<h:form id="employeeTableForm">
+			<p:panel header="Employee List">
+				<p:dataTable id="employeeTable"
+					value="#{ManageEmployeeActionBean.employees}" var="emp"
+					paginator="true" rows="5" responsiveLayout="scroll" rowHover="true"
+					styleClass="p-datatable-striped p-datatable-gridlines"
+					filterDelay="500">
 
-                    <p:column headerText="Status" filterBy="#{emp.status}"
-                        filterMatchMode="contains">
-                        <h:outputText value="#{emp.status}" />
-                    </p:column>
+					<p:column headerText="Full Name" filterBy="#{emp.fullName}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.fullName}" />
+					</p:column>
 
-                    <!-- Actions -->
-                    <p:column headerText="Actions" style="width:120px;">
-                        <p:commandButton icon="pi pi-pencil" title="Edit"
-                            action="#{ManageEmployeeActionBean.prepareUpdateEmployee(emp)}"
-                            update=":employeeForm :employeeForm:msgs"
-                            styleClass="p-button-text p-button-info" />
-                        <p:commandButton icon="pi pi-trash" title="Delete"
-                            action="#{ManageEmployeeActionBean.deleteEmployee(emp)}"
-                            update=":employeeTableForm:employeeTable :employeeForm:msgs"
-                            onclick="return confirm('Are you sure?')"
-                            styleClass="p-button-text p-button-danger" />
-                    </p:column>
+					<p:column headerText="Department" filterBy="#{emp.department}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.department}" />
+					</p:column>
 
-                </p:dataTable>
-            </p:panel>
-        </h:form>
+					<p:column headerText="Position" filterBy="#{emp.position}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.position}" />
+					</p:column>
 
-    </ui:define>
+					<p:column headerText="Hire Date">
+						<h:outputText value="#{emp.hireDate}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Date Of Birth">
+						<h:outputText value="#{emp.dateOfBirth}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gender">
+						<h:outputText value="#{emp.gender}" />
+					</p:column>
+
+					<p:column headerText="Status" filterBy="#{emp.status}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.status}" />
+					</p:column>
+
+
+					<p:column headerText="Actions" style="width:120px;">
+						<p:commandButton icon="pi pi-pencil" title="Edit"
+							action="#{ManageEmployeeActionBean.prepareUpdateEmployee(emp)}"
+							update=":employeeForm :globalMessageForm:msgs" />
+						<p:commandButton icon="pi pi-trash" title="Delete"
+							action="#{ManageEmployeeActionBean.deleteEmployee(emp)}"
+							update=":employeeTableForm :globalMessageForm:msgs"
+							onclick="return confirm('Are you sure?')" />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
 </ui:composition>

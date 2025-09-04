@@ -201,6 +201,12 @@
 			<to-view-id>/ui/system/manageEmployee.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		
+			<navigation-case>
+			<from-outcome>attendanceForm</from-outcome>
+			<to-view-id>/ui/system/manageAttendance.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 
 
 		<!-- Transaction Entry -->
