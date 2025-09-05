@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.ace.accounting.common.BasicEntity;
@@ -29,22 +31,23 @@ public class Attendance implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "BRANCH_GEN")
 	private String id;
-	
+
+	@Temporal(TemporalType.DATE)
 	private Date date;
-	
-	private Time arrivalTime;
-	
-	private Time departureTime;
-	
+
+	@Temporal(TemporalType.TIME)
+	private Date arrivalTime;
+
+	@Temporal(TemporalType.TIME)
+	private Date departureTime;
+
 	private String remarks;
-	
 
 	@Version
 	private int version;
 
 	@Embedded
 	private BasicEntity basicEntity;
-
 
 	public String getId() {
 		return id;
@@ -62,19 +65,19 @@ public class Attendance implements Serializable {
 		this.date = date;
 	}
 
-	public Time getArrivalTime() {
+	public Date getArrivalTime() {
 		return arrivalTime;
 	}
 
-	public void setArrivalTime(Time arrivalTime) {
+	public void setArrivalTime(Date arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
 
-	public Time getDepartureTime() {
+	public Date getDepartureTime() {
 		return departureTime;
 	}
 
-	public void setDepartureTime(Time departureTime) {
+	public void setDepartureTime(Date departureTime) {
 		this.departureTime = departureTime;
 	}
 
@@ -102,6 +105,4 @@ public class Attendance implements Serializable {
 		this.basicEntity = basicEntity;
 	}
 
-	
-	
 }

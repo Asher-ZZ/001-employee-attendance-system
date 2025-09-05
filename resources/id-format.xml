@@ -18,9 +18,8 @@
     
     
     <class prefix="EMP015" name="org.ace.accounting.system.employee.Employee" />
-     <class prefix="ATF015" name="org.ace.accounting.system.attachfile.AttachFile" />
-      <class prefix="ADE015" name="org.ace.accounting.system.attendance.Attendance" />
-       <class prefix="LRT015" name="org.ace.accounting.system.leaverequest.LeaveRequest" />
+      <class prefix="ADE016" name="org.ace.accounting.system.attendance.Attendance" />
+       <class prefix="LRT017" name="org.ace.accounting.system.leaverequest.LeaveRequest" />
        
     
     <!-- Chart Of Account -->

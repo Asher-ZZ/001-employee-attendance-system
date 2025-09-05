@@ -4,39 +4,19 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
-	<!-- 
-	<ui:param name="header" value="Employee Management" />
-	<ui:param name="headerRendered" value="true"/>
-	<ui:define name="content">
-	
-	<h:form id="employeeForm">
-	<p:growl escape="false" globalOnly="true" life="5000" showSummary="true"/>
-	
-			<p:panel>
-				<p:panelGrid id="panelDept" columns="2"
-					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
-					styleClass="ui-panelgrid-blank ui-fluid">
-	
-	
-	
-	
-	
-	
-	</h:form>
-	</ui:define>
-	</ui:composition> -->
+
 
 	<ui:define name="title">Employee Management</ui:define>
 
 	<ui:define name="content">
 
-		
+
 		<h:form id="globalMessageForm">
 			<p:growl id="msgs" escape="false" globalOnly="true" life="5000"
 				showDetail="true" />
 		</h:form>
 
-		
+
 		<h:form id="employeeForm">
 
 			<p:panel header="Employee Entry" style="margin-bottom:20px;">
@@ -54,6 +34,7 @@
 							value="#{ManageEmployeeActionBean.employee.fullName}"
 							required="true" placeholder="Enter full name"
 							requiredMessage="Name is required!" />
+
 
 						<h:outputText value="" />
 						<p:message display="text" for="department" />

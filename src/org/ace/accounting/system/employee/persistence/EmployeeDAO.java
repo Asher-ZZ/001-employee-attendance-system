@@ -1,7 +1,8 @@
 package org.ace.accounting.system.employee.persistence;
-import java.util.List;
 
+import java.util.List;
 import javax.persistence.PersistenceException;
+
 import org.ace.accounting.system.employee.Employee;
 import org.ace.accounting.system.employee.persistence.interfaces.IEmployeeDAO;
 import org.ace.java.component.persistence.BasicDAO;
@@ -10,47 +11,46 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 @Repository("EmployeeDAO")
 public class EmployeeDAO extends BasicDAO implements IEmployeeDAO {
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void insert(Employee employee)throws DAOException{
+	public void insert(Employee employee) throws DAOException {
 		try {
-			em.persist(employee);
+			em.persist(employee); // ✅ insert အတွက် persist သုံးမယ်
 			em.flush();
 		} catch (PersistenceException pe) {
 			throw translate("Fail To Insert Employee", pe);
-		}	
+		}
 	}
- 	
+
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void update (Employee employee)throws DAOException{
+	public void update(Employee employee) throws DAOException {
 		try {
-			em.persist(employee);
+			em.merge(employee); // ✅ update အတွက် merge သုံးမယ်
 			em.flush();
-		}catch(PersistenceException pe) {
+		} catch (PersistenceException pe) {
 			throw translate("Fail To Update Employee", pe);
 		}
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void delete (Employee employee)throws DAOException{
+	public void delete(Employee employee) throws DAOException {
 		try {
-			em.persist(employee);
+			Employee managedEmp = em.merge(employee); // entity managed ဖြစ်အောင်
+			em.remove(managedEmp); // ✅ delete အတွက် remove သုံးမယ်
 			em.flush();
-		}catch(PersistenceException pe){
-			throw translate("Fail TO Delete Employee", pe);
+		} catch (PersistenceException pe) {
+			throw translate("Fail To Delete Employee", pe);
 		}
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED)
 	public List<Employee> findAll() throws DAOException {
-	    try {
-	        return em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
-	    } catch (PersistenceException pe) {
-	        throw translate("Failed to retrieve employees", pe);
-	    }
-	}	
+		try {
+			return em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
+		} catch (PersistenceException pe) {
+			throw translate("Failed to retrieve employees", pe);
+		}
+	}
 }

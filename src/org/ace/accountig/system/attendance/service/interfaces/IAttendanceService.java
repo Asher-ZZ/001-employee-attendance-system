@@ -6,13 +6,11 @@ import org.ace.accountig.system.attendance.Attendance;
 import org.ace.java.component.SystemException;
 
 public interface IAttendanceService {
+	void addNewAttendance(Attendance attendance) throws SystemException;
 
-	public List<Attendance> findAllBranch() throws SystemException;
+	void updateAttendance(Attendance attendance) throws SystemException;
 
-	public void addNewBranch(Attendance attendance) throws SystemException;
+	/* void deleteAttendance(Attendance attendance) throws SystemException; */
 
-	public void updateBranch(Attendance attendance) throws SystemException;
-
-	public void deleteBranch(Attendance attendance) throws SystemException;
-
+	List<Attendance> findAllAttendance() throws SystemException;
 }

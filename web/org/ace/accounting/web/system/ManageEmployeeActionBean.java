@@ -34,7 +34,7 @@ public class ManageEmployeeActionBean implements Serializable {
 	public void init() {
 		employee = new Employee();
 		try {
-			employees = employeeService.findAllEmployee(); // Load from DB
+			employees = employeeService.findAllEmployee();
 		} catch (SystemException e) {
 			employees = new ArrayList<>();
 			addErrorMessage("Failed to load employees: " + e.getMessage());
@@ -53,19 +53,16 @@ public class ManageEmployeeActionBean implements Serializable {
 	public void save() {
 		try {
 			if (employee.getId() == null) {
-				employeeService.addNewEmployee(employee); // Insert
-				// Create a new instance to add to the list to avoid reference issues
+				employeeService.addNewEmployee(employee);
 				Employee newEmployee = new Employee();
-				// Copy properties if needed, or refresh the list from DB
-				employees = employeeService.findAllEmployee(); // Reload from DB
+				employees = employeeService.findAllEmployee();
 				addInfoMessage("Employee added successfully: " + employee.getFullName());
 			} else {
-				employeeService.updateEmployee(employee); // Update
-				// Refresh the list from DB to ensure consistency
+				employeeService.updateEmployee(employee);
 				employees = employeeService.findAllEmployee();
 				addInfoMessage("Employee updated successfully: " + employee.getFullName());
 			}
-			reset(); // reset form
+			reset();
 		} catch (SystemException ex) {
 			addErrorMessage("Error saving employee: " + ex.getMessage());
 		}

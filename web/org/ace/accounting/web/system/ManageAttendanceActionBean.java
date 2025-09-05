@@ -1,23 +1,87 @@
 package org.ace.accounting.web.system;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
 import org.ace.accountig.system.attendance.Attendance;
+import org.ace.accountig.system.attendance.service.interfaces.IAttendanceService;
+import org.ace.accounting.common.validation.MessageId;
+import org.ace.java.component.SystemException;
+import org.ace.java.web.common.BaseBean;
 
 @ManagedBean(name = "ManageAttendanceActionBean")
 @ViewScoped
-public class ManageAttendanceActionBean implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class ManageAttendanceActionBean extends BaseBean implements Serializable {
 
-	private Attendance attendance = new Attendance();
-	private List<Attendance> attendanceList = new ArrayList<>();
+	@ManagedProperty(value = "#{AttendanceService}")
+	private IAttendanceService attendanceService;
+
+	private boolean createNew;
+	private Attendance attendance;
+	private List<Attendance> attendanceList;
+
+	@PostConstruct
+	public void init() {
+		createNewAttendance();
+		rebindData();
+	}
+
+	public void createNewAttendance() {
+		createNew = true;
+		attendance = new Attendance();
+	}
+
+	public void rebindData() {
+		if (attendanceService != null) {
+			attendanceList = attendanceService.findAllAttendance();
+		}
+	}
+
+	public void prepareUpdateAttendance(Attendance attendance) {
+		createNew = false;
+		this.attendance = attendance;
+	}
+
+	public void save() {
+		try {
+			if (createNew) {
+				attendanceService.addNewAttendance(attendance);
+				addInfoMessage(null, MessageId.INSERT_SUCCESS, "Attendance");
+			} else {
+				attendanceService.updateAttendance(attendance);
+				addInfoMessage(null, MessageId.UPDATE_SUCCESS, "Attendance");
+			}
+			createNewAttendance();
+			rebindData();
+		} catch (SystemException ex) {
+			handleSysException(ex);
+		}
+	}
+
+	/*
+	 * public void delete(Attendance attendance) { try {
+	 * attendanceService.deleteAttendance(attendance); addInfoMessage(null,
+	 * MessageId.DELETE_SUCCESS, "Attendance"); rebindData(); } catch
+	 * (SystemException ex) { handleSysException(ex); } }
+	 */
+
+	public void reset() {
+		createNewAttendance();
+	}
+
+	// Getters and Setters
+	public IAttendanceService getAttendanceService() {
+		return attendanceService;
+	}
+
+	public void setAttendanceService(IAttendanceService attendanceService) {
+		this.attendanceService = attendanceService;
+	}
 
 	public Attendance getAttendance() {
 		return attendance;
@@ -31,33 +95,15 @@ public class ManageAttendanceActionBean implements Serializable {
 		return attendanceList;
 	}
 
-	// Save new or update existing record
-	public void save() {
-		if (!attendanceList.contains(attendance)) {
-			attendanceList.add(attendance);
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Saved", "Attendance added successfully"));
-		} else {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Updated", "Attendance updated successfully"));
-		}
-		attendance = new Attendance(); // reset form
+	public void setAttendanceList(List<Attendance> attendanceList) {
+		this.attendanceList = attendanceList;
 	}
 
-	// Edit record
-	public void edit(Attendance att) {
-		this.attendance = att;
+	public boolean isCreateNew() {
+		return createNew;
 	}
 
-	// Delete record
-	public void delete(Attendance att) {
-		attendanceList.remove(att);
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Deleted", "Attendance deleted"));
-	}
-
-	// Clear form
-	public void clear() {
-		this.attendance = new Attendance();
+	public void setCreateNew(boolean createNew) {
+		this.createNew = createNew;
 	}
 }
