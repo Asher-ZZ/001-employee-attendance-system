@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,9 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	private Date fromDate;
 	private Date toDate;
 
+	private static final int OFFICE_START_HOUR = 9;
+	private static final int OFFICE_END_HOUR = 17;
+
 	// Result list
 	private List<Attendance> resultList;
 
@@ -41,17 +45,16 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		resultList = new ArrayList<>();
 	}
 
-	// ========== Search ==========
+	// ====== Search ======
 	public void search() {
 		try {
-			// load all records (you can optimize by writing a DAO query instead)
 			List<Attendance> allRecords = attendanceService.findAll();
 
 			resultList = allRecords.stream().filter(att -> {
 				boolean matches = true;
 
 				if (searchEmployee != null && !searchEmployee.trim().isEmpty()) {
-					matches &= att.getEmployee() != null
+					matches &= att.getEmployee() != null && att.getEmployee().getFullName() != null
 							&& att.getEmployee().getFullName().toLowerCase().contains(searchEmployee.toLowerCase());
 				}
 
@@ -86,7 +89,59 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		resultList = new ArrayList<>();
 	}
 
-	// ========== Getters & Setters ==========
+	// ====== Computed values ======
+	public String getTotalHours(Attendance att) {
+		if (att.getArrivalTime() != null && att.getDepartureTime() != null) {
+			long diff = att.getDepartureTime().getTime() - att.getArrivalTime().getTime();
+			long hours = diff / (1000 * 60 * 60);
+			long minutes = (diff / (1000 * 60)) % 60;
+			return hours + "h " + minutes + "m";
+		}
+		return "0h 0m";
+	}
+
+	public String getLateArrival(Attendance att) {
+		if (att.getArrivalTime() == null)
+			return "N/A";
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(att.getArrivalTime());
+		int arrivalHour = cal.get(Calendar.HOUR_OF_DAY);
+		int arrivalMinute = cal.get(Calendar.MINUTE);
+		int lateMinutes = (arrivalHour - OFFICE_START_HOUR) * 60 + arrivalMinute;
+		return lateMinutes > 0 ? lateMinutes + " min" : "On time";
+	}
+
+	public String getEarlyDeparture(Attendance att) {
+		if (att.getDepartureTime() == null)
+			return "N/A";
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(att.getDepartureTime());
+		int departureHour = cal.get(Calendar.HOUR_OF_DAY);
+		int departureMinute = cal.get(Calendar.MINUTE);
+		int earlyMinutes = (OFFICE_END_HOUR - departureHour) * 60 - departureMinute;
+		return earlyMinutes > 0 ? earlyMinutes + " min" : "On time";
+	}
+
+	// ====== Row highlight helpers ======
+	public boolean isLateArrival(Attendance att) {
+		if (att.getArrivalTime() == null)
+			return false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(att.getArrivalTime());
+		int minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+		return minutes > OFFICE_START_HOUR * 60;
+	}
+
+	public boolean isEarlyDeparture(Attendance att) {
+		if (att.getDepartureTime() == null)
+			return false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(att.getDepartureTime());
+		int minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+		return minutes < OFFICE_END_HOUR * 60;
+	}
+
+	// ====== Getters & Setters ======
 	public String getSearchEmployee() {
 		return searchEmployee;
 	}

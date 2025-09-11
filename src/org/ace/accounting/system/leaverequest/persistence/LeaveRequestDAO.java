@@ -2,6 +2,7 @@ package org.ace.accounting.system.leaverequest.persistence;
 
 import java.util.List;
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 
 import org.ace.accounting.system.leaverequest.LeaveRequest;
 import org.ace.accounting.system.leaverequest.persistence.interfaces.ILeaveRequestDAO;
@@ -53,4 +54,43 @@ public class LeaveRequestDAO extends BasicDAO implements ILeaveRequestDAO {
 			throw translate("Failed to retrieve LeaveRequests", pe);
 		}
 	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<LeaveRequest> findAllLeaveRequest() {
+		TypedQuery<LeaveRequest> query = em.createQuery("SELECT l FROM LeaveRequest l ORDER BY l.startDate DESC",
+				LeaveRequest.class);
+		return query.getResultList();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<LeaveRequest> searchLeaveRequests(String employeeName, String leaveType, String status) {
+		String jpql = "SELECT l FROM LeaveRequest l WHERE 1=1";
+
+		if (employeeName != null && !employeeName.isEmpty()) {
+			jpql += " AND LOWER(l.employee.fullName) LIKE :employeeName";
+		}
+		if (leaveType != null && !leaveType.isEmpty()) {
+			jpql += " AND l.leaveType = :leaveType";
+		}
+		if (status != null && !status.isEmpty()) {
+			jpql += " AND l.status = :status";
+		}
+
+		jpql += " ORDER BY l.startDate DESC";
+
+		TypedQuery<LeaveRequest> query = em.createQuery(jpql, LeaveRequest.class);
+
+		if (employeeName != null && !employeeName.isEmpty()) {
+			query.setParameter("employeeName", "%" + employeeName.toLowerCase() + "%");
+		}
+		if (leaveType != null && !leaveType.isEmpty()) {
+			query.setParameter("leaveType", leaveType);
+		}
+		if (status != null && !status.isEmpty()) {
+			query.setParameter("status", status);
+		}
+
+		return query.getResultList();
+	}
+
 }

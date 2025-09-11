@@ -1,6 +1,7 @@
 package org.ace.accounting.system.attendance;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Embedded;

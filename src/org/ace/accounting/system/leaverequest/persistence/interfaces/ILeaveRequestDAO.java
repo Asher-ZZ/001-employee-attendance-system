@@ -14,4 +14,8 @@ public interface ILeaveRequestDAO {
 	public void delete (LeaveRequest leaveRequest)throws DAOException;
 	
 	public List<LeaveRequest> findAll() throws DAOException;
+	
+	 List<LeaveRequest> findAllLeaveRequest();
+
+	public List<LeaveRequest> searchLeaveRequests(String employeeName, String leaveType, String status);
 }

@@ -81,4 +81,14 @@ public class AttachFile implements Serializable {
 	public String getFilePath() {
 		return medicalRecord;
 	}
+
+	public String getContentType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getFileData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -93,8 +93,8 @@
 				<p:dataTable value="#{ManageAttendanceActionBean.attendanceList}"
 					var="att" paginator="true" rows="5" responsiveLayout="scroll"
 					style="width:100%;">
-					
-					<p:column headerText="Full Name" >
+
+					<p:column headerText="Full Name">
 						<h:outputText value="#{att.employee.fullName}" />
 					</p:column>
 
@@ -106,13 +106,15 @@
 
 					<p:column headerText="Arrival">
 						<h:outputText value="#{att.arrivalTime}">
-							<f:convertDateTime pattern="HH:mm" />
+							<f:convertDateTime pattern="HH:mm"
+								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Departure">
 						<h:outputText value="#{att.departureTime}">
-							<f:convertDateTime pattern="HH:mm" />
+							<f:convertDateTime pattern="HH:mm"
+								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 
