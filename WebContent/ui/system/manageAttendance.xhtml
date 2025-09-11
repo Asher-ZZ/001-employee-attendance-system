@@ -1,0 +1,136 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+
+	<ui:define name="title">Attendance Management</ui:define>
+
+	<ui:define name="content">
+
+		<!-- Global messages -->
+		<p:growl id="msgs" globalOnly="true" showDetail="true" life="4000" />
+
+		<!-- Attendance Form -->
+		<h:form id="attendanceForm">
+			<p:panel header="Attendance Entry" style="margin-bottom:20px;">
+				<p:panelGrid id="panelDept" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:panelGrid columns="2">
+
+						<h:outputLabel for="employeeId" value="Employee:" />
+						<p:panelGrid styleClass="ui-panelgrid-blank">
+							<div class="ui-g ui-fluid">
+								<div class="ui-inputgroup ui-g-12 ui-lg-12">
+									<p:commandButton styleClass="green-button" icon="fa fa-search"
+										actionListener="#{ManageAttendanceActionBean.selectEmployee}"
+										id="selectEmployeeDialogLink" process="@this">
+										<p:ajax event="dialogReturn"
+											listener="#{ManageAttendanceActionBean.returnEmployee}"
+											update="employeeId" />
+									</p:commandButton>
+
+									<p:inputText id="employeeId"
+										value="#{ManageAttendanceActionBean.attendance.employee == null ? '' : ManageAttendanceActionBean.attendance.employee.fullName}"
+										readonly="true" />
+
+									<p:commandButton styleClass="red-button" icon="fa fa-times"
+										action="#{ManageAttendanceActionBean.attendance.setEmployee(null)}"
+										process="@this" update="employeeId" />
+								</div>
+							</div>
+						</p:panelGrid>
+
+						<!-- Date -->
+						<h:outputLabel for="date" value="Date:" />
+						<p:calendar id="date"
+							value="#{ManageAttendanceActionBean.attendance.date}"
+							pattern="yyyy-MM-dd" showButtonPanel="true" navigator="true"
+							required="true" />
+
+						<!-- Arrival Time -->
+						<h:outputLabel for="arrival" value="Arrival Time:" />
+						<p:calendar id="arrival"
+							value="#{ManageAttendanceActionBean.attendance.arrivalTime}"
+							pattern="HH:mm" timeOnly="true" showSeconds="true"
+							placeholder="Select arrival time" required="true"
+							showButtonPanel="true" />
+
+						<!-- Departure Time -->
+						<h:outputLabel for="departure" value="Departure Time:" />
+						<p:calendar id="departure"
+							value="#{ManageAttendanceActionBean.attendance.departureTime}"
+							pattern="HH:mm" timeOnly="true" showSeconds="true"
+							placeholder="Select departure time" showButtonPanel="true" />
+
+						<!-- Remarks -->
+						<h:outputLabel for="remarks" value="Remarks:" />
+						<p:inputTextarea id="remarks"
+							value="#{ManageAttendanceActionBean.attendance.remarks}" rows="3"
+							cols="30" autoResize="true" />
+
+					</p:panelGrid>
+				</p:panelGrid>
+
+				<!-- Buttons -->
+				<p:separator />
+				<p:commandButton value="Save"
+					action="#{ManageAttendanceActionBean.save}"
+					update=":attendanceForm :attendanceTable :msgs" icon="pi pi-save"
+					styleClass="ui-button-success" />
+				<p:commandButton value="Clear"
+					action="#{ManageAttendanceActionBean.reset}" process="@this"
+					update="attendanceForm" icon="pi pi-refresh"
+					styleClass="ui-button-secondary" />
+			</p:panel>
+		</h:form>
+
+		<!-- Attendance List -->
+		<h:form id="attendanceTable">
+			<p:panel header="Attendance Records">
+				<p:dataTable value="#{ManageAttendanceActionBean.attendanceList}"
+					var="att" paginator="true" rows="5" responsiveLayout="scroll"
+					style="width:100%;">
+					
+					<p:column headerText="Full Name" >
+						<h:outputText value="#{att.employee.fullName}" />
+					</p:column>
+
+					<p:column headerText="Date">
+						<h:outputText value="#{att.date}">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Arrival">
+						<h:outputText value="#{att.arrivalTime}">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Departure">
+						<h:outputText value="#{att.departureTime}">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Remarks">
+						<h:outputText value="#{att.remarks}" />
+					</p:column>
+
+					<p:column headerText="Action"
+						style="width:120px; text-align:center;">
+						<p:commandButton icon="fa fa-pencil" title="Edit"
+							action="#{ManageAttendanceActionBean.prepareUpdateAttendance(att)}"
+							update=":attendanceForm"
+							styleClass="ui-button-warning rounded-button" />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

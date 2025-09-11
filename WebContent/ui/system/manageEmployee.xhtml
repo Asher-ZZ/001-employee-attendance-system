@@ -5,350 +5,200 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
 
-	<!-- Page title -->
-	<ui:define name="title">
-        Employee Management
-    </ui:define>
 
-	<!-- Page content -->
+	<ui:define name="title">Employee Management</ui:define>
+
 	<ui:define name="content">
-		<div class="employee-management-container">
 
-			<!-- Header -->
-			<div class="header-section">
-				<h1 class="page-title">Employee Management</h1>
-				<p class="page-subtitle">Manage employee information and records</p>
-			</div>
 
-			<!-- Employee Form -->
-			<h:form id="employeeForm" styleClass="form-card">
-				<div class="card">
-					<div class="card-header">
-						<h2>Employee Information</h2>
-					</div>
-					<div class="card-body">
-						<p:panelGrid columns="2" columnClasses="label,value" layout="grid"
-							styleClass="form-panel" style="margin-bottom:20px;">
+		<h:form id="globalMessageForm">
+			<p:growl id="msgs" escape="false" globalOnly="true" life="5000"
+				showDetail="true" />
+		</h:form>
 
-							<h:outputLabel for="fullName" value="Full Name:"
-								styleClass="form-label" />
-							<p:inputText id="fullName"
-								value="#{ManageEmployeeActionBean.employee.fullName}"
-								required="true" styleClass="form-input"
-								placeholder="Enter full name" />
 
-							<h:outputLabel for="department" value="Department:"
-								styleClass="form-label" />
-							<p:inputText id="department"
-								value="#{ManageEmployeeActionBean.employee.department}"
-								styleClass="form-input" placeholder="Enter department" />
+		<h:form id="employeeForm">
 
-							<h:outputLabel for="position" value="Position:"
-								styleClass="form-label" />
-							<p:inputText id="position"
-								value="#{ManageEmployeeActionBean.employee.position}"
-								styleClass="form-input" placeholder="Enter position" />
+			<p:panel header="Employee Entry" style="margin-bottom:20px;">
 
-							<h:outputLabel for="hireDate" value="Hire Date:"
-								styleClass="form-label" />
-							<p:datePicker id="hireDate"
-								value="#{ManageEmployeeActionBean.employee.hireDate}"
-								styleClass="form-input" pattern="dd-MM-yyyy"
-								placeholder="Select hire date" />
+				<p:panelGrid id="panelDept" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:panelGrid columns="2">
 
-							<h:outputLabel for="status" value="Status:"
-								styleClass="form-label" />
-							<p:selectOneMenu id="status"
-								value="#{ManageEmployeeActionBean.employee.status}"
-								styleClass="form-input">
-								<f:selectItem itemLabel="-- Select Status --" itemValue="" />
-								<f:selectItem itemLabel="Active" itemValue="Active" />
-								<f:selectItem itemLabel="Inactive" itemValue="Inactive" />
-							</p:selectOneMenu>
-						</p:panelGrid>
+						<h:outputText value="" />
+						<p:message display="text" for="fullName" />
+						<h:outputLabel for="fullName" value="Full Name:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:inputText id="fullName"
+							value="#{ManageEmployeeActionBean.employee.fullName}"
+							required="true" placeholder="Enter full name"
+							requiredMessage="Name is required!" />
 
-						<div class="form-actions">
-							<p:commandButton value="Save" icon="pi pi-check"
-								action="#{ManageEmployeeActionBean.save}"
-								update=":employeeTableForm:employeeTable :employeeForm"
-								styleClass="btn-primary" />
-							<p:commandButton value="Reset" icon="pi pi-refresh"
-								action="#{ManageEmployeeActionBean.reset}"
-								update=":employeeForm" styleClass="btn-secondary" />
-						</div>
-					</div>
-				</div>
-			</h:form>
 
-			<!-- Employee Table -->
-			<h:form id="employeeTableForm" styleClass="table-card">
-				<div class="card">
-					<div class="card-header">
-						<h2>Employee List</h2>
-						<p:commandButton icon="pi pi-download" value="Export"
-							styleClass="btn-export" />
-					</div>
-					<div class="card-body">
-						<p:dataTable id="employeeTable"
-							value="#{ManageEmployeeActionBean.employees}" var="emp"
-							paginator="true" rows="5" styleClass="employee-table"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15"
-							currentPageReportTemplate="Showing {start} to {end} of {totalRecords} entries">
+						<h:outputText value="" />
+						<p:message display="text" for="department" />
+						<h:outputLabel for="department" value="Department:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="department"
+							value="#{ManageEmployeeActionBean.employee.department}"
+							required="true" requiredMessage="Department is required!">
+							<f:selectItem itemLabel="-- Select Department --" itemValue="" />
+							<f:selectItems
+								value="#{ManageEmployeeActionBean.departmentValues}" var="dept"
+								itemLabel="#{dept.department}" itemValue="#{dept}" />
+						</p:selectOneMenu>
 
-							<p:column headerText="Full Name" sortBy="#{emp.fullName}"
-								filterBy="#{emp.fullName}" filterMatchMode="contains">
-								<h:outputText value="#{emp.fullName}" />
-							</p:column>
+						<h:outputText value="" />
+						<p:message display="text" for="position" />
+						<h:outputLabel for="position" value="Position:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="position"
+							value="#{ManageEmployeeActionBean.employee.position}"
+							required="true" requiredMessage="Position is required!">
+							<f:selectItem itemLabel="-- Select Position --" itemValue="" />
+							<f:selectItems value="#{ManageEmployeeActionBean.positionValues}"
+								var="pos" itemLabel="#{pos.position}" itemValue="#{pos}" />
+						</p:selectOneMenu>
 
-							<p:column headerText="Department" sortBy="#{emp.department}"
-								filterBy="#{emp.department}" filterMatchMode="contains">
-								<h:outputText value="#{emp.department}" />
-							</p:column>
+						<h:outputText value="" />
+						<p:message display="text" for="hireDate" />
+						<h:outputLabel for="hireDate" value="Hire Date:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:datePicker id="hireDate"
+							value="#{ManageEmployeeActionBean.employee.hireDate}"
+							required="true" requiredMessage="Hire Date is required!"
+							pattern="dd-MM-yyyy" placeholder="Select hire date"
+							showIcon="true" />
 
-							<p:column headerText="Position" sortBy="#{emp.position}"
-								filterBy="#{emp.position}" filterMatchMode="contains">
-								<h:outputText value="#{emp.position}" />
-							</p:column>
+						<h:outputText value="" />
+						<p:message display="text" for="dateOfBirth" />
+						<h:outputLabel for="dateOfBirth" value="Date of Birth:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:datePicker id="dateOfBirth"
+							value="#{ManageEmployeeActionBean.employee.dateOfBirth}"
+							required="true" requiredMessage="Date Of Birth is required!"
+							pattern="dd-MM-yyyy" placeholder="Select date of birth"
+							showIcon="true" />
 
-							<p:column headerText="Hire Date" sortBy="#{emp.hireDate}">
-								<h:outputText value="#{emp.hireDate}">
-									<f:convertDateTime pattern="dd-MM-yyyy" />
-								</h:outputText>
-							</p:column>
 
-							<p:column headerText="Status" sortBy="#{emp.status}"
-								filterBy="#{emp.status}">
-								<h:outputText value="#{emp.status}"
-									styleClass="status-badge status-#{emp.status.toLowerCase()}" />
-							</p:column>
+						<h:outputText value="" />
+						<p:message display="text" for="gender" />
+						<h:outputLabel for="gender" value="Gender:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneRadio id="gender" layout="lineDirection"
+							value="#{ManageEmployeeActionBean.employee.gender}"
+							required="true" requiredMessage="Gender is required!">
+							<f:selectItem itemLabel="Male" itemValue="Male" />
+							<f:selectItem itemLabel="Female" itemValue="Female" />
+						</p:selectOneRadio>
 
-							<p:column headerText="Actions" style="width:120px;">
-								<div class="action-buttons">
-									<p:commandButton icon="pi pi-pencil" title="Edit"
-										action="#{ManageEmployeeActionBean.edit(emp)}"
-										update=":employeeForm" styleClass="btn-edit" />
-									<p:commandButton icon="pi pi-trash" title="Delete"
-										action="#{ManageEmployeeActionBean.delete(emp)}"
-										update=":employeeTableForm:employeeTable"
-										onclick="return confirm('Are you sure you want to delete this employee?')"
-										styleClass="btn-delete" />
-								</div>
-							</p:column>
-						</p:dataTable>
-					</div>
-				</div>
-			</h:form>
-		</div>
+						<h:outputText value="" />
+						<p:message display="text" for="status" />
+						<h:outputLabel for="status" value="Status:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="status"
+							value="#{ManageEmployeeActionBean.employee.status}"
+							required="true" requiredMessage="Status is required!">
+							<f:selectItem itemLabel="-- Select Status --" itemValue="" />
+							<f:selectItem itemLabel="Active" itemValue="Active" />
+							<f:selectItem itemLabel="Inactive" itemValue="Inactive" />
+						</p:selectOneMenu>
 
-		<!-- Custom CSS -->
-		<style>
-.employee-management-container {
-	padding: 20px;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	color: #333;
-	background: #f4f6f9;
-	min-height: 100vh;
-}
+					</p:panelGrid>
+				</p:panelGrid>
 
-.header-section {
-	margin-bottom: 30px;
-	text-align: center;
-}
 
-.page-title {
-	color: #2c3e50;
-	font-weight: 700;
-	margin-bottom: 5px;
-	font-size: 28px;
-}
+				<p:commandButton value="Save" icon="pi pi-check"
+					action="#{ManageEmployeeActionBean.save}"
+					update=":employeeForm :employeeTableForm :globalMessageForm:msgs"
+					styleClass="p-button-success p-button-raised" />
+				<p:commandButton value="Reset" icon="pi pi-refresh"
+					action="#{ManageEmployeeActionBean.createNewEmployee}"
+					process="@this" update="employeeForm"
+					styleClass="p-button-secondary p-button-raised" />
+			</p:panel>
+		</h:form>
 
-.page-subtitle {
-	color: #7f8c8d;
-	font-size: 16px;
-}
 
-.card {
-	background: #fff;
-	border-radius: 12px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-	margin-bottom: 30px;
-	overflow: hidden;
-}
+		<h:form id="employeeTableForm">
+			<p:panel header="Employee List">
+				<p:dataTable id="employeeTable"
+					value="#{ManageEmployeeActionBean.employees}" var="emp"
+					paginator="true" rows="5" responsiveLayout="scroll" rowHover="true"
+					styleClass="p-datatable-striped p-datatable-gridlines"
+					filterDelay="500">
 
-.card-header {
-	background: linear-gradient(135deg, #3498db, #2980b9);
-	padding: 15px 20px;
-	color: white;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
+					<p:column headerText="Full Name" filterBy="#{emp.fullName}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.fullName}" />
+					</p:column>
 
-.card-header h2 {
-	margin: 0;
-	font-size: 20px;
-	font-weight: 600;
-}
+					<p:column headerText="Department" filterBy="#{emp.department}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.department}" />
+					</p:column>
 
-.card-body {
-	padding: 25px;
-}
+					<p:column headerText="Position" filterBy="#{emp.position}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.position}" />
+					</p:column>
 
-.form-label {
-	font-weight: 500;
-	color: #2c3e50;
-	padding: 8px 0;
-}
+					<p:column headerText="Hire Date">
+						<h:outputText value="#{emp.hireDate}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
 
-.form-input {
-	width: 100%;
-	padding: 10px 14px;
-	border: 1px solid #dcdfe6;
-	border-radius: 6px;
-	transition: all 0.3s;
-	font-size: 14px;
-}
+					<p:column headerText="Date Of Birth">
+						<h:outputText value="#{emp.dateOfBirth}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
 
-.form-input:focus {
-	outline: none;
-	border-color: #3498db;
-	box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
-}
+					<p:column headerText="Gender">
+						<h:outputText value="#{emp.gender}" />
+					</p:column>
 
-.form-actions {
-	display: flex;
-	gap: 12px;
-	margin-top: 20px;
-}
+					<p:column headerText="Status" filterBy="#{emp.status}"
+						filterMatchMode="contains">
+						<h:outputText value="#{emp.status}" />
+					</p:column>
 
-/* Buttons */
-.btn-primary, .btn-secondary, .btn-export, .btn-edit, .btn-delete {
-	border: none;
-	border-radius: 6px;
-	padding: 10px 18px;
-	font-weight: 600;
-	cursor: pointer;
-	transition: all 0.3s;
-	font-size: 14px;
-}
 
-.btn-primary {
-	background: #3498db;
-	color: white;
-}
+					<p:column headerText="Actions"
+						style="width:60px; text-align:center">
+						<p:commandButton icon="fa fa-pencil" title="Edit"
+							action="#{ManageEmployeeActionBean.prepareUpdateEmployee(emp)}"
+							update=":employeeForm :globalMessageForm:msgs" />
 
-.btn-primary:hover {
-	background: #2980b9;
-}
+					</p:column>
 
-.btn-secondary {
-	background: #95a5a6;
-	color: white;
-}
+				</p:dataTable>
+			</p:panel>
+		</h:form>
 
-.btn-secondary:hover {
-	background: #7f8c8d;
-}
-
-.btn-export {
-	background: #27ae60;
-	color: white;
-}
-
-.btn-export:hover {
-	background: #219653;
-}
-
-.btn-edit {
-	background: #f39c12;
-	color: white;
-	padding: 6px 12px;
-}
-
-.btn-edit:hover {
-	background: #e67e22;
-}
-
-.btn-delete {
-	background: #e74c3c;
-	color: white;
-	padding: 6px 12px;
-}
-
-.btn-delete:hover {
-	background: #c0392b;
-}
-
-/* Table */
-.employee-table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-.employee-table th {
-	background: #ecf0f1;
-	color: #2c3e50;
-	font-weight: 600;
-	padding: 12px 15px;
-	text-align: left;
-}
-
-.employee-table td {
-	padding: 12px 15px;
-	border-bottom: 1px solid #eaecef;
-}
-
-.employee-table tr:nth-child(even) {
-	background-color: #f9fbfd;
-}
-
-.employee-table tr:hover {
-	background-color: #f0f6fc;
-}
-
-/* Status */
-.status-badge {
-	padding: 6px 12px;
-	border-radius: 20px;
-	font-size: 13px;
-	font-weight: 600;
-	display: inline-block;
-}
-
-.status-active {
-	background: #d4edda;
-	color: #155724;
-}
-
-.status-inactive {
-	background: #f8d7da;
-	color: #721c24;
-}
-
-/* Action buttons */
-.action-buttons {
-	display: flex;
-	gap: 8px;
-}
-
-/* Responsive */
-@media ( max-width : 768px) {
-	.employee-management-container {
-		padding: 10px;
-	}
-	.form-actions {
-		flex-direction: column;
-	}
-	.action-buttons {
-		flex-direction: column;
-	}
-	.card-header {
-		flex-direction: column;
-		gap: 10px;
-		align-items: flex-start;
-	}
-}
-</style>
 	</ui:define>
 </ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

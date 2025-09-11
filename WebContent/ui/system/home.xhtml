@@ -1,12 +1,149 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.org/ui"
-                template="/common/commonLayout.xhtml">
-                
-   <ui:define name="content">
-   		
-   </ui:define>             
-           
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+
+	<ui:define name="content">
+		<style>
+.dashboard-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	padding: 20px;
+}
+
+.stat-card {
+	background: #f5f5f5;
+	padding: 15px;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	height: 150px;
+}
+
+.stat-card h3 {
+	margin-top: 0;
+	color: #2c3e50;
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 10px;
+}
+
+.stat-value {
+	font-size: 24px;
+	font-weight: bold;
+	color: #4285f4;
+	margin: 10px 0;
+}
+
+.quick-actions {
+	display: flex;
+	gap: 10px;
+	margin: 15px 0;
+	padding: 0 20px;
+}
+
+.action-btn {
+	padding: 10px 20px;
+	background: #4285f4;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background 0.3s;
+}
+
+.action-btn:hover {
+	background: #3367d6;
+}
+
+.attendance-chart {
+	width: 100%;
+	height: 40px;
+	background: #ecf0f1;
+	border-radius: 5px;
+	overflow: hidden;
+	margin: 10px 0;
+}
+
+.attendance-fill {
+	height: 100%;
+	background: #4285f4;
+	border-radius: 5px;
+}
+
+.notification-badge {
+	background: #ea4335;
+	color: white;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	margin-left: 5px;
+}
+
+@media ( max-width : 768px) {
+	.dashboard-container {
+		grid-template-columns: 1fr;
+	}
+	.quick-actions {
+		flex-direction: column;
+	}
+}
+</style>
+
+		<div class="quick-actions">
+			<button class="action-btn">Mark Attendance</button>
+			<button class="action-btn">Request Leave</button>
+			<button class="action-btn">Generate Report</button>
+		</div>
+
+		<div class="dashboard-container">
+			<div class="stat-card">
+				<h3>Today's Attendance</h3>
+				<div class="stat-value">85%</div>
+				<div class="attendance-chart">
+					<div class="attendance-fill" style="width: 85%;"></div>
+				</div>
+				<p>34/40 employees present</p>
+			</div>
+
+			<div class="stat-card">
+				<h3>
+					Pending Approvals <span class="notification-badge">5</span>
+				</h3>
+				<div class="stat-value">5 requests</div>
+				<p>Leave requests awaiting your action</p>
+			</div>
+
+			<div class="stat-card">
+				<h3>Late Arrivals</h3>
+				<div class="stat-value">3</div>
+				<p>Employees arrived late today</p>
+			</div>
+
+			<div class="stat-card">
+				<h3>On Leave</h3>
+				<div class="stat-value">6</div>
+				<p>Employees on leave today</p>
+			</div>
+		</div>
+
+		<div style="padding: 20px;">
+			<h3>Recent Activity</h3>
+			<ul style="list-style-type: none; padding: 0;">
+				<li style="padding: 10px; border-bottom: 1px solid #eee;">John
+					Doe checked in at 8:45 AM</li>
+				<li style="padding: 10px; border-bottom: 1px solid #eee;">Jane
+					Smith requested leave (Pending)</li>
+				<li style="padding: 10px; border-bottom: 1px solid #eee;">Robert
+					Johnson checked out at 5:30 PM</li>
+				<li style="padding: 10px; border-bottom: 1px solid #eee;">Sara
+					Williams updated her attendance</li>
+			</ul>
+		</div>
+	</ui:define>
 </ui:composition>

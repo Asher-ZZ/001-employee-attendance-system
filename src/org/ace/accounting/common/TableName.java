@@ -21,6 +21,9 @@ public class TableName {
 	public static final String BRANCH = "BRANCH";
 
 	public static final String EMPLOYEE = "EMPLOYEE";
+	public static final String ATTACHFILE = "ATTACHFILE";
+	public static final String LEAVEREQUEST = "LEAVEREQUEST";
+	public static final String ATTENDANCE = "ATTENDANCE";
 
 	/**
 	 * Chart Of Account Table Name

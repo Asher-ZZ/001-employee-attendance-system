@@ -47,6 +47,11 @@
 			<to-view-id>/dialog/roleDialog.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
+			<from-outcome>employeeDialog</from-outcome>
+			<to-view-id>/dialog/employeeDialog.xhtml</to-view-id>
+		</navigation-case>
+
+		<navigation-case>
 			<from-outcome>branchDialog</from-outcome>
 			<to-view-id>/dialog/branchDialog.xhtml</to-view-id>
 		</navigation-case>
@@ -195,13 +200,36 @@
 			<to-view-id>/ui/system/manageRole.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
-			<navigation-case>
+
+		<navigation-case>
 			<from-outcome>employeeForm</from-outcome>
 			<to-view-id>/ui/system/manageEmployee.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 
+		<navigation-case>
+			<from-outcome>attendanceForm</from-outcome>
+			<to-view-id>/ui/system/manageAttendance.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>leaveForm</from-outcome>
+			<to-view-id>/ui/system/manageLeaveRequest.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>attendanceEnquiry</from-outcome>
+			<to-view-id>/ui/system/manageAttendanceEnquiry.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>leaveEnquiry</from-outcome>
+			<to-view-id>/ui/system/manageLeaveRequestEnquiry.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 
 		<!-- Transaction Entry -->
 		<navigation-case>
@@ -434,43 +462,43 @@
 			<to-view-id>/ui/system/manageCustomer.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
+
 		<navigation-case>
 			<from-outcome>manageProposal</from-outcome>
 			<to-view-id>/ui/system/manageProposal.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
+
 		<navigation-case>
 			<from-outcome>newProposal</from-outcome>
 			<to-view-id>/ui/system/NewProposal.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
+
 		<navigation-case>
 			<from-outcome>excelUploadProposal</from-outcome>
 			<to-view-id>/ui/system/ExcelUploadProposal.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
+
 		<navigation-case>
 			<from-outcome>proposalList</from-outcome>
 			<to-view-id>/ui/system/ProposalList.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
+
 		<navigation-case>
 			<from-outcome>searchProposal</from-outcome>
 			<to-view-id>/ui/system/SearchByGroupName.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
+
 		<navigation-case>
 			<from-outcome>excel</from-outcome>
 			<to-view-id>/ui/system/Excel.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
-		
+
 		<navigation-case>
 			<from-outcome>proposalListing</from-outcome>
 			<to-view-id>/ui/system/ProposalListing.xhtml</to-view-id>
