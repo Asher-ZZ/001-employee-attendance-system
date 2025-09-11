@@ -1,8 +1,8 @@
-package org.ace.accountig.system.attendance.persistence.interfaces;
+package org.ace.accounting.system.attendance.persistence.interfaces;
 
 import java.util.List;
 
-import org.ace.accountig.system.attendance.Attendance;
+import org.ace.accounting.system.attendance.Attendance;
 import org.ace.java.component.persistence.exception.DAOException;
 
 public interface IAttendanceDAO {

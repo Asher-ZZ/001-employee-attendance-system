@@ -50,7 +50,7 @@ public class EmployeeService implements IEmployeeService {
 		try {
 			result = employeeDAO.findAll();
 		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Failed to find all of Branch)", e);
+			throw new SystemException(e.getErrorCode(), "Failed to find all of Employee)", e);
 		}
 		return result;
 	}

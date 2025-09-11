@@ -1,8 +1,8 @@
-package org.ace.accountig.system.leaverequest.service.interfaces;
+package org.ace.accounting.system.leaverequest.service.interfaces;
 
 import java.util.List;
 
-import org.ace.accountig.system.leaverequest.LeaveRequest;
+import org.ace.accounting.system.leaverequest.LeaveRequest;
 import org.ace.java.component.SystemException;
 
 public interface ILeaveRequestService {

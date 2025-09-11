@@ -1,12 +1,12 @@
-package org.ace.accountig.system.attendance.service;
+package org.ace.accounting.system.attendance.service;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.ace.accountig.system.attendance.Attendance;
-import org.ace.accountig.system.attendance.persistence.interfaces.IAttendanceDAO;
-import org.ace.accountig.system.attendance.service.interfaces.IAttendanceService;
+import org.ace.accounting.system.attendance.Attendance;
+import org.ace.accounting.system.attendance.persistence.interfaces.IAttendanceDAO;
+import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
 import org.ace.java.component.SystemException;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Service;
@@ -46,6 +46,15 @@ public class AttendanceService implements IAttendanceService {
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public List<Attendance> findAllAttendance() throws SystemException {
+		try {
+			return attendanceDAO.findAll();
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Failed to find all Attendance", e);
+		}
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public List<Attendance> findAll() throws SystemException {
 		try {
 			return attendanceDAO.findAll();
 		} catch (DAOException e) {

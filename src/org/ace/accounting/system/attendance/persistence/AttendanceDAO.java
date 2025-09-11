@@ -1,11 +1,11 @@
-package org.ace.accountig.system.attendance.persistence;
+package org.ace.accounting.system.attendance.persistence;
 
 import java.util.List;
 
 import javax.persistence.PersistenceException;
 
-import org.ace.accountig.system.attendance.Attendance;
-import org.ace.accountig.system.attendance.persistence.interfaces.IAttendanceDAO;
+import org.ace.accounting.system.attendance.Attendance;
+import org.ace.accounting.system.attendance.persistence.interfaces.IAttendanceDAO;
 import org.ace.java.component.persistence.BasicDAO;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Repository;

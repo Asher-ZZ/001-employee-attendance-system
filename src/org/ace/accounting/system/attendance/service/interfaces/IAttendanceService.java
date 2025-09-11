@@ -1,8 +1,8 @@
-package org.ace.accountig.system.attendance.service.interfaces;
+package org.ace.accounting.system.attendance.service.interfaces;
 
 import java.util.List;
 
-import org.ace.accountig.system.attendance.Attendance;
+import org.ace.accounting.system.attendance.Attendance;
 import org.ace.java.component.SystemException;
 
 public interface IAttendanceService {
@@ -13,4 +13,7 @@ public interface IAttendanceService {
 	/* void deleteAttendance(Attendance attendance) throws SystemException; */
 
 	List<Attendance> findAllAttendance() throws SystemException;
+
+		List<Attendance> findAll();
+
 }

@@ -1,0 +1,103 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+
+	<ui:param name="header" value="Attendance Enquiry" />
+	<ui:param name="headerRendered" value="true" />
+
+	<ui:define name="content">
+
+		<h:form id="attendanceEnquiry">
+
+			<p:panel header="Search Attendance" style="margin-bottom:20px;">
+				<p:panelGrid columns="4" styleClass="ui-fluid"
+					columnClasses="label,value,label,value">
+
+					<!-- Employee Search -->
+					<h:outputLabel for="employee" value="Employee:" />
+					<p:inputText id="employee"
+						value="#{ManageAttendanceEnquiryActionBean.searchEmployee}"
+						placeholder="Enter employee name" />
+
+					<!-- From Date -->
+					<h:outputLabel for="fromDate" value="From Date:" />
+					<p:calendar id="fromDate"
+						value="#{ManageAttendanceEnquiryActionBean.fromDate}"
+						pattern="yyyy-MM-dd" navigator="true" showButtonPanel="true" />
+
+					<!-- To Date -->
+					<h:outputLabel for="toDate" value="To Date:" />
+					<p:calendar id="toDate"
+						value="#{ManageAttendanceEnquiryActionBean.toDate}"
+						pattern="yyyy-MM-dd" navigator="true" showButtonPanel="true" />
+
+					<!-- Department (Optional) -->
+					<h:outputLabel for="dept" value="Department:" />
+					<p:inputText id="dept"
+						value="#{ManageAttendanceEnquiryActionBean.searchDepartment}"
+						placeholder="Enter department" />
+
+				</p:panelGrid>
+
+				<p:separator />
+				<p:commandButton value="Search"
+					action="#{ManageAttendanceEnquiryActionBean.search}"
+					update=":attendanceResults" icon="pi pi-search"
+					styleClass="ui-button-success" />
+				<p:commandButton value="Clear"
+					action="#{ManageAttendanceEnquiryActionBean.reset}" process="@this"
+					update="attendanceEnquiry :attendanceResults" icon="pi pi-refresh"
+					styleClass="ui-button-secondary" />
+			</p:panel>
+		</h:form>
+
+		<!-- Results -->
+		<h:form id="attendanceResults">
+			<p:panel header="Attendance Results">
+				<p:dataTable value="#{ManageAttendanceEnquiryActionBean.resultList}"
+					var="att" paginator="true" rows="10" responsiveLayout="scroll"
+					style="width:100%;">
+
+					<p:column headerText="Employee">
+						<h:outputText value="#{att.employee.fullName}" />
+					</p:column>
+
+					<p:column headerText="Department">
+						<h:outputText value="#{att.employee.department}" />
+					</p:column>
+
+					<p:column headerText="Date">
+						<h:outputText value="#{att.date}">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Arrival">
+						<h:outputText value="#{att.arrivalTime}">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Departure">
+						<h:outputText value="#{att.departureTime}">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Total Hours">
+						<h:outputText value="#{att.totalHours}" />
+					</p:column>
+
+					<p:column headerText="Remarks">
+						<h:outputText value="#{att.remarks}" />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

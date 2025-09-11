@@ -1,11 +1,14 @@
-package org.ace.accountig.system.leaverequest;
+package org.ace.accounting.system.leaverequest;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 import org.ace.accounting.common.BasicEntity;
 import org.ace.accounting.common.TableName;
+import org.ace.accounting.system.employee.Employee;
 import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
@@ -13,8 +16,6 @@ import org.ace.java.component.idgen.service.IDInterceptor;
 @TableGenerator(name = "LEAVEREQUEST_GEN", table = "ID_GEN", pkColumnName = "GEN_NAME", valueColumnName = "GEN_VAL", pkColumnValue = "LEAVEREQUEST_GEN", allocationSize = 10)
 @EntityListeners(IDInterceptor.class)
 public class LeaveRequest implements Serializable {
-
-	private static final long serialVersionUID = -3773190552836366546L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "LEAVEREQUEST_GEN")
@@ -29,12 +30,16 @@ public class LeaveRequest implements Serializable {
 	private Date endDate;
 
 	private String reason;
-
+	
+	
 	private String status;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	private byte[] medicalRecord;
+	@ManyToOne
+	@JoinColumn(name = "employeeid")
+	private Employee employee;
+
+	@OneToMany(mappedBy = "leaveRequest", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<AttachFile> attachFiles = new ArrayList<>();
 
 	@Version
 	private int version;
@@ -42,7 +47,15 @@ public class LeaveRequest implements Serializable {
 	@Embedded
 	private BasicEntity basicEntity;
 
-	// --- getters and setters ---
+	public BasicEntity getBasicEntity() {
+		return basicEntity;
+	}
+
+	public void setBasicEntity(BasicEntity basicEntity) {
+		this.basicEntity = basicEntity;
+	}
+
+	// --- getters & setters ---
 	public String getId() {
 		return id;
 	}
@@ -91,12 +104,20 @@ public class LeaveRequest implements Serializable {
 		this.status = status;
 	}
 
-	public byte[] getMedicalRecord() {
-		return medicalRecord;
+	public Employee getEmployee() {
+		return employee;
 	}
 
-	public void setMedicalRecord(byte[] medicalRecord) {
-		this.medicalRecord = medicalRecord;
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public List<AttachFile> getAttachFiles() {
+		return attachFiles;
+	}
+
+	public void setAttachFiles(List<AttachFile> attachFiles) {
+		this.attachFiles = attachFiles;
 	}
 
 	public int getVersion() {
@@ -105,13 +126,5 @@ public class LeaveRequest implements Serializable {
 
 	public void setVersion(int version) {
 		this.version = version;
-	}
-
-	public BasicEntity getBasicEntity() {
-		return basicEntity;
-	}
-
-	public void setBasicEntity(BasicEntity basicEntity) {
-		this.basicEntity = basicEntity;
 	}
 }

@@ -48,8 +48,10 @@
     
     <class>org.ace.accounting.system.attendance.Attendance</class>
     <class>org.ace.accounting.system.leaverequest.LeaveRequest</class>
-    <class>org.ace.accounting.system.attachfile.AttachFile</class>
     <class>org.ace.accounting.system.employee.Employee</class>
+        <class>org.ace.accounting.system.leaverequest.AttachFile</class>
+    
+    
     
 	
 	 <!-- <class>org.ace.accounting.report.cleanCashReport.CleanCashView</class>

@@ -1,10 +1,10 @@
-package org.ace.accountig.system.leaverequest.persistence;
+package org.ace.accounting.system.leaverequest.persistence;
 
 import java.util.List;
 import javax.persistence.PersistenceException;
 
-import org.ace.accountig.system.leaverequest.LeaveRequest;
-import org.ace.accountig.system.leaverequest.persistence.interfaces.ILeaveRequestDAO;
+import org.ace.accounting.system.leaverequest.LeaveRequest;
+import org.ace.accounting.system.leaverequest.persistence.interfaces.ILeaveRequestDAO;
 import org.ace.java.component.persistence.BasicDAO;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Repository;

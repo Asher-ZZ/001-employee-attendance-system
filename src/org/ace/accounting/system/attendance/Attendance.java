@@ -1,7 +1,6 @@
-package org.ace.accountig.system.attendance;
+package org.ace.accounting.system.attendance;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 import javax.persistence.Embedded;
@@ -10,6 +9,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
@@ -18,6 +19,7 @@ import javax.persistence.Version;
 
 import org.ace.accounting.common.BasicEntity;
 import org.ace.accounting.common.TableName;
+import org.ace.accounting.system.employee.Employee;
 import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
@@ -29,7 +31,7 @@ public class Attendance implements Serializable {
 	private static final long serialVersionUID = -3773190552836366546L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "BRANCH_GEN")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ATTENDANCE_GEN")
 	private String id;
 
 	@Temporal(TemporalType.DATE)
@@ -43,11 +45,24 @@ public class Attendance implements Serializable {
 
 	private String remarks;
 
+	@ManyToOne
+	@JoinColumn(name = "employeeid")
+	private Employee employee;
+
 	@Version
 	private int version;
 
 	@Embedded
 	private BasicEntity basicEntity;
+
+	// Getters and setters...
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
 
 	public String getId() {
 		return id;
@@ -104,5 +119,4 @@ public class Attendance implements Serializable {
 	public void setBasicEntity(BasicEntity basicEntity) {
 		this.basicEntity = basicEntity;
 	}
-
 }

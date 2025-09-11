@@ -5,6 +5,7 @@ import org.ace.accounting.system.employee.service.interfaces.IEmployeeService;
 import org.ace.accounting.system.employeeattendenceenum.Department;
 import org.ace.accounting.system.employeeattendenceenum.Position;
 import org.ace.java.component.SystemException;
+import org.ace.java.web.common.BaseBean;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @ManagedBean(name = "ManageEmployeeActionBean")
 @ViewScoped
-public class ManageEmployeeActionBean implements Serializable {
+public class ManageEmployeeActionBean extends BaseBean {
 
 	private Employee employee;
 	private List<Employee> employees;
@@ -91,17 +92,11 @@ public class ManageEmployeeActionBean implements Serializable {
 		employee = new Employee();
 	}
 
-	// --- Messaging Helpers ---
-	private void addErrorMessage(String message) {
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", message));
-	}
+	
 
-	private void addInfoMessage(String message) {
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", message));
-	}
-
+	
+	
+	
 	// --- Getters & Setters ---
 	public Employee getEmployee() {
 		return employee;

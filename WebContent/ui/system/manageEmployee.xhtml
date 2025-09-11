@@ -166,14 +166,12 @@
 					</p:column>
 
 
-					<p:column headerText="Actions" style="width:120px;">
-						<p:commandButton icon="pi pi-pencil" title="Edit"
+					<p:column headerText="Actions"
+						style="width:60px; text-align:center">
+						<p:commandButton icon="fa fa-pencil" title="Edit"
 							action="#{ManageEmployeeActionBean.prepareUpdateEmployee(emp)}"
 							update=":employeeForm :globalMessageForm:msgs" />
-						<p:commandButton icon="pi pi-trash" title="Delete"
-							action="#{ManageEmployeeActionBean.deleteEmployee(emp)}"
-							update=":employeeTableForm :globalMessageForm:msgs"
-							onclick="return confirm('Are you sure?')" />
+
 					</p:column>
 
 				</p:dataTable>
@@ -182,3 +180,25 @@
 
 	</ui:define>
 </ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

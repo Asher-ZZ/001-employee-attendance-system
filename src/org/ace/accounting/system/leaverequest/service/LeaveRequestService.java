@@ -1,12 +1,12 @@
-package org.ace.accountig.system.leaverequest.service;
+package org.ace.accounting.system.leaverequest.service;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.ace.accountig.system.leaverequest.LeaveRequest;
-import org.ace.accountig.system.leaverequest.persistence.interfaces.ILeaveRequestDAO;
-import org.ace.accountig.system.leaverequest.service.interfaces.ILeaveRequestService;
+import org.ace.accounting.system.leaverequest.LeaveRequest;
+import org.ace.accounting.system.leaverequest.persistence.interfaces.ILeaveRequestDAO;
+import org.ace.accounting.system.leaverequest.service.interfaces.ILeaveRequestService;
 import org.ace.java.component.SystemException;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Service;

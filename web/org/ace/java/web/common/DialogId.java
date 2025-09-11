@@ -19,4 +19,6 @@ public class DialogId {
 	public static final String FF_COA_DIALOG = "formatFileCoaDialog";
 	
 	public static final String OCCUPATION_DIALOG = "occupationDialog";
+	
+	public static final String EMPLOYEE_DIALOG="employeeDialog";
 }

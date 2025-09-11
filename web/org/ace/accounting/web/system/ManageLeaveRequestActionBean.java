@@ -1,29 +1,48 @@
 package org.ace.accounting.web.system;
 
-import org.ace.accountig.system.leaverequest.LeaveRequest;
-import org.ace.accountig.system.leaverequest.service.interfaces.ILeaveRequestService;
+import org.ace.accounting.system.employee.Employee;
+import org.ace.accounting.system.leaverequest.AttachFile;
+import org.ace.accounting.system.leaverequest.LeaveRequest;
+import org.ace.accounting.system.leaverequest.service.interfaces.ILeaveRequestService;
+import org.ace.java.web.common.BaseBean;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
-import org.primefaces.model.DefaultStreamedContent;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.util.*;
 
-@ManagedBean(name = "manageLeaveRequestActionBean")
+@ManagedBean(name = "ManageLeaveRequestActionBean")
 @ViewScoped
-public class ManageLeaveRequestActionBean implements Serializable {
+public class ManageLeaveRequestActionBean extends BaseBean implements Serializable {
 
 	private LeaveRequest leaveRequest;
 	private LeaveRequest selectedLeaveRequest;
-
 	private List<LeaveRequest> leaveRequests;
-	private UploadedFile file; // uploaded image
+	private Employee employee;
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	// Map to track uploaded files: fileName -> filePath
+	private Map<String, String> medicalUploadedFileMap = new LinkedHashMap<>();
+
+	// Temporary upload directory
+	private String temporyDir = "/uploads/";
 
 	@ManagedProperty(value = "#{LeaveRequestService}")
 	private ILeaveRequestService leaveRequestService;
@@ -35,10 +54,141 @@ public class ManageLeaveRequestActionBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		leaveRequest = new LeaveRequest();
+		leaveRequest.setAttachFiles(new ArrayList<>());
 		leaveRequests = leaveRequestService.findAllLeaveRequest();
 	}
 
-	// --- getters and setters ---
+	// ================= File Upload =================
+	public void handleProposalAttachment(FileUploadEvent event) {
+		UploadedFile uploadedFile = event.getFile();
+		String fileName = uploadedFile.getFileName().replaceAll("\\s", "_");
+
+		if (!medicalUploadedFileMap.containsKey(fileName)) {
+			try {
+				String filePath = temporyDir + fileName;
+				File targetFile = new File(getUploadPath() + filePath);
+				targetFile.getParentFile().mkdirs(); // create directories if not exist
+				Files.write(targetFile.toPath(), uploadedFile.getContents());
+				medicalUploadedFileMap.put(fileName, filePath);
+
+				// attachFiles list ထဲကိုလည်း ထည့်
+				leaveRequest.getAttachFiles();
+
+				addInfoMessage("Upload Success", fileName + " uploaded successfully.");
+			} catch (IOException e) {
+				addErrorMessage("Upload Error", e.getMessage());
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+
+	public List<String> getMedicalUploadedFileList() {
+		return new ArrayList<>(medicalUploadedFileMap.values());
+	}
+
+	public void removeMedicalUploadedFile(String filePath) {
+		try {
+			File file = new File(getUploadPath() + filePath);
+			if (file.exists())
+				file.delete();
+			medicalUploadedFileMap.values().removeIf(v -> v.equals(filePath));
+			leaveRequest.getAttachFiles().remove(filePath);
+			addInfoMessage("Delete Success", "File deleted successfully.");
+		} catch (Exception e) {
+			addErrorMessage("Delete Error", e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	// ================= Stream File for Preview =================
+	public StreamedContent getMedicalRecordImage(String filePath) {
+		try {
+			File file = new File(getUploadPath() + filePath);
+			if (!file.exists())
+				return null; // File မရှိရင် null return
+			String contentType = Files.probeContentType(file.toPath());
+			return new DefaultStreamedContent(new FileInputStream(file), contentType, file.getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private String getUploadPath() {
+		// Example: project root folder + temporyDir
+		String projectPath = System.getProperty("user.dir"); // project root
+		return projectPath + temporyDir; // e.g., /home/user/project/uploads/
+	}
+
+	public boolean isPdfFile(String filePath) {
+		return filePath.toLowerCase().endsWith(".pdf");
+	}
+
+	public boolean isImageFile(String filePath) {
+		String lower = filePath.toLowerCase();
+		return lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".png") || lower.endsWith(".gif");
+	}
+
+	// ပထမဆုံး attach file path ကို return
+	public AttachFile firstMedicalRecordImage(LeaveRequest leave) {
+		if (leave != null && leave.getAttachFiles() != null && !leave.getAttachFiles().isEmpty()) {
+			return leave.getAttachFiles().get(0);
+		}
+		return null;
+	}
+
+	// ================= CRUD =================
+	public String save() {
+		try {
+			leaveRequestService.addNewLeaveRequest(leaveRequest);
+			leaveRequests = leaveRequestService.findAllLeaveRequest();
+			reset();
+			addInfoMessage("Success", "Leave Request Saved Successfully");
+		} catch (Exception e) {
+			addErrorMessage("Save Error", e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void reset() {
+		leaveRequest = new LeaveRequest();
+		leaveRequest.setAttachFiles(new ArrayList<>());
+		medicalUploadedFileMap.clear();
+	}
+
+	public String update() {
+		try {
+			leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
+			leaveRequests = leaveRequestService.findAllLeaveRequest();
+			addInfoMessage("Success", "Leave Request Updated Successfully");
+		} catch (Exception e) {
+			addErrorMessage("Update Error", e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public void delete(LeaveRequest request) {
+		try {
+			leaveRequestService.deleteLeaveRequest(request);
+			leaveRequests = leaveRequestService.findAllLeaveRequest();
+			addInfoMessage("Success", "Leave Request Deleted Successfully");
+		} catch (Exception e) {
+			addErrorMessage("Delete Error", e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	// ================= Employee Selection =================
+	public void returnEmployee(SelectEvent event) {
+		Employee employee = (Employee) event.getObject();
+		leaveRequest.setEmployee(employee);
+	}
+
+	// ================= Getters & Setters =================
 	public LeaveRequest getLeaveRequest() {
 		return leaveRequest;
 	}
@@ -58,58 +208,4 @@ public class ManageLeaveRequestActionBean implements Serializable {
 	public List<LeaveRequest> getLeaveRequests() {
 		return leaveRequests;
 	}
-
-	public UploadedFile getFile() {
-		return file;
-	}
-
-	public void setFile(UploadedFile file) {
-		this.file = file;
-	}
-
-	// --- CRUD operations ---
-	public String save() {
-		try {
-			if (file != null) {
-				leaveRequest.setMedicalRecord(file.getContents());
-			}
-			leaveRequestService.addNewLeaveRequest(leaveRequest);
-			leaveRequests = leaveRequestService.findAllLeaveRequest(); // refresh
-			leaveRequest = new LeaveRequest(); // reset form
-			file = null;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public String update() {
-		try {
-			if (file != null && selectedLeaveRequest != null) {
-				selectedLeaveRequest.setMedicalRecord(file.getContents());
-			}
-			leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
-			leaveRequests = leaveRequestService.findAllLeaveRequest(); // refresh
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public void delete(LeaveRequest request) {
-		try {
-			leaveRequestService.deleteLeaveRequest(request);
-			leaveRequests = leaveRequestService.findAllLeaveRequest(); // refresh
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public StreamedContent getMedicalRecordImage(LeaveRequest request) {
-		if (request != null && request.getMedicalRecord() != null) {
-			return new DefaultStreamedContent(new ByteArrayInputStream(request.getMedicalRecord()), "image/png");
-		}
-		return null;
-	}
-
 }

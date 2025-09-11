@@ -70,4 +70,14 @@ public class ApplicationSetting {
 	public String getMonthPicker() {
 		return MONTH_PICKER;
 	}
+	  private static final String DELETE_ICON = "/resources/images/delete.png";
+	    private static final String DELETE_STYLE_CLASS = "ui-icon-trash";
+
+	    public String getDeleteIcon() {
+	        return DELETE_ICON;
+	    }
+
+	    public String getDeleteStyleClass() {
+	        return DELETE_STYLE_CLASS;
+	    }
 }
