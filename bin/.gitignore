@@ -1,19 +1,1 @@
-/DB Script.xlsx
-/LANGUAGE_en.properties
-/MESSAGES_en.properties
-/META-INF/
-/SQL_ERROR_CODE.properties
-/create.sql
-/drop.sql
-/fonts/
-/id-config.properties
-/id-format.xml
-/irfonts.xml
-/jasperreports_extension.properties
 /org/
-/spring-beans.xml
-/trialBalanceReport.jrxml
-/voucherListingReport.jasper
-/voucherListingReport.jrxml
-/voucherPrintingExcelReport.jrxml
-/voucherPrintingReport.jrxml

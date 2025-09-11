@@ -30,6 +30,7 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 	private LeaveRequest selectedLeaveRequest;
 	private List<LeaveRequest> leaveRequests;
 	private Employee employee;
+
 	public Employee getEmployee() {
 		return employee;
 	}
@@ -81,8 +82,6 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 			}
 		}
 	}
-
-
 
 	public List<String> getMedicalUploadedFileList() {
 		return new ArrayList<>(medicalUploadedFileMap.values());
@@ -140,12 +139,16 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 	}
 
 	// ================= CRUD =================
+	// ================= CRUD =================
 	public String save() {
 		try {
+			// Always set status to Pending on submit
+			leaveRequest.setStatus("Pending");
+
 			leaveRequestService.addNewLeaveRequest(leaveRequest);
 			leaveRequests = leaveRequestService.findAllLeaveRequest();
 			reset();
-			addInfoMessage("Success", "Leave Request Saved Successfully");
+			addInfoMessage("Success", "Leave Request Saved Successfully (Status: Pending)");
 		} catch (Exception e) {
 			addErrorMessage("Save Error", e.getMessage());
 			e.printStackTrace();
@@ -187,6 +190,8 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		Employee employee = (Employee) event.getObject();
 		leaveRequest.setEmployee(employee);
 	}
+
+	////////// Status/////////////
 
 	// ================= Getters & Setters =================
 	public LeaveRequest getLeaveRequest() {

@@ -30,8 +30,7 @@ public class LeaveRequest implements Serializable {
 	private Date endDate;
 
 	private String reason;
-	
-	
+
 	private String status;
 
 	@ManyToOne
@@ -40,6 +39,10 @@ public class LeaveRequest implements Serializable {
 
 	@OneToMany(mappedBy = "leaveRequest", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<AttachFile> attachFiles = new ArrayList<>();
+
+	public LeaveRequest() {
+		this.status = "Pending"; // default status
+	}
 
 	@Version
 	private int version;
