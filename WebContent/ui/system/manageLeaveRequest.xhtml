@@ -70,7 +70,8 @@
 							styleClass="input-label mandatory" />
 						<p:calendar id="startDate"
 							value="#{ManageLeaveRequestActionBean.leaveRequest.startDate}"
-							pattern="dd-MM-yyyy" required="true" showIcon="true" />
+							pattern="#{ApplicationSetting.dateFormat}" required="true"
+							showIcon="true" />
 
 						<!-- End Date -->
 						<h:outputText value="" />
@@ -79,7 +80,8 @@
 							styleClass="input-label mandatory" />
 						<p:calendar id="endDate"
 							value="#{ManageLeaveRequestActionBean.leaveRequest.endDate}"
-							pattern="dd-MM-yyyy" required="true" showIcon="true" />
+							pattern="#{ApplicationSetting.dateFormat}" required="true"
+							showIcon="true" />
 
 						<!-- Reason -->
 						<h:outputText value="" />
@@ -159,13 +161,13 @@
 
 					<p:column headerText="Start Date">
 						<h:outputText value="#{leave.startDate}">
-							<f:convertDateTime pattern="dd-MMM-yyyy" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="End Date">
 						<h:outputText value="#{leave.endDate}">
-							<f:convertDateTime pattern="dd-MMM-yyyy" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
 					</p:column>
 

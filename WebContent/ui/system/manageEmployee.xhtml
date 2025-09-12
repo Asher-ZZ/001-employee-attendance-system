@@ -24,7 +24,10 @@
 				<p:panelGrid id="panelDept" columns="2"
 					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
 					styleClass="ui-panelgrid-blank ui-fluid">
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-6" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+
 
 						<h:outputText value="" />
 						<p:message display="text" for="fullName" />
@@ -32,8 +35,9 @@
 							styleClass="input-label mandatory" escape="false" />
 						<p:inputText id="fullName"
 							value="#{ManageEmployeeActionBean.employee.fullName}"
-							required="true" placeholder="Enter full name"
-							requiredMessage="Name is required!" />
+							required="true" requiredMessage="Name is required!"
+							maxlength="50"
+							validatorMessage="Name must not exceed 50 characters" />
 
 
 						<h:outputText value="" />
@@ -46,8 +50,9 @@
 							<f:selectItem itemLabel="-- Select Department --" itemValue="" />
 							<f:selectItems
 								value="#{ManageEmployeeActionBean.departmentValues}" var="dept"
-								itemLabel="#{dept.department}" itemValue="#{dept}" />
+								itemLabel="#{dept.department}" itemValue="#{dept.department}" />
 						</p:selectOneMenu>
+
 
 						<h:outputText value="" />
 						<p:message display="text" for="position" />
@@ -58,8 +63,10 @@
 							required="true" requiredMessage="Position is required!">
 							<f:selectItem itemLabel="-- Select Position --" itemValue="" />
 							<f:selectItems value="#{ManageEmployeeActionBean.positionValues}"
-								var="pos" itemLabel="#{pos.position}" itemValue="#{pos}" />
+								var="pos" itemLabel="#{pos.position}"
+								itemValue="#{pos.position}" />
 						</p:selectOneMenu>
+
 
 						<h:outputText value="" />
 						<p:message display="text" for="hireDate" />
@@ -68,8 +75,8 @@
 						<p:datePicker id="hireDate"
 							value="#{ManageEmployeeActionBean.employee.hireDate}"
 							required="true" requiredMessage="Hire Date is required!"
-							pattern="dd-MM-yyyy" placeholder="Select hire date"
-							showIcon="true" />
+							pattern="#{ApplicationSetting.dateFormat}"
+							placeholder="Select hire date" showIcon="true" />
 
 						<h:outputText value="" />
 						<p:message display="text" for="dateOfBirth" />
@@ -78,8 +85,8 @@
 						<p:datePicker id="dateOfBirth"
 							value="#{ManageEmployeeActionBean.employee.dateOfBirth}"
 							required="true" requiredMessage="Date Of Birth is required!"
-							pattern="dd-MM-yyyy" placeholder="Select date of birth"
-							showIcon="true" />
+							pattern="#{ApplicationSetting.dateFormat}"
+							placeholder="Select date of birth" showIcon="true" />
 
 
 						<h:outputText value="" />
@@ -92,6 +99,49 @@
 							<f:selectItem itemLabel="Male" itemValue="Male" />
 							<f:selectItem itemLabel="Female" itemValue="Female" />
 						</p:selectOneRadio>
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-6" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+
+						<h:outputText value="" />
+						<p:message display="text" for="email" />
+						<h:outputLabel for="email" value="Email:"
+							styleClass="input-label mandatory" escape="false" />
+
+						<p:inputText id="email"
+							value="#{ManageEmployeeActionBean.employee.email}"
+							required="true" placeholder="Enter Email"
+							requiredMessage="Email is required!" maxlength="100">
+							<f:validator validatorId="EmailValidator" />
+						</p:inputText>
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="phone" />
+						<h:outputLabel for="phone" value="Phone No:"
+							styleClass="input-label mandatory" escape="false" />
+
+						<p:inputText id="phone"
+							value="#{ManageEmployeeActionBean.employee.phone}"
+							required="true" placeholder="09XXXXXXXXX" maxlength="20"
+							requiredMessage="Phone is required!">
+							<f:validator validatorId="EmployeeValidator" />
+						</p:inputText>
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="address" />
+						<h:outputLabel for="address" value="Address:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:inputText id="address"
+							value="#{ManageEmployeeActionBean.employee.address}"
+							required="true" placeholder="Enter Address" maxlength="255"
+							requiredMessage="Address is required!" />
+
+
 
 						<h:outputText value="" />
 						<p:message display="text" for="status" />
@@ -107,6 +157,7 @@
 
 					</p:panelGrid>
 				</p:panelGrid>
+
 
 
 				<p:commandButton value="Save" icon="pi pi-check"
@@ -129,30 +180,27 @@
 					styleClass="p-datatable-striped p-datatable-gridlines"
 					filterDelay="500">
 
-					<p:column headerText="Full Name" filterBy="#{emp.fullName}"
-						filterMatchMode="contains">
+					<p:column headerText="Full Name">
 						<h:outputText value="#{emp.fullName}" />
 					</p:column>
 
-					<p:column headerText="Department" filterBy="#{emp.department}"
-						filterMatchMode="contains">
+					<p:column headerText="Department">
 						<h:outputText value="#{emp.department}" />
 					</p:column>
 
-					<p:column headerText="Position" filterBy="#{emp.position}"
-						filterMatchMode="contains">
+					<p:column headerText="Position">
 						<h:outputText value="#{emp.position}" />
 					</p:column>
 
 					<p:column headerText="Hire Date">
 						<h:outputText value="#{emp.hireDate}">
-							<f:convertDateTime pattern="dd-MM-yyyy" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Date Of Birth">
 						<h:outputText value="#{emp.dateOfBirth}">
-							<f:convertDateTime pattern="dd-MM-yyyy" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
 					</p:column>
 
@@ -160,8 +208,19 @@
 						<h:outputText value="#{emp.gender}" />
 					</p:column>
 
-					<p:column headerText="Status" filterBy="#{emp.status}"
-						filterMatchMode="contains">
+					<p:column headerText="Email">
+						<h:outputText value="#{emp.email}" />
+					</p:column>
+
+					<p:column headerText="Phone">
+						<h:outputText value="#{emp.phone}" />
+					</p:column>
+
+					<p:column headerText="Address">
+						<h:outputText value="#{emp.address}" />
+					</p:column>
+
+					<p:column headerText="Status">
 						<h:outputText value="#{emp.status}" />
 					</p:column>
 

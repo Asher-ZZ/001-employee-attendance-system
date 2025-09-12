@@ -26,6 +26,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	private String searchDepartment;
 	private Date fromDate;
 	private Date toDate;
+	private Attendance selectedAttendance;
 
 	private static final int OFFICE_START_HOUR = 9;
 	private static final int OFFICE_END_HOUR = 17;
@@ -60,7 +61,8 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 
 				if (searchDepartment != null && !searchDepartment.trim().isEmpty()) {
 					matches &= att.getEmployee() != null && att.getEmployee().getDepartment() != null
-							&& att.getEmployee().getDepartment().toLowerCase(searchDepartment).contains(searchDepartment.toLowerCase());
+							&& att.getEmployee().getDepartment().toLowerCase(searchDepartment)
+									.contains(searchDepartment.toLowerCase());
 				}
 
 				if (fromDate != null) {
@@ -91,6 +93,9 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 
 	// ====== Computed values ======
 	public String getTotalHours(Attendance att) {
+		if (att == null) {
+			return "0h 0m";
+		}
 		if (att.getArrivalTime() != null && att.getDepartureTime() != null) {
 			long diff = att.getDepartureTime().getTime() - att.getArrivalTime().getTime();
 			long hours = diff / (1000 * 60 * 60);
@@ -101,8 +106,9 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	}
 
 	public String getLateArrival(Attendance att) {
-		if (att.getArrivalTime() == null)
+		if (att == null || att.getArrivalTime() == null) {
 			return "N/A";
+		}
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(att.getArrivalTime());
 		int arrivalHour = cal.get(Calendar.HOUR_OF_DAY);
@@ -112,8 +118,9 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	}
 
 	public String getEarlyDeparture(Attendance att) {
-		if (att.getDepartureTime() == null)
+		if (att == null || att.getDepartureTime() == null) {
 			return "N/A";
+		}
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(att.getDepartureTime());
 		int departureHour = cal.get(Calendar.HOUR_OF_DAY);
@@ -181,4 +188,13 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	public void setResultList(List<Attendance> resultList) {
 		this.resultList = resultList;
 	}
+
+	public void selectAttendance(Attendance att) {
+		this.selectedAttendance = att;
+	}
+
+	public Attendance getSelectedAttendance() {
+		return selectedAttendance;
+	}
+
 }

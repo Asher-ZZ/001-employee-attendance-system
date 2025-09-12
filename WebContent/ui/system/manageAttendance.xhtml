@@ -47,8 +47,8 @@
 						<h:outputLabel for="date" value="Date:" />
 						<p:calendar id="date"
 							value="#{ManageAttendanceActionBean.attendance.date}"
-							pattern="yyyy-MM-dd" showButtonPanel="true" navigator="true"
-							required="true" />
+							pattern="#{ApplicationSetting.dateFormat}" showButtonPanel="true"
+							navigator="true" required="true" />
 
 						<!-- Arrival Time -->
 						<h:outputLabel for="arrival" value="Arrival Time:" />
@@ -70,7 +70,6 @@
 						<p:inputTextarea id="remarks"
 							value="#{ManageAttendanceActionBean.attendance.remarks}" rows="3"
 							cols="30" autoResize="true" />
-
 					</p:panelGrid>
 				</p:panelGrid>
 
@@ -78,11 +77,12 @@
 				<p:separator />
 				<p:commandButton value="Save"
 					action="#{ManageAttendanceActionBean.save}"
-					update=":attendanceForm :attendanceTable :msgs" icon="pi pi-save"
+					update=":attendanceForm :attendanceTable :msgs" icon="fa fa-save"
 					styleClass="ui-button-success" />
+			
 				<p:commandButton value="Clear"
 					action="#{ManageAttendanceActionBean.reset}" process="@this"
-					update="attendanceForm" icon="pi pi-refresh"
+					update="attendanceForm" icon="fa fa-refresh"
 					styleClass="ui-button-secondary" />
 			</p:panel>
 		</h:form>
@@ -100,7 +100,7 @@
 
 					<p:column headerText="Date">
 						<h:outputText value="#{att.date}">
-							<f:convertDateTime pattern="yyyy-MM-dd" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
 					</p:column>
 

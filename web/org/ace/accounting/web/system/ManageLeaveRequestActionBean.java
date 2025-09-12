@@ -143,7 +143,7 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 	public String save() {
 		try {
 			// Always set status to Pending on submit
-			leaveRequest.setStatus("Pending");
+			leaveRequest.setStatus("PENDING");
 
 			leaveRequestService.addNewLeaveRequest(leaveRequest);
 			leaveRequests = leaveRequestService.findAllLeaveRequest();
