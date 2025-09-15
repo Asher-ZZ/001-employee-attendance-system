@@ -1,11 +1,14 @@
 package org.ace.accounting.web.system;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
@@ -40,6 +43,7 @@ public class ManageAttendanceActionBean extends BaseBean {
 	@PostConstruct
 	public void init() {
 		attendance = new Attendance();
+		attendance.setDate(new Date());
 		try {
 			attendanceList = attendanceService.findAllAttendance();
 		} catch (SystemException e) {
@@ -50,17 +54,36 @@ public class ManageAttendanceActionBean extends BaseBean {
 
 	public void save() {
 		try {
+			// Duplicate check before DB operation
+			boolean exists = attendanceService.existsByEmployeeAndDate(attendance.getEmployee(), attendance.getDate(),
+					attendance.getId());
+
+			if (exists) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Error", "Employee already has attendance for this date."));
+				return;
+			}
+
+			// Add or update attendance
 			if (attendance.getId() == null) {
 				attendanceService.addNewAttendance(attendance);
-				addInfoMessage("Attendance added successfully");
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Attendance added successfully"));
 			} else {
 				attendanceService.updateAttendance(attendance);
-				addInfoMessage("Attendance updated successfully");
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Attendance updated successfully"));
 			}
+
+			// Refresh list after DB operation
 			attendanceList = attendanceService.findAllAttendance();
+
+			// Reset form
 			reset();
+
 		} catch (SystemException e) {
-			addErrorMessage("Error saving attendance: " + e.getMessage());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+					"Error saving attendance: " + e.getMessage()));
 		}
 	}
 
@@ -70,6 +93,7 @@ public class ManageAttendanceActionBean extends BaseBean {
 
 	public void reset() {
 		attendance = new Attendance();
+		attendance.setDate(new Date());
 	}
 
 	/** Called when employee is selected from dialog */

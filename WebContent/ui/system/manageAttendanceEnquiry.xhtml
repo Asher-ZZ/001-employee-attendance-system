@@ -13,28 +13,33 @@
 		<!-- Search Form -->
 		<h:form id="attendanceEnquiry">
 			<p:panel header="Search Attendance" style="margin-bottom:20px;">
-				<p:panelGrid columns="4" styleClass="ui-fluid"
-					columnClasses="label,value,label,value">
+				<p:panelGrid id="panelDept" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:panelGrid columns="2">
 
-					<h:outputLabel for="employee" value="Employee:" />
-					<p:inputText id="employee"
-						value="#{ManageAttendanceEnquiryActionBean.searchEmployee}"
-						placeholder="Enter employee name" />
+						<h:outputLabel for="employee" value="Employee:" />
+						<p:inputText id="employee"
+							value="#{ManageAttendanceEnquiryActionBean.searchEmployee}"
+							placeholder="Enter employee name" />
 
-					<h:outputLabel for="fromDate" value="From Date:" />
-					<p:calendar id="fromDate"
-						value="#{ManageAttendanceEnquiryActionBean.fromDate}"
-						pattern="yyyy-MM-dd" navigator="true" showButtonPanel="true" />
+						<h:outputLabel for="fromDate" value="From Date:" />
+						<p:calendar id="fromDate"
+							value="#{ManageAttendanceEnquiryActionBean.fromDate}"
+							pattern="#{ApplicationSetting.dateFormat}" navigator="true"
+							showButtonPanel="true" />
 
-					<h:outputLabel for="toDate" value="To Date:" />
-					<p:calendar id="toDate"
-						value="#{ManageAttendanceEnquiryActionBean.toDate}"
-						pattern="yyyy-MM-dd" navigator="true" showButtonPanel="true" />
+						<h:outputLabel for="toDate" value="To Date:" />
+						<p:calendar id="toDate"
+							value="#{ManageAttendanceEnquiryActionBean.toDate}"
+							pattern="#{ApplicationSetting.dateFormat}" navigator="true"
+							showButtonPanel="true" />
 
-					<h:outputLabel for="dept" value="Department:" />
-					<p:inputText id="dept"
-						value="#{ManageAttendanceEnquiryActionBean.searchDepartment}"
-						placeholder="Enter department" />
+						<h:outputLabel for="dept" value="Department:" />
+						<p:inputText id="dept"
+							value="#{ManageAttendanceEnquiryActionBean.searchDepartment}"
+							placeholder="Enter department" />
+					</p:panelGrid>
 				</p:panelGrid>
 
 				<p:separator />
@@ -48,6 +53,14 @@
 					styleClass="ui-button-secondary" />
 			</p:panel>
 		</h:form>
+
+		<h:form id="exportForm">
+			<p:commandButton value="Export to Excel"
+				actionListener="#{ManageAttendanceEnquiryActionBean.exportExcel}"
+				ajax="false" icon="fa fa-file-excel-o"
+				styleClass="ui-button-success" />
+		</h:form>
+
 
 		<!-- Results -->
 		<h:form id="attendanceResults">
@@ -66,7 +79,7 @@
 
 					<p:column headerText="Date">
 						<h:outputText value="#{att.date}">
-							<f:convertDateTime pattern="yyyy-MM-dd" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
 					</p:column>
 
@@ -103,9 +116,84 @@
 						<h:outputText value="#{att.remarks}" />
 					</p:column>
 
+					<p:column headerText="Details" style="text-align:center;">
+						<h:panelGroup style="text-align:center; display:block;">
+							<!-- Button မှာ select method ခေါ် -->
+							<p:commandButton value="Details"
+								actionListener="#{ManageAttendanceEnquiryActionBean.selectAttendance(att)}"
+								oncomplete="PF('attendanceDialog').show()"
+								update=":detailForm:attendanceDetailPanel" icon="fa fa-eye"
+								styleClass="ui-button-info" />
+
+						</h:panelGroup>
+					</p:column>
+
 				</p:dataTable>
 			</p:panel>
 		</h:form>
+
+		<!-- Leave Request Details Dialog -->
+		<h:form id="detailForm">
+			<p:dialog id="attendanceDialog" widgetVar="attendanceDialog"
+				modal="true" closable="true" resizable="false" appendTo="@(body)"
+				header="Attendance Details" width="600">
+
+				<p:panelGrid id="attendanceDetailPanel" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+
+
+					<h:outputLabel value="Employee Name :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.fullName}" />
+
+					<h:outputLabel value="Department :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.department}" />
+
+					<h:outputLabel value="Date :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.date}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+					<h:outputLabel value="Arrival Time :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.arrivalTime}">
+						<f:convertDateTime pattern="HH:mm"
+							timeZone="#{ApplicationSetting.timeZone}" />
+					</h:outputText>
+
+					<h:outputLabel value="Departure Time :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.departureTime}">
+						<f:convertDateTime pattern="HH:mm"
+							timeZone="#{ApplicationSetting.timeZone}" />
+					</h:outputText>
+
+					<h:outputLabel value="Total Hours :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.getTotalHours(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+
+					<h:outputLabel value="Late Arrival :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.getLateArrival(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+
+					<h:outputLabel value="Early Departure:" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.getEarlyDeparture(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+
+					<h:outputLabel value="Remarks :" />
+					<h:outputText
+						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.remarks}" />
+
+				</p:panelGrid>
+
+			</p:dialog>
+		</h:form>
+
+
+
 
 	</ui:define>
 </ui:composition>

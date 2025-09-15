@@ -1,8 +1,10 @@
 package org.ace.accounting.system.attendance.service.interfaces;
 
+import java.util.Date;
 import java.util.List;
 
 import org.ace.accounting.system.attendance.Attendance;
+import org.ace.accounting.system.employee.Employee;
 import org.ace.java.component.SystemException;
 
 public interface IAttendanceService {
@@ -14,6 +16,8 @@ public interface IAttendanceService {
 
 	List<Attendance> findAllAttendance() throws SystemException;
 
-		List<Attendance> findAll();
+	List<Attendance> findAll();
+
+	boolean existsByEmployeeAndDate(Employee employee, Date date, String id);
 
 }

@@ -17,7 +17,7 @@
 		<!-- Search Panel -->
 		<h:form id="leaveEnquiry">
 			<p:panel header="Search Leave Requests" style="margin-bottom:20px">
-				<p:panelGrid columns="4" columnClasses="label,value,label,value">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank ui-fluid">
 
 					<h:outputLabel for="employeeName" value="Employee Name:" />
 					<p:inputText id="employeeName"
@@ -25,20 +25,20 @@
 
 					<h:outputLabel for="leaveType" value="Leave Type:" />
 					<p:selectOneMenu id="leaveType"
-						value="#{ManageLeaveRequestEnquiryActionBean.criteria.leaveType}"
-						filter="true">
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.leaveType}">
 						<f:selectItem itemLabel="-- All --" itemValue="" />
 						<f:selectItem itemLabel="Casual Leave" itemValue="CASUAL" />
 						<f:selectItem itemLabel="Medical Leave" itemValue="MEDICAL" />
-						<f:selectItem itemLabel="Annual Leave" itemValue="ANNUAL" />
 					</p:selectOneMenu>
 
 					<h:outputLabel for="startDate" value="From Date:" />
-					<p:calendar id="startDate" pattern="dd-MM-yyyy" showIcon="true"
+					<p:calendar id="startDate"
+						pattern="#{ApplicationSetting.dateFormat}" showIcon="true"
 						value="#{ManageLeaveRequestEnquiryActionBean.criteria.startDate}" />
 
 					<h:outputLabel for="endDate" value="To Date:" />
-					<p:calendar id="endDate" pattern="dd-MM-yyyy" showIcon="true"
+					<p:calendar id="endDate" pattern="#{ApplicationSetting.dateFormat}"
+						showIcon="true"
 						value="#{ManageLeaveRequestEnquiryActionBean.criteria.endDate}" />
 
 					<h:outputLabel for="status" value="Status:" />
@@ -70,52 +70,156 @@
 						<h:outputText value="#{leave.employee.fullName}" />
 					</p:column>
 
+					<p:column headerText="Department">
+						<h:outputText value="#{leave.employee.department}" />
+					</p:column>
+
 					<p:column headerText="Leave Type">
 						<h:outputText value="#{leave.leaveType}" />
 					</p:column>
 
 					<p:column headerText="Start Date">
 						<h:outputText value="#{leave.startDate}">
-							<f:convertDateTime pattern="dd-MMM-yyyy" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="End Date">
 						<h:outputText value="#{leave.endDate}">
-							<f:convertDateTime pattern="dd-MMM-yyyy" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 						</h:outputText>
-					</p:column>
-
-					<p:column headerText="Reason">
-						<h:outputText value="#{leave.reason}" />
 					</p:column>
 
 					<p:column headerText="Status">
 						<h:outputText value="#{leave.status}" />
 					</p:column>
 
-					<!-- 	<p:column headerText="Medical Record">
-						<p:graphicImage style="width:80px;height:80px;"
-							value="#{ManageLeaveRequestEnquiryActionBean.firstMedicalRecordImage(leave)}"
-							cache="false" />
-					</p:column> -->
+					<p:column headerText="Actions">
+						<!-- Approve Button -->
+						<p:commandButton value="Approve" styleClass="ui-button-success"
+							actionListener="#{ManageLeaveRequestEnquiryActionBean.prepareApprove(leave)}"
+							oncomplete="PF('approveDialog').show()" update=":approveForm"
+							rendered="#{leave.status.toUpperCase() eq 'PENDING'}" />
 
-					
-						<p:column headerText="Actions">
-							<p:commandButton value="Approve" style="width:42%; margin-right:10px"
-								actionListener="#{ManageLeaveRequestEnquiryActionBean.approve(leave)}"
-								update=":resultForm:leaveTable :globalMessageForm:msgs"
-								rendered="#{leave.status eq 'PENDING'}"
-								styleClass="ui-button-success" />
-							<p:commandButton value="Reject" style="width:42%; margin-left:10px"
-								actionListener="#{ManageLeaveRequestEnquiryActionBean.reject(leave)}"
-								update=":resultForm:leaveTable :globalMessageForm:msgs"
-								rendered="#{leave.status eq 'PENDING'}"
-								styleClass="ui-button-danger" />
-						</p:column>
-					
+						<!-- Reject Button -->
+						<p:commandButton value="Reject" styleClass="ui-button-danger"
+							actionListener="#{ManageLeaveRequestEnquiryActionBean.prepareReject(leave)}"
+							oncomplete="PF('rejectDialog').show()" update=":rejectForm"
+							rendered="#{leave.status.toUpperCase() eq 'PENDING'}" />
+					</p:column>
+
+					<p:column headerText="Details" style="text-align:center;">
+						<p:commandButton value="Details"
+							actionListener="#{ManageLeaveRequestEnquiryActionBean.selectLeave(leave)}"
+							oncomplete="PF('leaveDialog').show()"
+							update=":detailForm:leaveDetailPanel" icon="fa fa-eye"
+							styleClass="ui-button-info" />
+					</p:column>
+
 				</p:dataTable>
 			</p:panel>
+		</h:form>
+
+		<!-- Leave Details Dialog -->
+		<h:form id="detailForm">
+			<p:dialog id="leaveDialog" widgetVar="leaveDialog" modal="true"
+				appendTo="@(body)" resizable="false" header="Leave Request Details"
+				width="600">
+
+				<p:panelGrid id="leaveDetailPanel" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+
+					<h:outputLabel value="Employee Name:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.employee.fullName}" />
+
+					<h:outputLabel value="Department:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.employee.department}" />
+
+					<h:outputLabel value="Leave Type:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.leaveType}" />
+
+					<h:outputLabel value="Start Date:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.startDate}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+					<h:outputLabel value="End Date:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.endDate}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+					<h:outputLabel value="Reason:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.reason}" />
+
+					<h:outputLabel value="Status:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status}" />
+
+					<h:outputLabel value="Approve Reason:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approveReason}" />
+
+					<h:outputLabel value="Reject Reason:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.rejectReason}" />
+
+				</p:panelGrid>
+			</p:dialog>
+		</h:form>
+
+		<!-- Approve Dialog -->
+		<h:form id="approveForm">
+			<p:dialog id="approveDialog" widgetVar="approveDialog"
+				appendTo="@(body)" header="Approve Leave" modal="true" width="400">
+				<h:panelGrid columns="1" cellpadding="5">
+					<h:outputLabel value="Reason:" />
+					<p:inputTextarea
+						value="#{ManageLeaveRequestEnquiryActionBean.approveReason}"
+						rows="4" cols="40" />
+
+					<h:outputLabel value="Approval Date:" />
+					<p:calendar
+						value="#{ManageLeaveRequestEnquiryActionBean.approveDate}"
+						pattern="#{ApplicationSetting.dateFormat}" showIcon="true" />
+
+					<p:commandButton value="Confirm Approve"
+						actionListener="#{ManageLeaveRequestEnquiryActionBean.approve}"
+						update=":resultForm:leaveTable :globalMessageForm:msgs"
+						oncomplete="PF('approveDialog').hide()"
+						styleClass="ui-button-primary" />
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+
+		<!-- Reject Dialog -->
+		<h:form id="rejectForm">
+			<p:dialog id="rejectDialog" widgetVar="rejectDialog"
+				appendTo="@(body)" header="Reject Leave" modal="true" width="400">
+				<h:panelGrid columns="1" cellpadding="5">
+					<h:outputLabel value="Reason:" />
+					<p:inputTextarea
+						value="#{ManageLeaveRequestEnquiryActionBean.rejectReason}"
+						rows="4" cols="40" />
+					<h:outputLabel value="Approval Date:" />
+					<p:calendar
+						value="#{ManageLeaveRequestEnquiryActionBean.rejectDate}"
+						pattern="#{ApplicationSetting.dateFormat}" showIcon="true" />
+
+
+					<p:commandButton value="Confirm Reject"
+						actionListener="#{ManageLeaveRequestEnquiryActionBean.reject}"
+						update=":resultForm:leaveTable :globalMessageForm:msgs"
+						oncomplete="PF('rejectDialog').hide()"
+						styleClass="ui-button-primary" />
+				</h:panelGrid>
+			</p:dialog>
 		</h:form>
 
 	</ui:define>

@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.ace.accounting.common.BasicEntity;
@@ -37,10 +39,16 @@ public class Employee implements Serializable {
 	private String id;
 
 	private String fullName;
+
+	@Temporal(TemporalType.DATE)
 	private Date hireDate;
 	private String status;
+	@Temporal(TemporalType.DATE)
 	private Date dateOfBirth;
 	private String gender;
+	private String email;
+	private String phone;
+	private String address;
 
 	@OneToMany(mappedBy = "employee")
 	private List<Attendance> attendance;
@@ -53,7 +61,7 @@ public class Employee implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	private Department department;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Position position;
 
@@ -144,5 +152,29 @@ public class Employee implements Serializable {
 
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

@@ -33,6 +33,11 @@ public class LeaveRequest implements Serializable {
 
 	private String status;
 
+	private String approveReason;
+	private String rejectReason;
+	private Date approvedDate;
+	private Date rejectedDate;
+
 	@ManyToOne
 	@JoinColumn(name = "employeeid")
 	private Employee employee;
@@ -130,4 +135,37 @@ public class LeaveRequest implements Serializable {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+
+	public String getApproveReason() {
+		return approveReason;
+	}
+
+	public void setApproveReason(String approveReason) {
+		this.approveReason = approveReason;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+
+	public Date getApprovedDate() {
+		return approvedDate;
+	}
+
+	public void setApprovedDate(Date approvedDate) {
+		this.approvedDate = approvedDate;
+	}
+
+	public Date getRejectedDate() {
+		return rejectedDate;
+	}
+
+	public void setRejectedDate(Date rejectedDate) {
+		this.rejectedDate = rejectedDate;
+	}
+
 }

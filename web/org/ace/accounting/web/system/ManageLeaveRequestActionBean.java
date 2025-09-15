@@ -140,20 +140,18 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 
 	// ================= CRUD =================
 	// ================= CRUD =================
-	public String save() {
+	public void save() {
 		try {
 			// Always set status to Pending on submit
-			leaveRequest.setStatus("Pending");
+			leaveRequest.setStatus("PENDING");
 
 			leaveRequestService.addNewLeaveRequest(leaveRequest);
 			leaveRequests = leaveRequestService.findAllLeaveRequest();
-			reset();
 			addInfoMessage("Success", "Leave Request Saved Successfully (Status: Pending)");
 		} catch (Exception e) {
-			addErrorMessage("Save Error", e.getMessage());
+			addErrorMessage("Error saving LeaveRequest:", e.getMessage());
 			e.printStackTrace();
 		}
-		return null;
 	}
 
 	private void reset() {
