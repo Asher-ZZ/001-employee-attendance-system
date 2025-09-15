@@ -55,15 +55,13 @@ public class ManageAttendanceActionBean extends BaseBean {
 	public void save() {
 		try {
 			// Duplicate check before DB operation
-			boolean exists = attendanceList.stream()
-					.anyMatch(a -> a.getEmployee().equals(attendance.getEmployee())
-							&& a.getDate().equals(attendance.getDate())
-							&& (attendance.getId() == null || !a.getId().equals(attendance.getId())));
+			boolean exists = attendanceService.existsByEmployeeAndDate(attendance.getEmployee(), attendance.getDate(),
+					attendance.getId());
 
 			if (exists) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"Error", "Employee already has attendance for this date."));
-				return; // Duplicate found
+				return;
 			}
 
 			// Add or update attendance
@@ -95,6 +93,7 @@ public class ManageAttendanceActionBean extends BaseBean {
 
 	public void reset() {
 		attendance = new Attendance();
+		attendance.setDate(new Date());
 	}
 
 	/** Called when employee is selected from dialog */

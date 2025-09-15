@@ -3,11 +3,17 @@ package org.ace.accounting.web.system;
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
 import org.ace.java.web.common.BaseBean;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -148,6 +154,56 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		return minutes < OFFICE_END_HOUR * 60;
 	}
 
+	/*
+	 * // Excel Export public void exportExcel() { try { // Apache POI workbook
+	 * သစ်တစ်ခုဖန်တီးမယ် XSSFWorkbook workbook = new XSSFWorkbook(); XSSFSheet sheet
+	 * = workbook.createSheet("Attendance Records");
+	 * 
+	 * int rowCount = 0;
+	 * 
+	 * // Header Row XSSFRow header = sheet.createRow(rowCount++);
+	 * header.createCell(0).setCellValue("Employee");
+	 * header.createCell(1).setCellValue("Department");
+	 * header.createCell(2).setCellValue("Date");
+	 * header.createCell(3).setCellValue("Arrival");
+	 * header.createCell(4).setCellValue("Departure");
+	 * header.createCell(5).setCellValue("Total Hours");
+	 * header.createCell(6).setCellValue("Late Arrival");
+	 * header.createCell(7).setCellValue("Early Departure");
+	 * header.createCell(8).setCellValue("Remarks");
+	 * 
+	 * // Data Rows for (Attendance att : resultList) { Row row =
+	 * sheet.createRow(rowCount++);
+	 * row.createCell(0).setCellValue(att.getEmployee().getFullName());
+	 * row.createCell(1).setCellValue(att.getEmployee().getDepartment());
+	 * 
+	 * if (att.getDate() != null) { row.createCell(2).setCellValue(new
+	 * java.text.SimpleDateFormat("dd-MM-yyyy").format(att.getDate())); } if
+	 * (att.getArrivalTime() != null) { row.createCell(3) .setCellValue(new
+	 * java.text.SimpleDateFormat("HH:mm").format(att.getArrivalTime())); } if
+	 * (att.getDepartureTime() != null) { row.createCell(4) .setCellValue(new
+	 * java.text.SimpleDateFormat("HH:mm").format(att.getDepartureTime())); }
+	 * 
+	 * row.createCell(5).setCellValue(getTotalHours(att));
+	 * row.createCell(6).setCellValue(getLateArrival(att));
+	 * row.createCell(7).setCellValue(getEarlyDeparture(att));
+	 * row.createCell(8).setCellValue(att.getRemarks() != null ? att.getRemarks() :
+	 * ""); }
+	 * 
+	 * // Browser response ထဲကို ထည့်ပေးမယ် FacesContext facesContext =
+	 * FacesContext.getCurrentInstance(); ExternalContext externalContext =
+	 * facesContext.getExternalContext(); externalContext.setResponseContentType(
+	 * "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	 * externalContext.setResponseHeader("Content-Disposition",
+	 * "attachment;filename=attendance.xlsx");
+	 * 
+	 * workbook.write(externalContext.getResponseOutputStream()); workbook.close();
+	 * 
+	 * facesContext.responseComplete();
+	 * 
+	 * } catch (Exception e) { addErrorMessage("Export Error", e.getMessage());
+	 * e.printStackTrace(); } }
+	 */
 	// ====== Getters & Setters ======
 	public String getSearchEmployee() {
 		return searchEmployee;

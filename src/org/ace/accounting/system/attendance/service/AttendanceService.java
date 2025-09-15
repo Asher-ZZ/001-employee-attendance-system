@@ -1,5 +1,6 @@
 package org.ace.accounting.system.attendance.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -7,6 +8,7 @@ import javax.annotation.Resource;
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.persistence.interfaces.IAttendanceDAO;
 import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
+import org.ace.accounting.system.employee.Employee;
 import org.ace.java.component.SystemException;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Service;
@@ -52,7 +54,7 @@ public class AttendanceService implements IAttendanceService {
 			throw new SystemException(e.getErrorCode(), "Failed to find all Attendance", e);
 		}
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public List<Attendance> findAll() throws SystemException {
 		try {
@@ -61,4 +63,19 @@ public class AttendanceService implements IAttendanceService {
 			throw new SystemException(e.getErrorCode(), "Failed to find all Attendance", e);
 		}
 	}
+
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public boolean existsByEmployeeAndDate(Employee employee, Date date, String excludeId) {
+		List<Attendance> list = findAttendanceByEmployeeAndDate(employee.getId(), date);
+		return list.stream().anyMatch(a -> excludeId == null || !a.getId().equals(excludeId));
+	}
+
+	private List<Attendance> findAttendanceByEmployeeAndDate(String empId, Date date) {
+		try {
+			return attendanceDAO.findByEmployeeAndDate(empId, date);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Failed to find Attendance by Employee and Date", e);
+		}
+	}
+
 }

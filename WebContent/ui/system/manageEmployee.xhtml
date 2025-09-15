@@ -39,7 +39,6 @@
 							maxlength="50"
 							validatorMessage="Name must not exceed 50 characters" />
 
-
 						<h:outputText value="" />
 						<p:message display="text" for="department" />
 						<h:outputLabel for="department" value="Department:"
@@ -50,7 +49,7 @@
 							<f:selectItem itemLabel="-- Select Department --" itemValue="" />
 							<f:selectItems
 								value="#{ManageEmployeeActionBean.departmentValues}" var="dept"
-								itemLabel="#{dept.department}" itemValue="#{dept.department}" />
+								itemLabel="#{dept.department}" itemValue="#{dept}" />
 						</p:selectOneMenu>
 
 
@@ -63,9 +62,8 @@
 							required="true" requiredMessage="Position is required!">
 							<f:selectItem itemLabel="-- Select Position --" itemValue="" />
 							<f:selectItems value="#{ManageEmployeeActionBean.positionValues}"
-								var="pos" itemLabel="#{pos.position}"
-								itemValue="#{pos.position}" />
-						</p:selectOneMenu>
+								var="pos" itemLabel="#{pos.position}" itemValue="#{pos}" />
+						</p:selectOneMenu> 
 
 
 						<h:outputText value="" />

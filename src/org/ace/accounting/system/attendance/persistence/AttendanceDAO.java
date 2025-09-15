@@ -1,8 +1,10 @@
 package org.ace.accounting.system.attendance.persistence;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.persistence.interfaces.IAttendanceDAO;
@@ -54,4 +56,18 @@ public class AttendanceDAO extends BasicDAO implements IAttendanceDAO {
 			throw translate("Failed to retrieve Attendance", pe);
 		}
 	}
+
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public List<Attendance> findByEmployeeAndDate(String empId, Date date) throws DAOException {
+		try {
+			TypedQuery<Attendance> q = em.createQuery(
+					"SELECT a FROM Attendance a WHERE a.employee.id = :empId AND a.date = :date", Attendance.class);
+			q.setParameter("empId", empId);
+			q.setParameter("date", date);
+			return q.getResultList();
+		} catch (PersistenceException pe) {
+			throw translate("Failed to find Attendance by Employee and Date", pe);
+		}
+	}
+
 }

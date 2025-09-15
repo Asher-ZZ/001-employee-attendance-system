@@ -11,7 +11,6 @@
 
 		<!-- Global messages -->
 		<p:growl id="msgs" globalOnly="true" showDetail="true" life="4000" />
-
 		<!-- Attendance Form -->
 		<h:form id="attendanceForm">
 			<p:panel header="Attendance Entry" style="margin-bottom:20px;">
@@ -79,7 +78,7 @@
 					action="#{ManageAttendanceActionBean.save}"
 					update=":attendanceForm :attendanceTable :msgs" icon="fa fa-save"
 					styleClass="ui-button-success" />
-			
+
 				<p:commandButton value="Clear"
 					action="#{ManageAttendanceActionBean.reset}" process="@this"
 					update="attendanceForm" icon="fa fa-refresh"

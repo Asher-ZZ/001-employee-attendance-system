@@ -38,11 +38,9 @@
 											listener="#{ManageLeaveRequestActionBean.returnEmployee}"
 											update="employeeId" />
 									</p:commandButton>
-
 									<p:inputText id="employeeId"
 										value="#{ManageLeaveRequestActionBean.leaveRequest.employee == null ? '' : ManageLeaveRequestActionBean.leaveRequest.employee.fullName}"
 										readonly="true" />
-
 									<p:commandButton styleClass="red-button" icon="fa fa-times"
 										action="#{ManageLeaveRequestActionBean.leaveRequest.setEmployee(null)}"
 										process="@this" update="employeeId" />
@@ -67,21 +65,25 @@
 						<h:outputText value="" />
 						<p:message display="text" for="startDate" />
 						<h:outputLabel for="startDate" value="Start Date:"
-							styleClass="input-label mandatory" />
+							styleClass="input-label mandatory" escape="false" />
 						<p:calendar id="startDate"
 							value="#{ManageLeaveRequestActionBean.leaveRequest.startDate}"
-							pattern="#{ApplicationSetting.dateFormat}" required="true"
-							showIcon="true" />
+							required="true" requiredMessage="Start Date is required!"
+							pattern="#{ApplicationSetting.dateFormat}"
+							placeholder="Select start date" showIcon="true" />
+
+
 
 						<!-- End Date -->
 						<h:outputText value="" />
 						<p:message display="text" for="endDate" />
 						<h:outputLabel for="endDate" value="End Date:"
-							styleClass="input-label mandatory" />
+							styleClass="input-label mandatory" escape="false" />
 						<p:calendar id="endDate"
 							value="#{ManageLeaveRequestActionBean.leaveRequest.endDate}"
-							pattern="#{ApplicationSetting.dateFormat}" required="true"
-							showIcon="true" />
+							required="true" requiredMessage=" End is required!"
+							pattern="#{ApplicationSetting.dateFormat}"
+							placeholder="Select end date" showIcon="true" />
 
 						<!-- Reason -->
 						<h:outputText value="" />
@@ -96,8 +98,7 @@
 						<!-- Medical Record Upload -->
 						<h:outputText value="" />
 						<p:message display="text" for="medicalAttachment" />
-						<h:outputLabel for="medicalAttachment" value="Medical Record:"
-							styleClass="input-label mandatory" />
+						<h:outputLabel for="medicalAttachment" value="Medical Record:" />
 						<h:panelGrid>
 							<p:fileUpload allowTypes="/(\.|\/)(pdf|gif|jpe?g|png)$/"
 								fileUploadListener="#{ManageLeaveRequestActionBean.handleProposalAttachment}"
@@ -135,10 +136,12 @@
 
 				<!-- Buttons -->
 				<p:commandButton value="Submit" icon="pi pi-check"
-					styleClass="ui-button-success p-mr-2 p-px-4 p-py-2"
+					styleClass="p-button-success p-button-raised"
 					action="#{ManageLeaveRequestActionBean.save()}"
-					update=":globalMessageForm:msgs :listForm:leaveTable" />
+					update=":listForm:leaveTable :globalMessageForm:msgs" />
+
 				<p:commandButton value="Reset" type="reset" icon="pi pi-refresh"
+					action="#{ManageLeaveRequestActionBean.reset()}"
 					styleClass="ui-button-secondary p-px-4 p-py-2" />
 			</p:panel>
 		</h:form>

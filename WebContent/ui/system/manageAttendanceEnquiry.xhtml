@@ -54,6 +54,14 @@
 			</p:panel>
 		</h:form>
 
+		<h:form id="exportForm">
+			<p:commandButton value="Export to Excel"
+				actionListener="#{ManageAttendanceEnquiryActionBean.exportExcel}"
+				ajax="false" icon="fa fa-file-excel-o"
+				styleClass="ui-button-success" />
+		</h:form>
+
+
 		<!-- Results -->
 		<h:form id="attendanceResults">
 			<p:panel header="Attendance Results">
@@ -138,43 +146,43 @@
 					<h:outputLabel value="Employee Name :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.fullName}" />
-					
+
 					<h:outputLabel value="Department :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.department}" />
-					
+
 					<h:outputLabel value="Date :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.date}">
 						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 					</h:outputText>
-					
+
 					<h:outputLabel value="Arrival Time :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.arrivalTime}">
 						<f:convertDateTime pattern="HH:mm"
 							timeZone="#{ApplicationSetting.timeZone}" />
 					</h:outputText>
-					
+
 					<h:outputLabel value="Departure Time :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.departureTime}">
 						<f:convertDateTime pattern="HH:mm"
 							timeZone="#{ApplicationSetting.timeZone}" />
 					</h:outputText>
-					
+
 					<h:outputLabel value="Total Hours :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.getTotalHours(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
-					
+
 					<h:outputLabel value="Late Arrival :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.getLateArrival(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
-					
+
 					<h:outputLabel value="Early Departure:" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.getEarlyDeparture(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
-					
+
 					<h:outputLabel value="Remarks :" />
 					<h:outputText
 						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.remarks}" />
