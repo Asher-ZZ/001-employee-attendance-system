@@ -63,7 +63,7 @@
 							<f:selectItem itemLabel="-- Select Position --" itemValue="" />
 							<f:selectItems value="#{ManageEmployeeActionBean.positionValues}"
 								var="pos" itemLabel="#{pos.position}" itemValue="#{pos}" />
-						</p:selectOneMenu> 
+						</p:selectOneMenu>
 
 
 						<h:outputText value="" />
@@ -84,8 +84,13 @@
 							value="#{ManageEmployeeActionBean.employee.dateOfBirth}"
 							required="true" requiredMessage="Date Of Birth is required!"
 							pattern="#{ApplicationSetting.dateFormat}"
-							placeholder="Select date of birth" showIcon="true" />
-
+							placeholder="Select date of birth" showIcon="true"
+							mindate="#{ManageEmployeeActionBean.minDateOfBirth}"
+							maxdate="#{ManageEmployeeActionBean.maxDateOfBirth}"
+							yearRange="1950:#{ManageEmployeeActionBean.maxDateOfBirthYear}"
+							showButtonPanel="true" navigator="true" yearNavigator="true"
+							monthNavigator="true"
+							validator="#{ManageEmployeeActionBean.validateAge16}" />
 
 						<h:outputText value="" />
 						<p:message display="text" for="gender" />

@@ -54,13 +54,13 @@
 			</p:panel>
 		</h:form>
 
-		<h:form id="exportForm">
-			<p:commandButton value="Export to Excel"
-				actionListener="#{ManageAttendanceEnquiryActionBean.exportExcel}"
-				ajax="false" icon="fa fa-file-excel-o"
-				styleClass="ui-button-success" />
-		</h:form>
-
+			<h:form id="exportForm" >
+				<p:commandButton value="Export to Excel"
+					actionListener="#{ManageAttendanceEnquiryActionBean.exportExcel}"
+					ajax="false" icon="fa fa-file-excel-o"
+					styleClass="ui-button-success" />
+			</h:form>
+		
 
 		<!-- Results -->
 		<h:form id="attendanceResults">

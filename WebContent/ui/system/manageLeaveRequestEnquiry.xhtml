@@ -31,15 +31,17 @@
 						<f:selectItem itemLabel="Medical Leave" itemValue="MEDICAL" />
 					</p:selectOneMenu>
 
-					<h:outputLabel for="startDate" value="From Date:" />
+					<h:outputLabel for="startDate" value="Start Date:" />
 					<p:calendar id="startDate"
-						pattern="#{ApplicationSetting.dateFormat}" showIcon="true"
-						value="#{ManageLeaveRequestEnquiryActionBean.criteria.startDate}" />
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.startDate}"
+						pattern="dd/MM/yyyy" showIcon="true" navigator="true"
+						yearRange="c-10:c+10" style="width:150px;" />
 
-					<h:outputLabel for="endDate" value="To Date:" />
-					<p:calendar id="endDate" pattern="#{ApplicationSetting.dateFormat}"
-						showIcon="true"
-						value="#{ManageLeaveRequestEnquiryActionBean.criteria.endDate}" />
+					<h:outputLabel for="endDate" value="End Date:" />
+					<p:calendar id="endDate"
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.endDate}"
+						navigator="true" yearRange="c-10:c+10" style="width:150px;"
+						pattern="dd/MM/yyyy" showIcon="true" />
 
 					<h:outputLabel for="status" value="Status:" />
 					<p:selectOneMenu id="status"
