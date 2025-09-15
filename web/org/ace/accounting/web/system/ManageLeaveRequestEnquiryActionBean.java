@@ -1,9 +1,11 @@
 package org.ace.accounting.web.system;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -30,6 +32,11 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 	private Date rejectDate;
 
 	private LeaveCriteria criteria = new LeaveCriteria();
+
+	@PostConstruct
+	public void init() {
+		setDefaultDates(); // page load အချိန်မှာ default date ချမှတ်မယ်
+	}
 
 	public void search() {
 		try {
@@ -90,6 +97,19 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 			addErrorMessage("Rejection Error", e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	private void setDefaultDates() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		criteria.endDate = cal.getTime(); // today
+		cal.add(Calendar.DAY_OF_MONTH, -7);
+		criteria.startDate = cal.getTime(); // 7 days before today
+	}
+
+	public void reset() {
+		criteria = new LeaveCriteria();
+		setDefaultDates(); // reset လုပ်တဲ့အချိန် default ပြန်သွားမယ်
 	}
 
 	public void selectLeave(LeaveRequest leave) {

@@ -12,9 +12,14 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @ManagedBean(name = "ManageEmployeeActionBean")
@@ -92,11 +97,41 @@ public class ManageEmployeeActionBean extends BaseBean {
 		employee = new Employee();
 	}
 
-	
+	public Date getMinDateOfBirth() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(1950, Calendar.JANUARY, 1);
+		return cal.getTime();
+	}
 
-	
-	
-	
+	// Maximum date of birth = Today - 16 years (age ≥16)
+	public Date getMaxDateOfBirth() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -16); // 16+ only
+		return cal.getTime();
+	}
+
+	// Maximum year for dropdown
+	public int getMaxDateOfBirthYear() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -16);
+		return cal.get(Calendar.YEAR);
+	}
+
+	// Age validator (server-side)
+	public void validateAge16(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+		if (value != null && value instanceof Date) {
+			Date dob = (Date) value;
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.YEAR, -16);
+			Date maxDate = cal.getTime();
+
+			if (dob.after(maxDate)) {
+				throw new ValidatorException(
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Employee must be at least 16 years old.", null));
+			}
+		}
+	}
+
 	// --- Getters & Setters ---
 	public Employee getEmployee() {
 		return employee;

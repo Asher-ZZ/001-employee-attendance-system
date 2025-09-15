@@ -1,5 +1,6 @@
 package org.ace.accounting.web.system;
 
+import org.ace.accounting.common.FileHandler;
 import org.ace.accounting.system.employee.Employee;
 import org.ace.accounting.system.leaverequest.AttachFile;
 import org.ace.accounting.system.leaverequest.LeaveRequest;
@@ -39,10 +40,8 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		this.employee = employee;
 	}
 
-	// Map to track uploaded files: fileName -> filePath
 	private Map<String, String> medicalUploadedFileMap = new LinkedHashMap<>();
 
-	// Temporary upload directory
 	private String temporyDir = "/uploads/";
 
 	@ManagedProperty(value = "#{LeaveRequestService}")
@@ -59,7 +58,6 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		leaveRequests = leaveRequestService.findAllLeaveRequest();
 	}
 
-	// ================= File Upload =================
 	public void handleProposalAttachment(FileUploadEvent event) {
 		UploadedFile uploadedFile = event.getFile();
 		String fileName = uploadedFile.getFileName().replaceAll("\\s", "_");
@@ -71,8 +69,6 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 				targetFile.getParentFile().mkdirs(); // create directories if not exist
 				Files.write(targetFile.toPath(), uploadedFile.getContents());
 				medicalUploadedFileMap.put(fileName, filePath);
-
-				// attachFiles list ထဲကိုလည်း ထည့်
 				leaveRequest.getAttachFiles();
 
 				addInfoMessage("Upload Success", fileName + " uploaded successfully.");
@@ -101,14 +97,20 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		}
 	}
 
-	// ================= Stream File for Preview =================
 	public StreamedContent getMedicalRecordImage(String filePath) {
+		if (filePath == null || filePath.isEmpty()) {
+			return null; // Null safe
+		}
 		try {
 			File file = new File(getUploadPath() + filePath);
 			if (!file.exists())
-				return null; // File မရှိရင် null return
+				return null; // File not found
+
 			String contentType = Files.probeContentType(file.toPath());
-			return new DefaultStreamedContent(new FileInputStream(file), contentType, file.getName());
+			FileInputStream fis = new FileInputStream(file);
+
+			// PrimeFaces 7.0 compatible way
+			return new DefaultStreamedContent(fis, contentType, file.getName());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -138,8 +140,6 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		return null;
 	}
 
-	// ================= CRUD =================
-	// ================= CRUD =================
 	public void save() {
 		try {
 			// Always set status to Pending on submit
@@ -183,13 +183,10 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		}
 	}
 
-	// ================= Employee Selection =================
 	public void returnEmployee(SelectEvent event) {
 		Employee employee = (Employee) event.getObject();
 		leaveRequest.setEmployee(employee);
 	}
-
-	////////// Status/////////////
 
 	// ================= Getters & Setters =================
 	public LeaveRequest getLeaveRequest() {
@@ -210,5 +207,6 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 
 	public List<LeaveRequest> getLeaveRequests() {
 		return leaveRequests;
-	}
+	}		
+
 }
