@@ -60,19 +60,19 @@ public class ManageAttendanceActionBean extends BaseBean {
 
 			if (exists) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Error", "Employee already has attendance for this date."));
+						"Error", "Employee already has attendance for this date." + attendance.getEmployee()));
 				return;
 			}
 
 			// Add or update attendance
 			if (attendance.getId() == null) {
 				attendanceService.addNewAttendance(attendance);
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Attendance added successfully"));
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Success", "Attendance added successfully" + attendance.getEmployee()));
 			} else {
 				attendanceService.updateAttendance(attendance);
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Attendance updated successfully"));
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Success", "Attendance updated successfully" + attendance.getEmployee()));
 			}
 
 			// Refresh list after DB operation

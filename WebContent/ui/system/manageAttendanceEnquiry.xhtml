@@ -54,20 +54,30 @@
 			</p:panel>
 		</h:form>
 
-			<h:form id="exportForm" >
-				<p:commandButton value="Export to Excel"
-					actionListener="#{ManageAttendanceEnquiryActionBean.exportExcel}"
-					ajax="false" icon="fa fa-file-excel-o"
-					styleClass="ui-button-success" />
-			</h:form>
-		
 
 		<!-- Results -->
 		<h:form id="attendanceResults">
 			<p:panel header="Attendance Results">
-				<p:dataTable value="#{ManageAttendanceEnquiryActionBean.resultList}"
-					var="att" paginator="true" rows="10" responsiveLayout="scroll"
+				<p:dataTable id="attendanceTable"
+					value="#{ManageAttendanceEnquiryActionBean.resultList}" var="att"
+					paginator="true" rows="10" responsiveLayout="scroll"
 					rowStyleClass="#{ManageAttendanceEnquiryActionBean.isLateArrival(att) ? 'lateArrival' : (ManageAttendanceEnquiryActionBean.isEarlyDeparture(att) ? 'earlyDeparture' : '')}">
+
+					<f:facet name="header">
+						<p:outputPanel
+							style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+							<h:outputText value="Attendance Export"
+								style="font-weight:bold; font-size:14px;" />
+
+							<p:commandButton value="Export To Excel"
+								styleClass="ui-button-primary" ajax="false"
+								icon="pi pi-file-excel">
+								<p:dataExporter type="xlsx" target="attendanceTable"
+									fileName="attendance" />
+							</p:commandButton>
+						</p:outputPanel>
+					</f:facet>
+
 
 					<p:column headerText="Employee">
 						<h:outputText value="#{att.employee.fullName}" />
@@ -116,7 +126,8 @@
 						<h:outputText value="#{att.remarks}" />
 					</p:column>
 
-					<p:column headerText="Details" style="text-align:center;">
+					<p:column headerText="Details" style="text-align:center;"
+						exportable="false">
 						<h:panelGroup style="text-align:center; display:block;">
 							<!-- Button မှာ select method ခေါ် -->
 							<p:commandButton value="Details"

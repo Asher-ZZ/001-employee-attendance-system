@@ -2,18 +2,21 @@ package org.ace.accounting.web.system;
 
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
+import org.ace.accounting.system.leaverequest.ExcelExport;
 import org.ace.java.web.common.BaseBean;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -98,7 +101,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	}
 
 	// ====== Computed values ======
-	public String getTotalHours(Attendance att) {
+	public static String getTotalHours(Attendance att) {
 		if (att == null) {
 			return "0h 0m";
 		}
@@ -111,7 +114,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		return "0h 0m";
 	}
 
-	public String getLateArrival(Attendance att) {
+	public static String getLateArrival(Attendance att) {
 		if (att == null || att.getArrivalTime() == null) {
 			return "N/A";
 		}
@@ -123,7 +126,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		return lateMinutes > 0 ? lateMinutes + " min" : "On time";
 	}
 
-	public String getEarlyDeparture(Attendance att) {
+	public static String getEarlyDeparture(Attendance att) {
 		if (att == null || att.getDepartureTime() == null) {
 			return "N/A";
 		}
@@ -152,6 +155,16 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		cal.setTime(att.getDepartureTime());
 		int minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
 		return minutes < OFFICE_END_HOUR * 60;
+	}
+
+	public void exportExcel() {
+		try {
+			ExcelExport.exportToExcel(resultList); // filePath မလိုတော့ပါ
+		} catch (IOException e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Export Failed", e.getMessage()));
+		}
 	}
 
 	/*

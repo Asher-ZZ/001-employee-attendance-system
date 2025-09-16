@@ -95,41 +95,47 @@
 							rows="4" autoResize="true" required="true"
 							placeholder="Enter reason for leave..." />
 
-						<!-- Medical Record Upload -->
-						<h:outputText value="" />
-						<p:message display="text" for="medicalAttachment" />
-						<h:outputLabel for="medicalAttachment" value="Medical Record:" />
-						<h:panelGrid>
-							<p:fileUpload allowTypes="/(\.|\/)(pdf|gif|jpe?g|png)$/"
-								fileUploadListener="#{ManageLeaveRequestActionBean.handleProposalAttachment}"
-								id="medicalAttachment" mode="advanced" multiple="true"
-								sizeLimit="50000000" update="medicalImageGrid" />
-							<p:dataGrid columns="4" id="medicalImageGrid" paginator="true"
-								rows="8"
-								value="#{ManageLeaveRequestActionBean.medicalUploadedFileList}"
-								var="image">
-								<p:panel>
-									<h:outputLink
-										onclick="window.open('/efigp/image/#{image}');return false;">
-										<pe:documentViewer width="100%" height="250"
-											value="#{ManageLeaveRequestActionBean.getMedicalRecordImage(image)}"
-											rendered="#{ManageLeaveRequestActionBean.isPdfFile(image)}" />
-										<p:graphicImage style="width:120px;height:120px;"
-											value="#{ManageLeaveRequestActionBean.getMedicalRecordImage(image)}"
-											rendered="#{ManageLeaveRequestActionBean.isImageFile(image)}" />
-									</h:outputLink>
-									<br />
 
-									<p:commandLink
-										action="#{ManageLeaveRequestActionBean.removeMedicalUploadedFile(image)}"
-										id="deleteGroupLink" update="medicalImageGrid">
-										<p:graphicImage styleClass="delete-icon"
-											value="/resources/icons/delete.png" />
-									</p:commandLink>
-								</p:panel>
-							</p:dataGrid>
-						</h:panelGrid>
 
+
+						<p:outputPanel style="margin:10px;" id="medicalAttachments">
+							<p:fieldset legend="Medial Record" toggleable="true"
+								collapsed="true">
+
+								<p:outputLabel value="File Types(gif,jpeg,jpg,png) are Allowed"
+									style="color:red;" />
+
+								<p:panelGrid columns="1"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:message for="medicalAttachment" display="text" />
+									<p:fileUpload required="true"
+										allowTypes="/(\.|\/)(gif|GIF|jpe?g|JPE?G|png|PNG)$/"
+										fileUploadListener="#{ManageLeaveRequestActionBean.handleProposalAttachment}"
+										id="medicalAttachment" mode="advanced" multiple="true"
+										sizeLimit="3000000" update="medicalImageGrid" />
+
+									<p:dataGrid columns="8" id="medicalImageGrid" paginator="true"
+										paginatorPosition="bottom" rows="8" rowsPerPageTemplate="8"
+										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										value="#{ManageLeaveRequestActionBean.medicalUploadedFileList}"
+										var="image">
+
+										<p:commandLink
+											action="#{ManageLeaveRequestActionBean.removeMedicalUploadedFile(image)}"
+											id="deleteGroupLink" update="medicalImageGrid">
+											<p:graphicImage
+												styleClass="#{ApplicationSetting.deleteStyleClass}"
+												value="#{ApplicationSetting.deleteIcon}" />
+										</p:commandLink>
+									</p:dataGrid>
+								</p:panelGrid>
+							</p:fieldset>
+						</p:outputPanel>
+
+
+						<!-- <p:outputLabel
+				rendered="#{FlexiHealthProposalActionBean.insuredPersonInfoDTO.idType eq 'STILL_APPLYING'}"
+				style="color:red;" value="* - mandatory fields" /> -->
 
 					</p:panelGrid>
 				</p:panelGrid>
@@ -137,11 +143,12 @@
 				<!-- Buttons -->
 				<p:commandButton value="Submit" icon="pi pi-check"
 					styleClass="p-button-success p-button-raised"
-					action="#{ManageLeaveRequestActionBean.save()}"
-					update=":listForm:leaveTable :globalMessageForm:msgs" />
+					action="#{ManageLeaveRequestActionBean.save()}" process="@form"
+					update=":leaveForm" />
 
 				<p:commandButton value="Reset" type="reset" icon="pi pi-refresh"
 					action="#{ManageLeaveRequestActionBean.reset()}"
+					update=":leaveForm" process="@this"
 					styleClass="ui-button-secondary p-px-4 p-py-2" />
 			</p:panel>
 		</h:form>
