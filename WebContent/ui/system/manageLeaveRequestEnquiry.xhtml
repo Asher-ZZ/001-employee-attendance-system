@@ -123,6 +123,7 @@
 		</h:form>
 
 		<!-- Leave Details Dialog -->
+		<!-- Leave Details Dialog -->
 		<h:form id="detailForm">
 			<p:dialog id="leaveDialog" widgetVar="leaveDialog" modal="true"
 				appendTo="@(body)" resizable="false" header="Leave Request Details"
@@ -163,14 +164,35 @@
 					<h:outputLabel value="Status:" />
 					<h:outputText
 						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status}" />
-
-					<h:outputLabel value="Approve Reason:" />
+					<!-- Approve Case -->
+					<h:outputLabel value="Approve Reason:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}" />
 					<h:outputText
-						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approveReason}" />
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approveReason}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}" />
 
-					<h:outputLabel value="Reject Reason:" />
+					<h:outputLabel value="Approve Date:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}" />
 					<h:outputText
-						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.rejectReason}" />
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approvedDate}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+					<!-- Reject Case -->
+					<h:outputLabel value="Reject Reason:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.rejectReason}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}" />
+
+					<h:outputLabel value="Reject Date:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.rejectedDate}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
 
 				</p:panelGrid>
 			</p:dialog>
@@ -181,10 +203,9 @@
 			<p:dialog id="approveDialog" widgetVar="approveDialog"
 				appendTo="@(body)" header="Approve Leave" modal="true" width="400">
 				<h:panelGrid columns="1" cellpadding="5">
-					<h:outputLabel value="Reason:" />
+					<h:outputLabel value="Approve Reason:" />
 					<p:inputTextarea
-						value="#{ManageLeaveRequestEnquiryActionBean.approveReason}"
-						rows="4" cols="40" />
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approveReason}" />
 
 					<h:outputLabel value="Approval Date:" />
 					<p:calendar
@@ -205,7 +226,7 @@
 			<p:dialog id="rejectDialog" widgetVar="rejectDialog"
 				appendTo="@(body)" header="Reject Leave" modal="true" width="400">
 				<h:panelGrid columns="1" cellpadding="5">
-					<h:outputLabel value="Reason:" />
+					<h:outputLabel value="Reject Reason:" />
 					<p:inputTextarea
 						value="#{ManageLeaveRequestEnquiryActionBean.rejectReason}"
 						rows="4" cols="40" />

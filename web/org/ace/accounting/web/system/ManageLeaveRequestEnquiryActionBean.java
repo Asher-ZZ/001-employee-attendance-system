@@ -70,8 +70,9 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 		try {
 			if (selectedLeaveRequest != null) {
 				selectedLeaveRequest.setStatus("APPROVED");
-				selectedLeaveRequest.setApproveReason(approveReason);
-				selectedLeaveRequest.setApprovedDate(approveDate); // use today
+				/*
+				 * selectedLeaveRequest.setApproveReason(approveReason);
+				 */				selectedLeaveRequest.setApprovedDate(approveDate); // use today
 				leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
 				search(); // refresh table
 				addInfoMessage("Success", "Leave Request Approved Successfully");
