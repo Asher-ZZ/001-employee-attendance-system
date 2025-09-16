@@ -50,19 +50,29 @@
 							navigator="true" required="true" />
 
 						<!-- Arrival Time -->
-						<h:outputLabel for="arrival" value="Arrival Time:" />
+						<h:outputText value="" />
+						<p:message display="text" for="arrival" />
+						<h:outputLabel for="arrival" value="Arrival Time:"
+							styleClass="input-label mandatory" escape="false" />
 						<p:calendar id="arrival"
 							value="#{ManageAttendanceActionBean.attendance.arrivalTime}"
 							pattern="HH:mm" timeOnly="true" showSeconds="true"
 							placeholder="Select arrival time" required="true"
+							requiredMessage="Arrival Time is required!"
 							showButtonPanel="true" />
 
+
 						<!-- Departure Time -->
-						<h:outputLabel for="departure" value="Departure Time:" />
+						<h:outputText value="" />
+						<p:message display="text" for="departure" />
+						<h:outputLabel for="departure" value="Departure Time:"
+							styleClass="input-label mandatory" escape="false" />
 						<p:calendar id="departure"
 							value="#{ManageAttendanceActionBean.attendance.departureTime}"
 							pattern="HH:mm" timeOnly="true" showSeconds="true"
-							placeholder="Select departure time" showButtonPanel="true" />
+							placeholder="Select departure time" required="true"
+							requiredMessage="Departure Time is required!"
+							showButtonPanel="true" />
 
 						<!-- Remarks -->
 						<h:outputLabel for="remarks" value="Remarks:" />

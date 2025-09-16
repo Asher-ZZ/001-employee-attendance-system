@@ -5,32 +5,39 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
 
+	<ui:define name="title">Employee Management Dashboard</ui:define>
+
 	<ui:define name="content">
 		<style>
 .dashboard-container {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	gap: 20px;
 	padding: 20px;
 }
 
 .stat-card {
-	background: #f5f5f5;
-	padding: 15px;
-	border-radius: 5px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	height: 150px;
+	background: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	height: 180px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 .stat-card h3 {
 	margin-top: 0;
 	color: #2c3e50;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #eee;
 	padding-bottom: 10px;
+	font-size: 16px;
+	font-weight: 600;
 }
 
 .stat-value {
-	font-size: 24px;
+	font-size: 28px;
 	font-weight: bold;
 	color: #4285f4;
 	margin: 10px 0;
@@ -38,19 +45,22 @@
 
 .quick-actions {
 	display: flex;
-	gap: 10px;
-	margin: 15px 0;
+	gap: 15px;
+	margin: 20px;
 	padding: 0 20px;
+	flex-wrap: wrap;
 }
 
 .action-btn {
-	padding: 10px 20px;
+	padding: 12px 24px;
 	background: #4285f4;
 	color: white;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
 	transition: background 0.3s;
+	font-weight: 500;
+	min-width: 160px;
 }
 
 .action-btn:hover {
@@ -59,9 +69,9 @@
 
 .attendance-chart {
 	width: 100%;
-	height: 40px;
+	height: 20px;
 	background: #ecf0f1;
-	border-radius: 5px;
+	border-radius: 10px;
 	overflow: hidden;
 	margin: 10px 0;
 }
@@ -69,20 +79,62 @@
 .attendance-fill {
 	height: 100%;
 	background: #4285f4;
-	border-radius: 5px;
+	border-radius: 10px;
+	transition: width 0.5s ease;
 }
 
 .notification-badge {
 	background: #ea4335;
 	color: white;
 	border-radius: 50%;
-	width: 20px;
-	height: 20px;
+	width: 24px;
+	height: 24px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	font-size: 12px;
-	margin-left: 5px;
+	margin-left: 8px;
+	vertical-align: middle;
+}
+
+.recent-activity {
+	background: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin: 20px;
+}
+
+.recent-activity h3 {
+	margin-top: 0;
+	color: #2c3e50;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 10px;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.activity-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.activity-item {
+	padding: 12px 10px;
+	border-bottom: 1px solid #eee;
+	display: flex;
+	align-items: center;
+}
+
+.activity-item:last-child {
+	border-bottom: none;
+}
+
+.activity-icon {
+	margin-right: 10px;
+	color: #4285f4;
+	font-size: 16px;
 }
 
 @media ( max-width : 768px) {
@@ -92,58 +144,100 @@
 	.quick-actions {
 		flex-direction: column;
 	}
+	.action-btn {
+		width: 100%;
+	}
 }
 </style>
 
+		<!-- Global messages -->
+		<h:form id="globalMessageForm">
+			<p:growl id="msgs" escape="false" globalOnly="true" life="5000"
+				showDetail="true" />
+		</h:form>
+
 		<div class="quick-actions">
-			<button class="action-btn">Mark Attendance</button>
-			<button class="action-btn">Request Leave</button>
-			<button class="action-btn">Generate Report</button>
+			<p:commandButton value="Mark Attendance" icon="pi pi-check"
+				styleClass="action-btn" action="attendanceForm" />
+			<p:commandButton value="Request Leave" icon="pi pi-calendar"
+				styleClass="action-btn" action="leaveForm" />
+
 		</div>
 
 		<div class="dashboard-container">
 			<div class="stat-card">
 				<h3>Today's Attendance</h3>
-				<div class="stat-value">85%</div>
+				<div class="stat-value">#{dashboardBean.todayAttendance}%</div>
 				<div class="attendance-chart">
-					<div class="attendance-fill" style="width: 85%;"></div>
+					<div class="attendance-fill"
+						style="width: #{dashboardBean.todayAttendance}%;"></div>
 				</div>
-				<p>34/40 employees present</p>
+				<p>#{dashboardBean.presentEmployees}/#{dashboardBean.totalEmployees}
+					employees present</p>
 			</div>
 
 			<div class="stat-card">
 				<h3>
-					Pending Approvals <span class="notification-badge">5</span>
+					Pending Approvals <span class="notification-badge">#{dashboardBean.pendingApprovals}</span>
 				</h3>
-				<div class="stat-value">5 requests</div>
+				<div class="stat-value">#{dashboardBean.pendingApprovals}
+					requests</div>
 				<p>Leave requests awaiting your action</p>
 			</div>
 
 			<div class="stat-card">
 				<h3>Late Arrivals</h3>
-				<div class="stat-value">3</div>
+				<div class="stat-value">#{dashboardBean.lateArrivals}</div>
 				<p>Employees arrived late today</p>
 			</div>
 
 			<div class="stat-card">
 				<h3>On Leave</h3>
-				<div class="stat-value">6</div>
+				<div class="stat-value">#{dashboardBean.onLeave}</div>
 				<p>Employees on leave today</p>
 			</div>
 		</div>
 
-		<div style="padding: 20px;">
+		<div class="recent-activity">
 			<h3>Recent Activity</h3>
-			<ul style="list-style-type: none; padding: 0;">
-				<li style="padding: 10px; border-bottom: 1px solid #eee;">John
-					Doe checked in at 8:45 AM</li>
-				<li style="padding: 10px; border-bottom: 1px solid #eee;">Jane
-					Smith requested leave (Pending)</li>
-				<li style="padding: 10px; border-bottom: 1px solid #eee;">Robert
-					Johnson checked out at 5:30 PM</li>
-				<li style="padding: 10px; border-bottom: 1px solid #eee;">Sara
-					Williams updated her attendance</li>
+			<ul class="activity-list">
+				<ui:repeat value="#{dashboardBean.recentActivities}" var="activity">
+					<li class="activity-item"><span
+						class="activity-icon pi pi-info-circle"></span> #{activity}</li>
+				</ui:repeat>
 			</ul>
+		</div>
+
+		<!-- Quick Access Panels -->
+		<div class="dashboard-container"
+			style="grid-template-columns: 1fr 1fr;">
+			<p:panel header="Quick Employee Access" style="margin-bottom:20px;">
+				<p:dataList value="#{dashboardBean.recentEmployees}" var="emp"
+					itemType="none" style="margin-bottom:0">
+					<p:commandLink value="#{emp.fullName} - #{emp.department}"
+						action="#{dashboardBean.viewEmployee(emp)}"
+						style="display:block; padding:5px 0;" />
+				</p:dataList>
+				<p:separator />
+				<p:commandButton value="View All Employees" icon="pi pi-users"
+					action="#{dashboardBean.navigateToEmployees}"
+					styleClass="p-button-text" />
+			</p:panel>
+
+			<p:panel header="Quick Leave Management" style="margin-bottom:20px;">
+				<p:dataList value="#{dashboardBean.recentLeaveRequests}" var="leave"
+					itemType="none" style="margin-bottom:0">
+					<p:commandLink
+						value="#{leave.employee.fullName} - #{leave.leaveType}"
+						action="#{dashboardBean.viewLeaveRequest(leave)}"
+						style="display:block; padding:5px 0;" />
+				</p:dataList>
+				<p:separator />
+				<p:commandButton value="Manage Leave Requests"
+					icon="pi pi-calendar-minus"
+					action="#{dashboardBean.navigateToLeaveManagement}"
+					styleClass="p-button-text" />
+			</p:panel>
 		</div>
 	</ui:define>
 </ui:composition>

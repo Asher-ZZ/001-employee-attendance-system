@@ -147,7 +147,9 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 
 			leaveRequestService.addNewLeaveRequest(leaveRequest);
 			leaveRequests = leaveRequestService.findAllLeaveRequest();
+
 			addInfoMessage("Success", "Leave Request Saved Successfully (Status: Pending)");
+			reset();
 		} catch (Exception e) {
 			addErrorMessage("Error saving LeaveRequest:", e.getMessage());
 			e.printStackTrace();
@@ -207,6 +209,6 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 
 	public List<LeaveRequest> getLeaveRequests() {
 		return leaveRequests;
-	}		
+	}
 
 }
