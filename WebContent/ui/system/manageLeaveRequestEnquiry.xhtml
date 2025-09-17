@@ -48,7 +48,7 @@
 
 					<h:outputLabel for="leaveType" value="Leave Type:" />
 					<p:selectOneMenu id="leaveType"
-						value="#{ManageLeaveRequestEnquiryActionBean.criteria.leaveType}">
+						value="#{ManageLeaveRequestEnquiryActionBean.leaveType}">
 						<f:selectItem itemLabel="-- All --" itemValue="" />
 						<f:selectItem itemLabel="Casual Leave" itemValue="CASUAL" />
 						<f:selectItem itemLabel="Medical Leave" itemValue="MEDICAL" />
@@ -56,19 +56,19 @@
 
 					<h:outputLabel for="startDate" value="Start Date:" />
 					<p:calendar id="startDate"
-						value="#{ManageLeaveRequestEnquiryActionBean.criteria.startDate}"
+						value="#{ManageLeaveRequestEnquiryActionBean.startDate}"
 						pattern="dd/MM/yyyy" showIcon="true" navigator="true"
 						yearRange="c-10:c+10" style="width:150px;" />
 
 					<h:outputLabel for="endDate" value="End Date:" />
 					<p:calendar id="endDate"
-						value="#{ManageLeaveRequestEnquiryActionBean.criteria.endDate}"
+						value="#{ManageLeaveRequestEnquiryActionBean.endDate}"
 						navigator="true" yearRange="c-10:c+10" style="width:150px;"
 						pattern="dd/MM/yyyy" showIcon="true" />
 
 					<h:outputLabel for="status" value="Status:" />
 					<p:selectOneMenu id="status"
-						value="#{ManageLeaveRequestEnquiryActionBean.criteria.status}">
+						value="#{ManageLeaveRequestEnquiryActionBean.status}">
 						<f:selectItem itemLabel="-- All --" itemValue="" />
 						<f:selectItem itemLabel="Pending" itemValue="PENDING" />
 						<f:selectItem itemLabel="Approved" itemValue="APPROVED" />
@@ -225,17 +225,17 @@
 		<h:form id="approveForm">
 			<p:dialog id="approveDialog" widgetVar="approveDialog"
 				appendTo="@(body)" header="Approve Leave" modal="true" width="400">
-				<h:panelGrid columns="1" cellpadding="5">
+				<h:panelGrid columns="1" cellpadding="5" id="panel11">
 					<h:outputLabel value="Approve Reason:" />
 					<p:inputTextarea
-						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approveReason}" />
+						value="#{ManageLeaveRequestEnquiryActionBean.approveReason}" />
 
 					<h:outputLabel value="Approval Date:" />
 					<p:calendar
 						value="#{ManageLeaveRequestEnquiryActionBean.approveDate}"
 						pattern="#{ApplicationSetting.dateFormat}" showIcon="true" />
 
-					<p:commandButton value="Confirm Approve"
+					<p:commandButton value="Confirm Approve" process="panel11"
 						actionListener="#{ManageLeaveRequestEnquiryActionBean.approve}"
 						update=":resultForm:leaveTable :globalMessageForm:msgs"
 						oncomplete="PF('approveDialog').hide()"
@@ -259,7 +259,7 @@
 						pattern="#{ApplicationSetting.dateFormat}" showIcon="true" />
 
 
-					<p:commandButton value="Confirm Reject"
+					<p:commandButton value="Confirm Reject" 
 						actionListener="#{ManageLeaveRequestEnquiryActionBean.reject}"
 						update=":resultForm:leaveTable :globalMessageForm:msgs"
 						oncomplete="PF('rejectDialog').hide()"

@@ -16,8 +16,7 @@ public interface ILeaveRequestService {
 
 	public void deleteLeaveRequest(LeaveRequest leaveRequest) throws SystemException;
 
-
-	List<LeaveRequest> searchLeaveRequests(String employeeName, String leaveType, String status);
+	public List<LeaveRequest> searchLeaveRequests(String employeeName, String leaveType, String status);
 
 	/* public StreamedContent getFirstMedicalRecordImage(LeaveRequest leave); */
 

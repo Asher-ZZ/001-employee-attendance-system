@@ -64,6 +64,7 @@ public class LeaveRequestService implements ILeaveRequestService {
 	public List<LeaveRequest> searchLeaveRequests(String employeeName, String leaveType, String status) {
 		return leaveRequestDAO.searchLeaveRequests(employeeName, leaveType, status);
 	}
+
 	/*
 	 * public String getFirstMedicalRecordImage(LeaveRequest leaveRequest) { try {
 	 * if (leaveRequest.getAttachFiles() != null &&

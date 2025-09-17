@@ -2,6 +2,7 @@ package org.ace.accounting.system.attendance.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -9,6 +10,7 @@ import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.persistence.interfaces.IAttendanceDAO;
 import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
 import org.ace.accounting.system.employee.Employee;
+import org.ace.accounting.system.employeeattendenceenum.Department;
 import org.ace.java.component.SystemException;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Service;
@@ -65,17 +67,27 @@ public class AttendanceService implements IAttendanceService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-	public boolean existsByEmployeeAndDate(Employee employee, Date date, String excludeId) {
-		List<Attendance> list = findAttendanceByEmployeeAndDate(employee.getId(), date);
-		return list.stream().anyMatch(a -> excludeId == null || !a.getId().equals(excludeId));
-	}
+	 public boolean existsByEmployeeAndDate(Employee employee, Date date, String excludeId) {
+        if (employee == null || employee.getId() == null) {
+            return false;
+        }
 
-	private List<Attendance> findAttendanceByEmployeeAndDate(String empId, Date date) {
-		try {
-			return attendanceDAO.findByEmployeeAndDate(empId, date);
-		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Failed to find Attendance by Employee and Date", e);
-		}
-	}
+        List<Attendance> list = attendanceDAO.findByEmployeeAndDate(
+                employee.getId(),
+                date,
+                employee.getDepartment()
+        );
 
+        if (list == null || list.isEmpty()) {
+            return false;
+        }
+
+        // excludeId မပါလျှင် record တစ်ခုခုရှိတာနဲ့ true
+        if (excludeId == null) {
+            return !list.isEmpty();
+        }
+
+        // excludeId ပါလျှင် excludeId မတူတဲ့ record ရှိ/မရှိ စစ်
+        return list.stream().anyMatch(a -> !Objects.equals(a.getId(), excludeId));
+    }
 }

@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.persistence.interfaces.IAttendanceDAO;
+import org.ace.accounting.system.employeeattendenceenum.Department;
 import org.ace.java.component.persistence.BasicDAO;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Repository;
@@ -58,12 +59,14 @@ public class AttendanceDAO extends BasicDAO implements IAttendanceDAO {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-	public List<Attendance> findByEmployeeAndDate(String empId, Date date) throws DAOException {
+	public List<Attendance> findByEmployeeAndDate(String empId, Date date, Department department) throws DAOException {
 		try {
 			TypedQuery<Attendance> q = em.createQuery(
-					"SELECT a FROM Attendance a WHERE a.employee.id = :empId AND a.date = :date", Attendance.class);
+					"SELECT a FROM Attendance a WHERE a.employee.id = :empId AND a.date = :date AND a.employee.department = :department",
+					Attendance.class);
 			q.setParameter("empId", empId);
 			q.setParameter("date", date);
+			q.setParameter("department", department);
 			return q.getResultList();
 		} catch (PersistenceException pe) {
 			throw translate("Failed to find Attendance by Employee and Date", pe);

@@ -9,6 +9,7 @@ import org.ace.java.web.common.BaseBean;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -67,8 +68,6 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		fromDate = cal.getTime();
 	}
 
-	// ====== Search ======
-	// ====== Search ======
 	public void search() {
 		try {
 			List<Attendance> allRecords = attendanceService.findAll();
@@ -104,13 +103,17 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		}
 	}
 
+	public void returnEmployee(SelectEvent event) {
+		employee = (Employee) event.getObject();
+	}
+
 	public void reset() {
+		setEmployee(null);
 		searchEmployee = null;
 		searchDepartment = null;
 		resultList = new ArrayList<>();
 	}
 
-	// ====== Computed values ======
 	public static String getTotalHours(Attendance att) {
 		if (att == null) {
 			return "0h 0m";

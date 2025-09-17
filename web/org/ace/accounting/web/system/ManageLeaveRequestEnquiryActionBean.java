@@ -26,22 +26,28 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 	private List<LeaveRequest> resultList;
 	private LeaveRequest selectedLeaveRequest;
 
+	// For Approve/Reject
 	private String approveReason;
 	private String rejectReason;
 	private Date approveDate;
 	private Date rejectDate;
 
-	private LeaveCriteria criteria = new LeaveCriteria();
+	// Search fields (replace LeaveCriteria)
+	private String employeeName;
+	private String leaveType;
+	private String status;
+	private Date startDate;
+	private Date endDate;
 
 	@PostConstruct
 	public void init() {
-		setDefaultDates(); // page load အချိန်မှာ default date ချမှတ်မယ်
+		setDefaultDates();
 	}
 
+	// Search directly with fields
 	public void search() {
 		try {
-			resultList = leaveRequestService.searchLeaveRequests(criteria.getEmployeeName(), criteria.getLeaveType(),
-					criteria.getStatus());
+			resultList = leaveRequestService.searchLeaveRequests(employeeName, leaveType, status);
 			if (resultList.isEmpty()) {
 				addInfoMessage("Search Result", "No leave requests found.");
 			}
@@ -51,30 +57,29 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 		}
 	}
 
-	// Prepare Approve Dialog
+	// Approve dialog
 	public void prepareApprove(LeaveRequest leave) {
 		this.selectedLeaveRequest = leave;
-		this.approveReason = null; // clear previous reason
-		this.approveDate = new Date(); // set today as default
+		this.approveReason = null;
+		this.approveDate = new Date();
 	}
 
-	// Prepare Reject Dialog
+	// Reject dialog
 	public void prepareReject(LeaveRequest leave) {
 		this.selectedLeaveRequest = leave;
-		this.rejectReason = null; // clear previous reason
-		this.rejectDate = new Date(); // set today as default
+		this.rejectReason = null;
+		this.rejectDate = new Date();
 	}
 
 	// Approve method
 	public void approve() {
 		try {
-			if (selectedLeaveRequest != null) {
+  			if (selectedLeaveRequest != null) {
 				selectedLeaveRequest.setStatus("APPROVED");
-				/*
-				 * selectedLeaveRequest.setApproveReason(approveReason);
-				 */				selectedLeaveRequest.setApprovedDate(approveDate); // use today
+				selectedLeaveRequest.setApproveReason(approveReason);      
+				selectedLeaveRequest.setApprovedDate(approveDate);
 				leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
-				search(); // refresh table
+				search();
 				addInfoMessage("Success", "Leave Request Approved Successfully");
 			}
 		} catch (Exception e) {
@@ -89,9 +94,9 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 			if (selectedLeaveRequest != null) {
 				selectedLeaveRequest.setStatus("REJECTED");
 				selectedLeaveRequest.setRejectReason(rejectReason);
-				selectedLeaveRequest.setRejectedDate(rejectDate); // use today
+				selectedLeaveRequest.setRejectedDate(rejectDate);
 				leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
-				search(); // refresh table
+				search();
 				addInfoMessage("Success", "Leave Request Rejected Successfully");
 			}
 		} catch (Exception e) {
@@ -100,19 +105,24 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 		}
 	}
 
+	// Default date range (today and 7 days before)
 	private void setDefaultDates() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		criteria.endDate = cal.getTime(); // today
+		endDate = cal.getTime();
 		cal.add(Calendar.DAY_OF_MONTH, -7);
-		criteria.startDate = cal.getTime(); // 7 days before today
+		startDate = cal.getTime();
 	}
 
+	// Reset search fields
 	public void reset() {
-		criteria = new LeaveCriteria();
-		setDefaultDates(); // reset လုပ်တဲ့အချိန် default ပြန်သွားမယ်
+		employeeName = null;
+		leaveType = null;
+		status = null;
+		setDefaultDates();
 	}
 
+	// Select for details
 	public void selectLeave(LeaveRequest leave) {
 		this.selectedLeaveRequest = leave;
 	}
@@ -158,14 +168,6 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 		this.rejectReason = rejectReason;
 	}
 
-	public LeaveCriteria getCriteria() {
-		return criteria;
-	}
-
-	public void setCriteria(LeaveCriteria criteria) {
-		this.criteria = criteria;
-	}
-
 	public Date getApproveDate() {
 		return approveDate;
 	}
@@ -182,53 +184,43 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 		this.rejectDate = rejectDate;
 	}
 
-	// LeaveCriteria class (as you had)
-	public static class LeaveCriteria implements Serializable {
-		private String employeeName;
-		private String leaveType;
-		private String status;
-		private Date startDate;
-		private Date endDate;
+	public String getEmployeeName() {
+		return employeeName;
+	}
 
-		// Getters/Setters
-		public String getEmployeeName() {
-			return employeeName;
-		}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
 
-		public void setEmployeeName(String employeeName) {
-			this.employeeName = employeeName;
-		}
+	public String getLeaveType() {
+		return leaveType;
+	}
 
-		public String getLeaveType() {
-			return leaveType;
-		}
+	public void setLeaveType(String leaveType) {
+		this.leaveType = leaveType;
+	}
 
-		public void setLeaveType(String leaveType) {
-			this.leaveType = leaveType;
-		}
+	public String getStatus() {
+		return status;
+	}
 
-		public String getStatus() {
-			return status;
-		}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-		public void setStatus(String status) {
-			this.status = status;
-		}
+	public Date getStartDate() {
+		return startDate;
+	}
 
-		public Date getStartDate() {
-			return startDate;
-		}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
 
-		public void setStartDate(Date startDate) {
-			this.startDate = startDate;
-		}
+	public Date getEndDate() {
+		return endDate;
+	}
 
-		public Date getEndDate() {
-			return endDate;
-		}
-
-		public void setEndDate(Date endDate) {
-			this.endDate = endDate;
-		}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 }

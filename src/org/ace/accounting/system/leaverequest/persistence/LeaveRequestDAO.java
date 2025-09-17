@@ -92,7 +92,5 @@ public class LeaveRequestDAO extends BasicDAO implements ILeaveRequestDAO {
 
 		return query.getResultList();
 	}
-	
-	
 
 }

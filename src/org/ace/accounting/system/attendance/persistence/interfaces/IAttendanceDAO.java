@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.ace.accounting.system.attendance.Attendance;
+import org.ace.accounting.system.employeeattendenceenum.Department;
 import org.ace.java.component.persistence.exception.DAOException;
 
 public interface IAttendanceDAO {
@@ -16,5 +17,5 @@ public interface IAttendanceDAO {
 
 	public List<Attendance> findAll() throws DAOException;
 
-	List<Attendance> findByEmployeeAndDate(String empId, Date date) throws DAOException;
+	List<Attendance> findByEmployeeAndDate(String empId, Date date, Department department) throws DAOException;
 }

@@ -12,6 +12,8 @@
 
 		<!-- Search Form -->
 		<h:form id="attendanceEnquiry">
+			<p:growl escape="false" globalOnly="true" life="5000" id="growl"
+				showDetail="true" />
 			<p:panel header="Search Attendance" style="margin-bottom:20px;">
 				<p:panelGrid id="panelDept" columns="2"
 					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
@@ -29,19 +31,19 @@
 							<div class="ui-g ui-fluid">
 								<div class="ui-inputgroup ui-g-12 ui-lg-12">
 									<p:commandButton styleClass="green-button" icon="fa fa-search"
-										actionListener="#{ManageAttendanceActionBean.selectEmployee}"
+										actionListener="#{ManageAttendanceEnquiryActionBean.selectEmployee}"
 										id="selectEmployeeDialogLink" process="@this">
 										<p:ajax event="dialogReturn"
-											listener="#{ManageAttendanceActionBean.returnEmployee}"
+											listener="#{ManageAttendanceEnquiryActionBean.returnEmployee}"
 											update="employeeId" />
 									</p:commandButton>
 
 									<p:inputText id="employeeId"
-										value="#{ManageAttendanceActionBean.attendance.employee == null ? '' : ManageAttendanceActionBean.attendance.employee.fullName}"
+										value="#{ManageAttendanceEnquiryActionBean.employee == null ? '' : ManageAttendanceEnquiryActionBean.employee.fullName}"
 										readonly="true" />
 
 									<p:commandButton styleClass="red-button" icon="fa fa-times"
-										action="#{ManageAttendanceActionBean.attendance.setEmployee(null)}"
+										action="#{ManageAttendanceEnquiryActionBean.setEmployee(null)}"
 										process="@this" update="employeeId" />
 								</div>
 							</div>
