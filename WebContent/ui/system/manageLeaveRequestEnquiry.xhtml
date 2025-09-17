@@ -19,9 +19,32 @@
 			<p:panel header="Search Leave Requests" style="margin-bottom:20px">
 				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank ui-fluid">
 
-					<h:outputLabel for="employeeName" value="Employee Name:" />
+					<!-- <h:outputLabel for="employeeName" value="Employee Name:" />
 					<p:inputText id="employeeName"
 						value="#{ManageLeaveRequestEnquiryActionBean.criteria.employeeName}" />
+						 -->
+							<h:outputText value="" />
+					<p:message display="text" for="employeeId" />
+					<h:outputLabel for="employeeId" value="Employee:" />
+						<p:panelGrid styleClass="ui-panelgrid-blank">
+							<div class="ui-g ui-fluid">
+								<div class="ui-inputgroup ui-g-12 ui-lg-12">
+									<p:commandButton styleClass="green-button" icon="fa fa-search"
+										actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
+										id="selectEmployeeDialogLink" process="@this">
+										<p:ajax event="dialogReturn"
+											listener="#{ManageLeaveRequestActionBean.returnEmployee}"
+											update="employeeId" />
+									</p:commandButton>
+									<p:inputText id="employeeId"
+										value="#{ManageLeaveRequestActionBean.leaveRequest.employee == null ? '' : ManageLeaveRequestActionBean.leaveRequest.employee.fullName}"
+										readonly="true" />
+									<p:commandButton styleClass="red-button" icon="fa fa-times"
+										action="#{ManageLeaveRequestActionBean.leaveRequest.setEmployee(null)}"
+										process="@this" update="employeeId" />
+								</div>
+							</div>
+						</p:panelGrid>
 
 					<h:outputLabel for="leaveType" value="Leave Type:" />
 					<p:selectOneMenu id="leaveType"

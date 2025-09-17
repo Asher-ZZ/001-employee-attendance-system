@@ -58,7 +58,7 @@
 	<class>org.ace.accounting.report.incomeandexpenditure.IncomeAndExpenditure</class>  -->
     <shared-cache-mode>NONE</shared-cache-mode>  
     <properties> 
-   		<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost;databaseName=FNIGP;selectMethod=cursor" />
+   		<property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost;databaseName=FNIGP-ACC;selectMethod=cursor" />
     	<!-- <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost;databaseName=FNIGP-ACC-202220;selectMethod=cursor" /> -->
 		<property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>  
 		<property name="javax.persistence.jdbc.user" value="sa"/>  

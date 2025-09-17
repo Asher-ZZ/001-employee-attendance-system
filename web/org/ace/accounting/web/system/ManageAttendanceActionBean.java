@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
 import org.ace.accounting.system.employee.Employee;
+import org.ace.accounting.system.employeeattendenceenum.Department;
 import org.ace.java.component.SystemException;
 import org.ace.java.web.common.BaseBean;
 import org.primefaces.event.SelectEvent;
@@ -25,6 +26,7 @@ public class ManageAttendanceActionBean extends BaseBean {
 	private List<Attendance> attendanceList;
 	private Employee employee;
 
+	
 	public Employee getEmployee() {
 		return employee;
 	}

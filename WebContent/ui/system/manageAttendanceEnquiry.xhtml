@@ -18,10 +18,35 @@
 					styleClass="ui-panelgrid-blank ui-fluid">
 					<p:panelGrid columns="2">
 
-						<h:outputLabel for="employee" value="Employee:" />
+						<!-- <h:outputLabel for="employee" value="Employee:" />
 						<p:inputText id="employee"
 							value="#{ManageAttendanceEnquiryActionBean.searchEmployee}"
 							placeholder="Enter employee name" />
+ -->
+
+						<h:outputLabel for="employeeId" value="Employee:" />
+						<p:panelGrid styleClass="ui-panelgrid-blank">
+							<div class="ui-g ui-fluid">
+								<div class="ui-inputgroup ui-g-12 ui-lg-12">
+									<p:commandButton styleClass="green-button" icon="fa fa-search"
+										actionListener="#{ManageAttendanceActionBean.selectEmployee}"
+										id="selectEmployeeDialogLink" process="@this">
+										<p:ajax event="dialogReturn"
+											listener="#{ManageAttendanceActionBean.returnEmployee}"
+											update="employeeId" />
+									</p:commandButton>
+
+									<p:inputText id="employeeId"
+										value="#{ManageAttendanceActionBean.attendance.employee == null ? '' : ManageAttendanceActionBean.attendance.employee.fullName}"
+										readonly="true" />
+
+									<p:commandButton styleClass="red-button" icon="fa fa-times"
+										action="#{ManageAttendanceActionBean.attendance.setEmployee(null)}"
+										process="@this" update="employeeId" />
+								</div>
+							</div>
+						</p:panelGrid>
+
 
 						<h:outputLabel for="fromDate" value="From Date:" />
 						<p:calendar id="fromDate"
@@ -35,10 +60,17 @@
 							pattern="#{ApplicationSetting.dateFormat}" navigator="true"
 							showButtonPanel="true" />
 
-						<h:outputLabel for="dept" value="Department:" />
-						<p:inputText id="dept"
-							value="#{ManageAttendanceEnquiryActionBean.searchDepartment}"
-							placeholder="Enter department" />
+
+						<h:outputLabel for="department" value="Department:" />
+						<p:selectOneMenu id="department"
+							value="#{ManageAttendanceEnquiryActionBean.searchDepartment}">
+							<f:selectItem itemLabel="-- Select Department --"
+								itemValue="#{null}" />
+							<f:selectItems
+								value="#{ManageAttendanceEnquiryActionBean.departmentValues}"
+								var="dept" itemLabel="#{dept.department}" itemValue="#{dept}" />
+						</p:selectOneMenu>
+
 					</p:panelGrid>
 				</p:panelGrid>
 
@@ -95,14 +127,14 @@
 
 					<p:column headerText="Arrival">
 						<h:outputText value="#{att.arrivalTime}">
-							<f:convertDateTime pattern="HH:mm"
+							<f:convertDateTime pattern="hh:mm a"
 								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Departure">
 						<h:outputText value="#{att.departureTime}">
-							<f:convertDateTime pattern="HH:mm"
+							<f:convertDateTime pattern="hh:mm a"
 								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
@@ -133,8 +165,9 @@
 							<p:commandButton value="Details"
 								actionListener="#{ManageAttendanceEnquiryActionBean.selectAttendance(att)}"
 								oncomplete="PF('attendanceDialog').show()"
-								update=":detailForm:attendanceDetailPanel" icon="fa fa-eye"
+								update=":detailForm:attendanceDialog" icon="fa fa-eye"
 								styleClass="ui-button-info" />
+
 
 						</h:panelGroup>
 					</p:column>
@@ -149,60 +182,116 @@
 				modal="true" closable="true" resizable="false" appendTo="@(body)"
 				header="Attendance Details" width="600">
 
-				<p:panelGrid id="attendanceDetailPanel" columns="2"
-					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
-					styleClass="ui-panelgrid-blank ui-fluid">
+				<p:tabView id="tabView">
+
+					<!-- Employee Tab -->
+					<p:tab title="Employee">
+						<p:panelGrid id="employeeDetailPanel" columns="2"
+							columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<h:outputLabel value="Employee Name :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.fullName}" />
+
+							<h:outputLabel value="Department :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.department}" />
 
 
-					<h:outputLabel value="Employee Name :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.fullName}" />
+							<h:outputLabel value="Position :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.position}" />
 
-					<h:outputLabel value="Department :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.department}" />
+							<h:outputLabel value="Hire Date :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.hireDate}">
+								<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							</h:outputText>
 
-					<h:outputLabel value="Date :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.date}">
-						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
-					</h:outputText>
+							<h:outputLabel value="Date Of Birth :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.dateOfBirth}">
+								<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							</h:outputText>
 
-					<h:outputLabel value="Arrival Time :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.arrivalTime}">
-						<f:convertDateTime pattern="HH:mm"
-							timeZone="#{ApplicationSetting.timeZone}" />
-					</h:outputText>
 
-					<h:outputLabel value="Departure Time :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.departureTime}">
-						<f:convertDateTime pattern="HH:mm"
-							timeZone="#{ApplicationSetting.timeZone}" />
-					</h:outputText>
 
-					<h:outputLabel value="Total Hours :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.getTotalHours(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+							<h:outputLabel value="Gender :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.gender}" />
 
-					<h:outputLabel value="Late Arrival :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.getLateArrival(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+							<h:outputLabel value="Email :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.email}" />
 
-					<h:outputLabel value="Early Departure:" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.getEarlyDeparture(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+							<h:outputLabel value="Phone :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.phone}" />
 
-					<h:outputLabel value="Remarks :" />
-					<h:outputText
-						value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.remarks}" />
+							<h:outputLabel value="Address :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.address}" />
 
-				</p:panelGrid>
+							<h:outputLabel value="Status :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.status}" />
+
+
+
+
+						</p:panelGrid>
+					</p:tab>
+
+					<!-- Attendance Tab -->
+					<p:tab title="Attendance">
+						<p:panelGrid id="attendanceDetailPanel" columns="2"
+							columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<h:outputLabel value="Date :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.date}">
+								<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							</h:outputText>
+
+							<h:outputLabel value="Arrival Time :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.arrivalTime}">
+								<f:convertDateTime pattern="hh:mm a"
+									timeZone="#{ApplicationSetting.timeZone}" />
+							</h:outputText>
+
+							<h:outputLabel value="Departure Time :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.departureTime}">
+								<f:convertDateTime pattern="hh:mm a"
+									timeZone="#{ApplicationSetting.timeZone}" />
+							</h:outputText>
+
+							<h:outputLabel value="Total Hours :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.getTotalHours(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+
+							<h:outputLabel value="Late Arrival :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.getLateArrival(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+
+							<h:outputLabel value="Early Departure:" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.getEarlyDeparture(ManageAttendanceEnquiryActionBean.selectedAttendance)}" />
+
+							<h:outputLabel value="Remarks :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.remarks}" />
+
+						</p:panelGrid>
+					</p:tab>
+
+				</p:tabView>
 
 			</p:dialog>
 		</h:form>
-
 
 
 

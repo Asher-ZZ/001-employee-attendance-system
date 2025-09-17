@@ -2,6 +2,8 @@ package org.ace.accounting.web.system;
 
 import org.ace.accounting.system.attendance.Attendance;
 import org.ace.accounting.system.attendance.service.interfaces.IAttendanceService;
+import org.ace.accounting.system.employee.Employee;
+import org.ace.accounting.system.employeeattendenceenum.Department;
 import org.ace.accounting.system.leaverequest.ExcelExport;
 import org.ace.java.web.common.BaseBean;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -30,9 +32,10 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 
 	private static final long serialVersionUID = 1L;
 
+	private Employee employee;
 	// Search filters
 	private String searchEmployee;
-	private String searchDepartment;
+	private Department searchDepartment;
 	private Date fromDate;
 	private Date toDate;
 	private Attendance selectedAttendance;
@@ -42,6 +45,10 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 
 	// Result list
 	private List<Attendance> resultList;
+
+	public Department[] getDepartmentValues() {
+		return Department.values();
+	}
 
 	@ManagedProperty(value = "#{AttendanceService}")
 	private IAttendanceService attendanceService;
@@ -53,8 +60,14 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	@PostConstruct
 	public void init() {
 		resultList = new ArrayList<>();
+		toDate = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(toDate);
+		cal.add(Calendar.DAY_OF_MONTH, -7);
+		fromDate = cal.getTime();
 	}
 
+	// ====== Search ======
 	// ====== Search ======
 	public void search() {
 		try {
@@ -68,10 +81,9 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 							&& att.getEmployee().getFullName().toLowerCase().contains(searchEmployee.toLowerCase());
 				}
 
-				if (searchDepartment != null && !searchDepartment.trim().isEmpty()) {
+				if (searchDepartment != null) {
 					matches &= att.getEmployee() != null && att.getEmployee().getDepartment() != null
-							&& att.getEmployee().getDepartment().toLowerCase(searchDepartment)
-									.contains(searchDepartment.toLowerCase());
+							&& att.getEmployee().getDepartment().equals(searchDepartment);
 				}
 
 				if (fromDate != null) {
@@ -95,8 +107,6 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	public void reset() {
 		searchEmployee = null;
 		searchDepartment = null;
-		fromDate = null;
-		toDate = null;
 		resultList = new ArrayList<>();
 	}
 
@@ -123,7 +133,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		int arrivalHour = cal.get(Calendar.HOUR_OF_DAY);
 		int arrivalMinute = cal.get(Calendar.MINUTE);
 		int lateMinutes = (arrivalHour - OFFICE_START_HOUR) * 60 + arrivalMinute;
-		return lateMinutes > 0 ? lateMinutes + " min" : "On time";
+		return lateMinutes > 0 ? lateMinutes + " min" : "On Time";
 	}
 
 	public static String getEarlyDeparture(Attendance att) {
@@ -135,7 +145,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		int departureHour = cal.get(Calendar.HOUR_OF_DAY);
 		int departureMinute = cal.get(Calendar.MINUTE);
 		int earlyMinutes = (OFFICE_END_HOUR - departureHour) * 60 - departureMinute;
-		return earlyMinutes > 0 ? earlyMinutes + " min" : "On time";
+		return earlyMinutes > 0 ? earlyMinutes + " min" : "On Time";
 	}
 
 	// ====== Row highlight helpers ======
@@ -167,71 +177,21 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		}
 	}
 
-	/*
-	 * // Excel Export public void exportExcel() { try { // Apache POI workbook
-	 * သစ်တစ်ခုဖန်တီးမယ် XSSFWorkbook workbook = new XSSFWorkbook(); XSSFSheet sheet
-	 * = workbook.createSheet("Attendance Records");
-	 * 
-	 * int rowCount = 0;
-	 * 
-	 * // Header Row XSSFRow header = sheet.createRow(rowCount++);
-	 * header.createCell(0).setCellValue("Employee");
-	 * header.createCell(1).setCellValue("Department");
-	 * header.createCell(2).setCellValue("Date");
-	 * header.createCell(3).setCellValue("Arrival");
-	 * header.createCell(4).setCellValue("Departure");
-	 * header.createCell(5).setCellValue("Total Hours");
-	 * header.createCell(6).setCellValue("Late Arrival");
-	 * header.createCell(7).setCellValue("Early Departure");
-	 * header.createCell(8).setCellValue("Remarks");
-	 * 
-	 * // Data Rows for (Attendance att : resultList) { Row row =
-	 * sheet.createRow(rowCount++);
-	 * row.createCell(0).setCellValue(att.getEmployee().getFullName());
-	 * row.createCell(1).setCellValue(att.getEmployee().getDepartment());
-	 * 
-	 * if (att.getDate() != null) { row.createCell(2).setCellValue(new
-	 * java.text.SimpleDateFormat("dd-MM-yyyy").format(att.getDate())); } if
-	 * (att.getArrivalTime() != null) { row.createCell(3) .setCellValue(new
-	 * java.text.SimpleDateFormat("HH:mm").format(att.getArrivalTime())); } if
-	 * (att.getDepartureTime() != null) { row.createCell(4) .setCellValue(new
-	 * java.text.SimpleDateFormat("HH:mm").format(att.getDepartureTime())); }
-	 * 
-	 * row.createCell(5).setCellValue(getTotalHours(att));
-	 * row.createCell(6).setCellValue(getLateArrival(att));
-	 * row.createCell(7).setCellValue(getEarlyDeparture(att));
-	 * row.createCell(8).setCellValue(att.getRemarks() != null ? att.getRemarks() :
-	 * ""); }
-	 * 
-	 * // Browser response ထဲကို ထည့်ပေးမယ် FacesContext facesContext =
-	 * FacesContext.getCurrentInstance(); ExternalContext externalContext =
-	 * facesContext.getExternalContext(); externalContext.setResponseContentType(
-	 * "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-	 * externalContext.setResponseHeader("Content-Disposition",
-	 * "attachment;filename=attendance.xlsx");
-	 * 
-	 * workbook.write(externalContext.getResponseOutputStream()); workbook.close();
-	 * 
-	 * facesContext.responseComplete();
-	 * 
-	 * } catch (Exception e) { addErrorMessage("Export Error", e.getMessage());
-	 * e.printStackTrace(); } }
-	 */
 	// ====== Getters & Setters ======
+	public Department getSearchDepartment() {
+		return searchDepartment;
+	}
+
+	public void setSearchDepartment(Department searchDepartment) {
+		this.searchDepartment = searchDepartment;
+	}
+
 	public String getSearchEmployee() {
 		return searchEmployee;
 	}
 
 	public void setSearchEmployee(String searchEmployee) {
 		this.searchEmployee = searchEmployee;
-	}
-
-	public String getSearchDepartment() {
-		return searchDepartment;
-	}
-
-	public void setSearchDepartment(String searchDepartment) {
-		this.searchDepartment = searchDepartment;
 	}
 
 	public Date getFromDate() {
@@ -264,6 +224,14 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 
 	public Attendance getSelectedAttendance() {
 		return selectedAttendance;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 
 }

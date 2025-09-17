@@ -56,7 +56,8 @@
 							styleClass="input-label mandatory" escape="false" />
 						<p:calendar id="arrival"
 							value="#{ManageAttendanceActionBean.attendance.arrivalTime}"
-							pattern="HH:mm" timeOnly="true" showSeconds="true"
+							pattern="hh:mm a" timeOnly="true" showSeconds="true"
+							timeZone="#{ApplicationSetting.timeZone}"
 							placeholder="Select arrival time" required="true"
 							requiredMessage="Arrival Time is required!"
 							showButtonPanel="true" />
@@ -69,7 +70,8 @@
 							styleClass="input-label mandatory" escape="false" />
 						<p:calendar id="departure"
 							value="#{ManageAttendanceActionBean.attendance.departureTime}"
-							pattern="HH:mm" timeOnly="true" showSeconds="true"
+							pattern="hh:mm a" timeOnly="true" showSeconds="true"
+							timeZone="#{ApplicationSetting.timeZone}"
 							placeholder="Select departure time" required="true"
 							requiredMessage="Departure Time is required!"
 							showButtonPanel="true" />
@@ -115,14 +117,14 @@
 
 					<p:column headerText="Arrival">
 						<h:outputText value="#{att.arrivalTime}">
-							<f:convertDateTime pattern="HH:mm"
+							<f:convertDateTime pattern="hh:mm a"
 								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Departure">
 						<h:outputText value="#{att.departureTime}">
-							<f:convertDateTime pattern="HH:mm"
+							<f:convertDateTime pattern="hh:mm a"
 								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
