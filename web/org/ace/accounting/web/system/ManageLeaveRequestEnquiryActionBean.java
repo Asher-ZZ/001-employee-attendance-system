@@ -54,32 +54,52 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 	// Prepare Approve Dialog
 	public void prepareApprove(LeaveRequest leave) {
 		this.selectedLeaveRequest = leave;
-		this.approveReason = null; // clear previous reason
-		this.approveDate = new Date(); // set today as default
+		this.approveDate = new Date(); // default to today
+		this.approveReason = null;
 	}
 
 	// Prepare Reject Dialog
 	public void prepareReject(LeaveRequest leave) {
 		this.selectedLeaveRequest = leave;
-		this.rejectReason = null; // clear previous reason
-		this.rejectDate = new Date(); // set today as default
+//		this.rejectReason = null; // clear previous reason
+//		this.rejectDate = new Date(); // set today as default
 	}
 
 	// Approve method
-	public void approve() {
+	public String approve() {
 		try {
-			if (selectedLeaveRequest != null) {
-				selectedLeaveRequest.setStatus("APPROVED");
-				/*
-				 * selectedLeaveRequest.setApproveReason(approveReason);
-				 */				selectedLeaveRequest.setApprovedDate(approveDate); // use today
-				leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
-				search(); // refresh table
-				addInfoMessage("Success", "Leave Request Approved Successfully");
+//			if (selectedLeaveRequest != null) {
+//				selectedLeaveRequest.setStatus("APPROVED");
+//				/*
+//				 * selectedLeaveRequest.setApproveReason(approveReason);
+//				 */ selectedLeaveRequest.setApprovedDate(approveDate); // use today
+//				selectedLeaveRequest.setApproveReason(approveReason);
+//				leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
+//				search(); // refresh table
+//				addInfoMessage("Success", "Leave Request Approved Successfully");
+//			}
+			if (selectedLeaveRequest == null) {
+				addErrorMessage("Approval Error", "No leave request selected.");
+				return null;
 			}
+
+			// DEBUG
+			System.out.println("approveReason=" + approveReason + ", approveDate=" + approveDate);
+
+			selectedLeaveRequest.setStatus("APPROVED");
+			selectedLeaveRequest.setApproveReason(approveReason);
+			selectedLeaveRequest.setApprovedDate(approveDate);
+
+			leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
+
+			search(); // refresh table
+			addInfoMessage("Success", "Leave Request Approved Successfully");
+
+			return null;
 		} catch (Exception e) {
 			addErrorMessage("Approval Error", e.getMessage());
-			e.printStackTrace();
+            e.printStackTrace();
+            return null;
 		}
 	}
 

@@ -23,28 +23,28 @@
 					<p:inputText id="employeeName"
 						value="#{ManageLeaveRequestEnquiryActionBean.criteria.employeeName}" />
 						 -->
-							<h:outputText value="" />
+					<h:outputText value="" />
 					<p:message display="text" for="employeeId" />
 					<h:outputLabel for="employeeId" value="Employee:" />
-						<p:panelGrid styleClass="ui-panelgrid-blank">
-							<div class="ui-g ui-fluid">
-								<div class="ui-inputgroup ui-g-12 ui-lg-12">
-									<p:commandButton styleClass="green-button" icon="fa fa-search"
-										actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
-										id="selectEmployeeDialogLink" process="@this">
-										<p:ajax event="dialogReturn"
-											listener="#{ManageLeaveRequestActionBean.returnEmployee}"
-											update="employeeId" />
-									</p:commandButton>
-									<p:inputText id="employeeId"
-										value="#{ManageLeaveRequestActionBean.leaveRequest.employee == null ? '' : ManageLeaveRequestActionBean.leaveRequest.employee.fullName}"
-										readonly="true" />
-									<p:commandButton styleClass="red-button" icon="fa fa-times"
-										action="#{ManageLeaveRequestActionBean.leaveRequest.setEmployee(null)}"
-										process="@this" update="employeeId" />
-								</div>
+					<p:panelGrid styleClass="ui-panelgrid-blank">
+						<div class="ui-g ui-fluid">
+							<div class="ui-inputgroup ui-g-12 ui-lg-12">
+								<p:commandButton styleClass="green-button" icon="fa fa-search"
+									actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
+									id="selectEmployeeDialogLink" process="@this">
+									<p:ajax event="dialogReturn"
+										listener="#{ManageLeaveRequestActionBean.returnEmployee}"
+										update="employeeId" />
+								</p:commandButton>
+								<p:inputText id="employeeId"
+									value="#{ManageLeaveRequestActionBean.leaveRequest.employee == null ? '' : ManageLeaveRequestActionBean.leaveRequest.employee.fullName}"
+									readonly="true" />
+								<p:commandButton styleClass="red-button" icon="fa fa-times"
+									action="#{ManageLeaveRequestActionBean.leaveRequest.setEmployee(null)}"
+									process="@this" update="employeeId" />
 							</div>
-						</p:panelGrid>
+						</div>
+					</p:panelGrid>
 
 					<h:outputLabel for="leaveType" value="Leave Type:" />
 					<p:selectOneMenu id="leaveType"
@@ -227,22 +227,25 @@
 				appendTo="@(body)" header="Approve Leave" modal="true" width="400">
 				<h:panelGrid columns="1" cellpadding="5">
 					<h:outputLabel value="Approve Reason:" />
-					<p:inputTextarea
-						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approveReason}" />
+					<p:inputTextarea id="approveReason" rows="4" cols="30"
+						value="#{ManageLeaveRequestEnquiryActionBean.approveReason}" />
 
 					<h:outputLabel value="Approval Date:" />
-					<p:calendar
+					<p:calendar id="approveDate"
 						value="#{ManageLeaveRequestEnquiryActionBean.approveDate}"
 						pattern="#{ApplicationSetting.dateFormat}" showIcon="true" />
 
 					<p:commandButton value="Confirm Approve"
-						actionListener="#{ManageLeaveRequestEnquiryActionBean.approve}"
+						action="#{ManageLeaveRequestEnquiryActionBean.approve}"
+						process="@form"
 						update=":resultForm:leaveTable :globalMessageForm:msgs"
 						oncomplete="PF('approveDialog').hide()"
 						styleClass="ui-button-primary" />
 				</h:panelGrid>
 			</p:dialog>
 		</h:form>
+
+
 
 		<!-- Reject Dialog -->
 		<h:form id="rejectForm">
