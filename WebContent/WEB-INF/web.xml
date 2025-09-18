@@ -39,16 +39,16 @@
     <param-value>true</param-value>
   </context-param>
   <filter>
-    <filter-name>PrimeFacesFileUploadFilter</filter-name>
+    <filter-name>PrimeFaces FileUpload Filter</filter-name>
     <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
     <init-param>
       <param-name>thresholdSize</param-name>
-      <param-value>2147483647</param-value>
+      <param-value>31457280</param-value>
     </init-param>
   </filter>
   <filter-mapping>
-    <filter-name>PrimeFacesFileUploadFilter</filter-name>
-    <servlet-name>FacesServlet</servlet-name>
+    <filter-name>PrimeFaces FileUpload Filter</filter-name>
+    <servlet-name>Faces Servlet</servlet-name>
   </filter-mapping>
   <filter>
     <filter-name>No Cache Filter</filter-name>

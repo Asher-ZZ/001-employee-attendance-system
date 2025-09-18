@@ -42,8 +42,9 @@ public class LeaveRequest implements Serializable {
 	@JoinColumn(name = "employeeid")
 	private Employee employee;
 
-	@OneToMany(mappedBy = "leaveRequest", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<AttachFile> attachFiles = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "LEAVEREQUESTID", referencedColumnName = "ID")
+	private List<AttachFile> attachFiles;
 
 	public LeaveRequest() {
 		this.status = "Pending"; // default status
@@ -121,11 +122,17 @@ public class LeaveRequest implements Serializable {
 	}
 
 	public List<AttachFile> getAttachFiles() {
+		if (attachFiles == null) {
+			attachFiles = new ArrayList<AttachFile>();
+		}
 		return attachFiles;
 	}
 
 	public void setAttachFiles(List<AttachFile> attachFiles) {
 		this.attachFiles = attachFiles;
+	}
+	public void addAttachment(AttachFile attachFile) {
+		getAttachFiles().add(attachFile);
 	}
 
 	public int getVersion() {

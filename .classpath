@@ -4,11 +4,6 @@
 	<classpathentry kind="src" path="report-template"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/all-themes-1.0.10.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ant-1.8.2.jar"/>
@@ -215,5 +210,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/validation-api-2.0.1.Final.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/xmlbeans-3.1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss EAP 7.2 Runtime"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

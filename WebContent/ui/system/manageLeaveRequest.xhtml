@@ -32,7 +32,7 @@
 							<div class="ui-g ui-fluid">
 								<div class="ui-inputgroup ui-g-12 ui-lg-12">
 									<p:commandButton styleClass="green-button" icon="fa fa-search"
-										actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
+								 		actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
 										id="selectEmployeeDialogLink" process="@this">
 										<p:ajax event="dialogReturn"
 											listener="#{ManageLeaveRequestActionBean.returnEmployee}"
@@ -95,56 +95,58 @@
 							rows="4" autoResize="true" required="true"
 							placeholder="Enter reason for leave..." />
 
+						<!-- <p:outputLabel
+				rendered="#{FlexiHealthProposalActionBean.insuredPersonInfoDTO.idType eq 'STILL_APPLYING'}"
+				style="color:red;" value="* - mandatory fields" /> -->
 
+						<!-- image -->
+						
 
-
-						<p:outputPanel style="margin:10px;" id="medicalAttachments">
-							<p:fieldset legend="Medial Record" toggleable="true"
-								collapsed="true">
-
-								<p:outputLabel value="File Types(gif,jpeg,jpg,png) are Allowed"
-									style="color:red;" />
-
+					</p:panelGrid>
+				</p:panelGrid>
+				
+				<p:outputPanel style="margin:10px;">
+							<p:fieldset legend="Proposal Attachment">
 								<p:panelGrid columns="1"
 									styleClass="ui-panelgrid-blank ui-fluid">
-									<p:message for="medicalAttachment" display="text" />
-									<p:fileUpload required="true"
-										allowTypes="/(\.|\/)(gif|GIF|jpe?g|JPE?G|png|PNG)$/"
+									<p:fileUpload allowTypes="/(\.|\/)(pdf|gif|jpe?g|png)$/"
 										fileUploadListener="#{ManageLeaveRequestActionBean.handleProposalAttachment}"
-										id="medicalAttachment" mode="advanced" multiple="true"
-										sizeLimit="3000000" update="medicalImageGrid" />
-
-									<p:dataGrid columns="8" id="medicalImageGrid" paginator="true"
+										id="proposalAttachment" mode="advanced" multiple="true"
+										sizeLimit="31457280" update="proposalImageGrid" />
+									<p:dataGrid columns="2" id="proposalImageGrid" paginator="true"
 										paginatorPosition="bottom" rows="8" rowsPerPageTemplate="8"
 										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-										value="#{ManageLeaveRequestActionBean.medicalUploadedFileList}"
+										value="#{ManageLeaveRequestActionBean.proposalAttachmentList}"
 										var="image">
-
-										<p:commandLink
-											action="#{ManageLeaveRequestActionBean.removeMedicalUploadedFile(image)}"
-											id="deleteGroupLink" update="medicalImageGrid">
-											<p:graphicImage
-												styleClass="#{ApplicationSetting.deleteStyleClass}"
-												value="#{ApplicationSetting.deleteIcon}" />
-										</p:commandLink>
+										<p:panel>
+											<h:outputLink
+												onclick="window.open('/employee-attendance/image/#{image}');return false;">
+												<pe:documentViewer width="104%" height="250"
+													url="#{uploadRootPath}#{image}"
+													rendered="#{ManageLeaveRequestActionBean.isPdfFile(image)}" />
+												<p:graphicImage style="width:120px;height:120px;"
+													value="#{uploadRootPath}#{image}"
+													rendered="#{ManageLeaveRequestActionBean.isImageFile(image)}" />
+											</h:outputLink>
+											<br />
+											<p:commandLink
+												action="#{ManageLeaveRequestActionBean.removeProposalUploadedFile(image)}"
+												id="deleteGroupLink" update="proposalImageGrid">
+												<p:graphicImage
+													styleClass="#{ApplicationSetting.deleteStyleClass}"
+													value="#{ApplicationSetting.deleteIcon}" />
+											</p:commandLink>
+										</p:panel>
 									</p:dataGrid>
 								</p:panelGrid>
 							</p:fieldset>
 						</p:outputPanel>
 
-
-						<!-- <p:outputLabel
-				rendered="#{FlexiHealthProposalActionBean.insuredPersonInfoDTO.idType eq 'STILL_APPLYING'}"
-				style="color:red;" value="* - mandatory fields" /> -->
-
-					</p:panelGrid>
-				</p:panelGrid>
-
 				<!-- Buttons -->
 				<p:commandButton value="Submit" icon="pi pi-check"
 					styleClass="p-button-success p-button-raised"
 					action="#{ManageLeaveRequestActionBean.save()}" process="@form"
-					update=":leaveForm" />
+					update=":leaveForm :listForm" />
 
 				<p:commandButton value="Reset" type="reset" icon="pi pi-refresh"
 					action="#{ManageLeaveRequestActionBean.reset()}"
@@ -185,15 +187,30 @@
 						<h:outputText value="#{leave.reason}" />
 					</p:column>
 
-					<p:column headerText="Medical Record">
+					<!-- <p:column headerText="Medical Record">
 						<p:graphicImage
 							value="#{ManageLeaveRequestActionBean.firstMedicalRecordImage(leave)}"
 							style="width:100px;height:100px;" cache="false" />
-					</p:column>
+					</p:column> -->
 
 					<p:column headerText="Status">
 						<h:outputText value="#{leave.status}" />
 					</p:column>
+
+					<p:column headerText="Details" style="text-align:center;"
+						exportable="false">
+						<h:panelGroup style="text-align:center; display:block;">
+							<!-- Button မှာ select method ခေါ် -->
+							<p:commandButton value="Details"
+								actionListener="#{ManageAttendanceEnquiryActionBean.selectAttendance(att)}"
+								oncomplete="PF('attendanceDialog').show()"
+								update=":detailForm:attendanceDialog" icon="fa fa-eye"
+								styleClass="ui-button-info" />
+
+
+						</h:panelGroup>
+					</p:column>
+
 
 					<p:column headerText="Actions"
 						style="width:150px; text-align:center">
@@ -222,6 +239,106 @@
 						icon="pi pi-times" />
 				</p:confirmDialog>
 			</p:panel>
+		</h:form>
+
+		<h:form id="detailForm">
+			<p:dialog id="attendanceDialog" widgetVar="attendanceDialog"
+				modal="true" closable="true" resizable="false" appendTo="@(body)"
+				header="Attendance Details" width="600">
+
+				<p:tabView id="tabView">
+
+					<!-- image -->
+					<p:tab id="attachmentWizardTab" title="Attachment"
+						titleStyle="font-size:14px">
+						<p:panel header="Attachment Information" style="min-height:400px;">
+							<p:dataGrid columns="8" id="insuredPersonImageGrid"
+								paginator="true" paginatorPosition="bottom"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rows="24"
+								value="#{ManageLeaveRequestActionBean.leaveRequest.attachFiles}"
+								var="image">
+								<h:outputLink
+								onclick="window.open('/employee-attendance/image/#{image}');return false;">
+									<pe:documentViewer width="104%" height="250"
+										url="#{uploadRootPath}#{image.filePath}"
+										rendered="#{ManageLeaveRequestActionBean.isPdfFile(image.name)}" />
+									<h:graphicImage style="width:120px;height:120px;"
+										value="#{uploadRootPath}#{image.filePath}"
+										rendered="#{ManageLeaveRequestActionBean.isImageFile(image.name)}" />
+								</h:outputLink>
+							</p:dataGrid>
+						</p:panel>
+					</p:tab>
+
+
+					<!-- 
+
+					Employee Tab
+					<p:tab title="Employee">
+						<p:panelGrid id="employeeDetailPanel" columns="2"
+							columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<h:outputLabel value="Employee Name :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.fullName}" />
+
+							<h:outputLabel value="Department :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.department}" />
+
+
+							<h:outputLabel value="Position :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.position}" />
+
+							<h:outputLabel value="Hire Date :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.hireDate}">
+								<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							</h:outputText>
+
+							<h:outputLabel value="Date Of Birth :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.dateOfBirth}">
+								<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							</h:outputText>
+
+
+
+							<h:outputLabel value="Gender :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.gender}" />
+
+							<h:outputLabel value="Email :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.email}" />
+
+							<h:outputLabel value="Phone :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.phone}" />
+
+							<h:outputLabel value="Address :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.address}" />
+
+							<h:outputLabel value="Status :" />
+							<h:outputText
+								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.status}" />
+
+
+
+
+						</p:panelGrid>
+					</p:tab> -->
+
+					<!-- Attendance Tab -->
+
+
+				</p:tabView>
+
+			</p:dialog>
 		</h:form>
 
 		<!-- Edit Leave Request Dialog -->

@@ -12,30 +12,34 @@ import org.ace.java.component.idgen.service.IDInterceptor;
 @EntityListeners(IDInterceptor.class)
 public class AttachFile implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ATTACHFILE_GEN")
 	private String id;
-
-	@Column(name = "MEDICALRECORD", length = 500)
-	private String medicalRecord; // filesystem path
-
+	private String name;
+	private String filePath;
+	
 	@Version
 	private int version;
 
 	@Embedded
 	private BasicEntity basicEntity;
 
-	@ManyToOne
-	@JoinColumn(name = "LEAVEREQUESTID")
-	private LeaveRequest leaveRequest;
+	public AttachFile(String fileNameString, String filePath2) {
+		this.name = fileNameString;
+		this.filePath = filePath2;
+	}
+	
+	
 
 	public AttachFile() {
+		super();
 	}
 
-	public AttachFile(String medicalRecord, LeaveRequest leaveRequest) {
-		this.medicalRecord = medicalRecord;
-		this.leaveRequest = leaveRequest;
-	}
+
 
 	public String getId() {
 		return id;
@@ -45,12 +49,20 @@ public class AttachFile implements Serializable {
 		this.id = id;
 	}
 
-	public String getMedicalRecord() {
-		return medicalRecord;
+	public String getName() {
+		return name;
 	}
 
-	public void setMedicalRecord(String medicalRecord) {
-		this.medicalRecord = medicalRecord;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 	public int getVersion() {
@@ -69,18 +81,7 @@ public class AttachFile implements Serializable {
 		this.basicEntity = basicEntity;
 	}
 
-	public LeaveRequest getLeaveRequest() {
-		return leaveRequest;
-	}
-
-	public void setLeaveRequest(LeaveRequest leaveRequest) {
-		this.leaveRequest = leaveRequest;
-	}
-
-	// convenient getter for file path
-	public String getFilePath() {
-		return medicalRecord;
-	}
+	
 
 	public String getContentType() {
 		// TODO Auto-generated method stub
