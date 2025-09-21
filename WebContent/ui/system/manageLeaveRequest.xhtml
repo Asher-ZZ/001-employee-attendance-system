@@ -51,14 +51,17 @@
 						<!-- Leave Type -->
 						<h:outputText value="" />
 						<p:message display="text" for="leaveType" />
-						<h:outputLabel for="leaveType" value="Leave Type:"
-							styleClass="input-label mandatory" />
+						<h:outputLabel for="leaveType" value="Leave Type"
+							styleClass="input-label mandatory" escape="false" />
 						<p:selectOneMenu id="leaveType"
 							value="#{ManageLeaveRequestActionBean.leaveRequest.leaveType}"
 							required="true" filter="true">
 							<f:selectItem itemLabel="-- Select Leave Type --" itemValue="" />
 							<f:selectItem itemLabel="Casual Leave" itemValue="CASUAL" />
 							<f:selectItem itemLabel="Medical Leave" itemValue="MEDICAL" />
+							<p:ajax event="change"
+								listener="#{ManageLeaveRequestActionBean.onLeaveTypeChange}"
+								process="@this" update="medicalAttachmentsWrapper" />
 						</p:selectOneMenu>
 
 						<!-- Start Date -->
@@ -95,47 +98,59 @@
 							rows="4" autoResize="true" required="true"
 							placeholder="Enter reason for leave..." />
 
+						<!-- Medical Attachments Panel -->
 
+						<h:outputText value="" />
+						<p:message display="text" for="medicalAttachment" />
+						<h:outputLabel for="medicalAttachment"
+							value="Medical Attachment :" styleClass="input-label mandatory" />
+						<p:outputPanel id="medicalAttachmentsWrapper">
+							<p:outputPanel style="margin:10px;"
+								rendered="#{ManageLeaveRequestActionBean.leaveRequest.leaveType eq 'MEDICAL'}">
 
+								<p:fieldset legend="Medical Record" toggleable="true"
+									collapsed="true">
+									<p:outputLabel
+										value="File Types (gif, jpeg, jpg, png) are Allowed"
+										style="color:red;" />
 
-						<p:outputPanel style="margin:10px;" id="medicalAttachments">
-							<p:fieldset legend="Medial Record" toggleable="true"
-								collapsed="true">
+									<p:panelGrid columns="1"
+										styleClass="ui-panelgrid-blank ui-fluid">
+										<p:message for="medicalAttachment" display="text" />
 
-								<p:outputLabel value="File Types(gif,jpeg,jpg,png) are Allowed"
-									style="color:red;" />
+										<p:fileUpload id="medicalAttachment"
+											required="#{ManageLeaveRequestActionBean.leaveRequest.leaveType eq 'MEDICAL'}"
+											allowTypes="/(\.|\/)(gif|GIF|jpe?g|JPE?G|png|PNG)$/"
+											fileUploadListener="#{ManageLeaveRequestActionBean.handleProposalAttachment}"
+											mode="advanced" multiple="true" sizeLimit="3000000"
+											update="medicalImageGrid"
+											invalidFileMessage="gif, jpeg, jpg, png"
+											requiredMessage="Need Medical Attachment for Medical Leave" />
 
-								<p:panelGrid columns="1"
-									styleClass="ui-panelgrid-blank ui-fluid">
-									<p:message for="medicalAttachment" display="text" />
-									<p:fileUpload required="true"
-										allowTypes="/(\.|\/)(gif|GIF|jpe?g|JPE?G|png|PNG)$/"
-										fileUploadListener="#{ManageLeaveRequestActionBean.handleProposalAttachment}"
-										id="medicalAttachment" mode="advanced" multiple="true"
-										sizeLimit="3000000" update="medicalImageGrid" />
-
-									<p:dataGrid columns="8" id="medicalImageGrid" paginator="true"
-										paginatorPosition="bottom" rows="8" rowsPerPageTemplate="8"
-										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-										value="#{ManageLeaveRequestActionBean.medicalUploadedFileList}"
-										var="image">
-
-										<p:commandLink
-											action="#{ManageLeaveRequestActionBean.removeMedicalUploadedFile(image)}"
-											id="deleteGroupLink" update="medicalImageGrid">
-											<p:graphicImage
-												styleClass="#{ApplicationSetting.deleteStyleClass}"
-												value="#{ApplicationSetting.deleteIcon}" />
-										</p:commandLink>
-									</p:dataGrid>
-								</p:panelGrid>
-							</p:fieldset>
+										<p:dataGrid id="medicalImageGrid" columns="8" paginator="true"
+											paginatorPosition="bottom" rows="8"
+											value="#{ManageLeaveRequestActionBean.medicalUploadedFileList}"
+											var="image">
+											<p:commandLink
+												action="#{ManageLeaveRequestActionBean.removeMedicalUploadedFile(image)}"
+												update="medicalImageGrid"
+												style="display:block; text-align:center;">
+												<p:graphicImage
+													style="width:80px; height:80px; border:1px solid #ddd; margin:4px;"
+													value="#{image.filePath}" />
+												<br />
+												<p:graphicImage
+													styleClass="#{ApplicationSetting.deleteStyleClass}"
+													value="#{ApplicationSetting.deleteIcon}"
+													style="margin-top:5px;" />
+											</p:commandLink>
+										</p:dataGrid>
+									</p:panelGrid>
+								</p:fieldset>
+							</p:outputPanel>
 						</p:outputPanel>
 
 
-						<!-- <p:outputLabel
-				rendered="#{FlexiHealthProposalActionBean.insuredPersonInfoDTO.idType eq 'STILL_APPLYING'}"
-				style="color:red;" value="* - mandatory fields" /> -->
 
 					</p:panelGrid>
 				</p:panelGrid>

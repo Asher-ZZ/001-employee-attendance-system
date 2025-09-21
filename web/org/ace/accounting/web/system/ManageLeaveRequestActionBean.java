@@ -58,6 +58,12 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		leaveRequests = leaveRequestService.findAllLeaveRequest();
 	}
 
+	public void onLeaveTypeChange() {
+		if (!"MEDICAL".equals(leaveRequest.getLeaveType())) {
+			medicalUploadedFileMap.clear();
+		}
+	}
+
 	/*
 	 * public void handleProposalAttachment(FileUploadEvent event) { UploadedFile
 	 * uploadedFile = event.getFile(); String fileName =

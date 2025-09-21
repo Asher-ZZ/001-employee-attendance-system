@@ -88,13 +88,12 @@
 				<p:separator />
 				<p:commandButton value="Save"
 					action="#{ManageAttendanceActionBean.save}"
-					update=":attendanceForm :attendanceTable :msgs" icon="fa fa-save"
+					update=":attendanceForm :attendanceTable :msgs"
 					styleClass="ui-button-success" />
 
 				<p:commandButton value="Clear"
 					action="#{ManageAttendanceActionBean.reset}" process="@this"
-					update="attendanceForm" icon="fa fa-refresh"
-					styleClass="ui-button-secondary" />
+					update="attendanceForm" styleClass="ui-button-secondary" />
 			</p:panel>
 		</h:form>
 

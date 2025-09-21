@@ -35,6 +35,14 @@ public class ExcelExport {
 			headerRow.createCell(6).setCellValue("Late Arrival");
 			headerRow.createCell(7).setCellValue("Early Departure");
 			headerRow.createCell(8).setCellValue("Remarks");
+			headerRow.createCell(9).setCellValue("Position");
+			headerRow.createCell(10).setCellValue("Hire Date");
+			headerRow.createCell(11).setCellValue("Date Of Birth");
+			headerRow.createCell(12).setCellValue("Gender");
+			headerRow.createCell(13).setCellValue("Email");
+			headerRow.createCell(14).setCellValue("Phone");
+			headerRow.createCell(15).setCellValue("Address");
+			headerRow.createCell(16).setCellValue("Status");
 
 			// Data rows
 			int rowNum = 1;
@@ -53,7 +61,6 @@ public class ExcelExport {
 				row.createCell(6).setCellValue(ManageAttendanceEnquiryActionBean.getLateArrival(att));
 				row.createCell(7).setCellValue(ManageAttendanceEnquiryActionBean.getEarlyDeparture(att));
 				row.createCell(8).setCellValue(att.getRemarks());
-
 				row.createCell(8).setCellValue(att.getRemarks() != null ? att.getRemarks() : "");
 			}
 

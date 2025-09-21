@@ -26,7 +26,6 @@ public class ManageAttendanceActionBean extends BaseBean {
 	private List<Attendance> attendanceList;
 	private Employee employee;
 
-	
 	public Employee getEmployee() {
 		return employee;
 	}
@@ -70,11 +69,11 @@ public class ManageAttendanceActionBean extends BaseBean {
 			if (attendance.getId() == null) {
 				attendanceService.addNewAttendance(attendance);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Success", "Attendance added successfully" + attendance.getEmployee()));
+						"Success", "Attendance added successfully" + attendance.getEmployee().getFullName()));
 			} else {
 				attendanceService.updateAttendance(attendance);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Success", "Attendance updated successfully" + attendance.getEmployee()));
+						"Success", "Attendance updated successfully" + attendance.getEmployee().getFullName()));
 			}
 
 			// Refresh list after DB operation

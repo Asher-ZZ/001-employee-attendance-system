@@ -167,8 +167,6 @@
 								oncomplete="PF('attendanceDialog').show()"
 								update=":detailForm:attendanceDialog" icon="fa fa-eye"
 								styleClass="ui-button-info" />
-
-
 						</h:panelGroup>
 					</p:column>
 
@@ -198,7 +196,6 @@
 							<h:outputText
 								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.department}" />
 
-
 							<h:outputLabel value="Position :" />
 							<h:outputText
 								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.position}" />
@@ -214,8 +211,6 @@
 								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.dateOfBirth}">
 								<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
 							</h:outputText>
-
-
 
 							<h:outputLabel value="Gender :" />
 							<h:outputText
@@ -236,9 +231,6 @@
 							<h:outputLabel value="Status :" />
 							<h:outputText
 								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.employee.status}" />
-
-
-
 
 						</p:panelGrid>
 					</p:tab>
@@ -284,6 +276,20 @@
 							<h:outputLabel value="Remarks :" />
 							<h:outputText
 								value="#{ManageAttendanceEnquiryActionBean.selectedAttendance.remarks}" />
+
+				<!-- 			<p:column headerText="Details" style="text-align:center;"
+								exportable="false">
+								<h:panelGroup style="text-align:center; display:block;">
+									Button မှာ select method ခေါ်
+									<p:commandButton value="Details"
+										actionListener="#{ManageAttendanceEnquiryActionBean.selectAttendance(att)}"
+										oncomplete="PF('attendanceDialog').show()"
+										update=":detailForm:attendanceDialog" icon="fa fa-eye"
+										styleClass="ui-button-info" />
+								</h:panelGroup>
+							</p:column>
+
+ -->
 
 						</p:panelGrid>
 					</p:tab>
