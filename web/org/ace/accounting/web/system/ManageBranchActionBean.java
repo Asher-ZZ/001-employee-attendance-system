@@ -31,9 +31,8 @@ public class ManageBranchActionBean extends BaseBean {
 	@ManagedProperty(value = "#{BranchService}")
 	private IBranchService branchService;
 
-	public void setBranchService(IBranchService branchService) {
-		this.branchService = branchService;
-	}
+
+
 
 	@ManagedProperty(value = "#{BranchCodeValidator}")
 	protected IDataValidator<Branch> branchCodeValidator;

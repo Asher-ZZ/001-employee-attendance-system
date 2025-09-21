@@ -19,13 +19,12 @@ public class ApplicationSetting {
 	private static final String PERCENT_FORMAT = "0.#####";
 	private static final String DATE_DAY_MONTH_FORMAT = "dd-MMMM";
 	private static final String MONTH_PICKER = "MM-yyyy";
-	private static final String LOGO= "pdf-report/fni-logo.png";
-	
+	private static final String LOGO = "pdf-report/fni-logo.png";
+
 
 	public static String getCompanyLogoFilePath() {
-			return LOGO;
+		return LOGO;
 	}
-	
 
 	public String getDateDayMonthFormat() {
 		return DATE_DAY_MONTH_FORMAT;
@@ -69,5 +68,16 @@ public class ApplicationSetting {
 
 	public String getMonthPicker() {
 		return MONTH_PICKER;
+	}
+
+	private static final String DELETE_ICON = "/resources/images/delete.png";
+	private static final String DELETE_STYLE_CLASS = "ui-icon-trash";
+
+	public String getDeleteIcon() {
+		return DELETE_ICON;
+	}
+
+	public String getDeleteStyleClass() {
+		return DELETE_STYLE_CLASS;
 	}
 }

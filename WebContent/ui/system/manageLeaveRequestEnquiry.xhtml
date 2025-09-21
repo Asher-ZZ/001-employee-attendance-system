@@ -1,0 +1,275 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+
+	<ui:define name="title">Leave Request Enquiry</ui:define>
+
+	<ui:define name="content">
+
+		<!-- Global Messages -->
+		<h:form id="globalMessageForm">
+			<p:growl id="msgs" showDetail="true" life="5000" globalOnly="true" />
+		</h:form>
+
+		<!-- Search Panel -->
+		<h:form id="leaveEnquiry">
+			<p:panel header="Search Leave Requests" style="margin-bottom:20px">
+				<p:panelGrid columns="2" styleClass="ui-panelgrid-blank ui-fluid">
+
+					<!-- <h:outputLabel for="employeeName" value="Employee Name:" />
+					<p:inputText id="employeeName"
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.employeeName}" />
+						 -->
+					<h:outputText value="" />
+					<p:message display="text" for="employeeId" />
+					<h:outputLabel for="employeeId" value="Employee:" />
+					<p:panelGrid styleClass="ui-panelgrid-blank">
+						<div class="ui-g ui-fluid">
+							<div class="ui-inputgroup ui-g-12 ui-lg-12">
+								<p:commandButton styleClass="green-button" icon="fa fa-search"
+									actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
+									id="selectEmployeeDialogLink" process="@this">
+									<p:ajax event="dialogReturn"
+										listener="#{ManageLeaveRequestActionBean.returnEmployee}"
+										update="employeeId" />
+								</p:commandButton>
+								<p:inputText id="employeeId"
+									value="#{ManageLeaveRequestActionBean.leaveRequest.employee == null ? '' : ManageLeaveRequestActionBean.leaveRequest.employee.fullName}"
+									readonly="true" />
+								<p:commandButton styleClass="red-button" icon="fa fa-times"
+									action="#{ManageLeaveRequestActionBean.leaveRequest.setEmployee(null)}"
+									process="@this" update="employeeId" />
+							</div>
+						</div>
+					</p:panelGrid>
+
+					<h:outputLabel for="leaveType" value="Leave Type:" />
+					<p:selectOneMenu id="leaveType"
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.leaveType}">
+						<f:selectItem itemLabel="-- All --" itemValue="" />
+						<f:selectItem itemLabel="Casual Leave" itemValue="CASUAL" />
+						<f:selectItem itemLabel="Medical Leave" itemValue="MEDICAL" />
+					</p:selectOneMenu>
+
+					<h:outputLabel for="startDate" value="Start Date:" />
+					<p:calendar id="startDate"
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.startDate}"
+						pattern="dd/MM/yyyy" showIcon="true" navigator="true"
+						yearRange="c-10:c+10" style="width:150px;" />
+
+					<h:outputLabel for="endDate" value="End Date:" />
+					<p:calendar id="endDate"
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.endDate}"
+						navigator="true" yearRange="c-10:c+10" style="width:150px;"
+						pattern="dd/MM/yyyy" showIcon="true" />
+
+					<h:outputLabel for="status" value="Status:" />
+					<p:selectOneMenu id="status"
+						value="#{ManageLeaveRequestEnquiryActionBean.criteria.status}">
+						<f:selectItem itemLabel="-- All --" itemValue="" />
+						<f:selectItem itemLabel="Pending" itemValue="PENDING" />
+						<f:selectItem itemLabel="Approved" itemValue="APPROVED" />
+						<f:selectItem itemLabel="Rejected" itemValue="REJECTED" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<p:commandButton value="Search" icon="pi pi-search"
+					action="#{ManageLeaveRequestEnquiryActionBean.search}"
+					update=":resultForm:leaveTable :globalMessageForm:msgs" />
+				<p:commandButton value="Reset" type="reset" icon="pi pi-refresh" />
+			</p:panel>
+		</h:form>
+
+		<!-- Search Results -->
+		<h:form id="resultForm">
+			<p:panel header="Leave Requests Result">
+				<p:dataTable id="leaveTable" var="leave"
+					value="#{ManageLeaveRequestEnquiryActionBean.resultList}"
+					paginator="true" rows="10" emptyMessage="No leave requests found.">
+
+					<p:column headerText="Employee">
+						<h:outputText value="#{leave.employee.fullName}" />
+					</p:column>
+
+					<p:column headerText="Department">
+						<h:outputText value="#{leave.employee.department}" />
+					</p:column>
+
+					<p:column headerText="Leave Type">
+						<h:outputText value="#{leave.leaveType}" />
+					</p:column>
+
+					<p:column headerText="Start Date">
+						<h:outputText value="#{leave.startDate}">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="End Date">
+						<h:outputText value="#{leave.endDate}">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Status">
+						<h:outputText value="#{leave.status}" />
+					</p:column>
+
+					<p:column headerText="Actions">
+						<!-- Approve Button -->
+						<p:commandButton value="Approve" styleClass="ui-button-success"
+							actionListener="#{ManageLeaveRequestEnquiryActionBean.prepareApprove(leave)}"
+							oncomplete="PF('approveDialog').show()" update=":approveForm"
+							rendered="#{leave.status.toUpperCase() eq 'PENDING'}" />
+
+						<!-- Reject Button -->
+						<p:commandButton value="Reject" styleClass="ui-button-danger"
+							actionListener="#{ManageLeaveRequestEnquiryActionBean.prepareReject(leave)}"
+							oncomplete="PF('rejectDialog').show()" update=":rejectForm"
+							rendered="#{leave.status.toUpperCase() eq 'PENDING'}" />
+					</p:column>
+
+					<p:column headerText="Details" style="text-align:center;">
+						<p:commandButton value="Details"
+							actionListener="#{ManageLeaveRequestEnquiryActionBean.selectLeave(leave)}"
+							oncomplete="PF('leaveDialog').show()"
+							update=":detailForm:leaveDetailPanel" icon="fa fa-eye"
+							styleClass="ui-button-info" />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+		<!-- Leave Details Dialog -->
+		<!-- Leave Details Dialog -->
+		<h:form id="detailForm">
+			<p:dialog id="leaveDialog" widgetVar="leaveDialog" modal="true"
+				appendTo="@(body)" resizable="false" header="Leave Request Details"
+				width="600">
+
+				<p:panelGrid id="leaveDetailPanel" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+
+					<h:outputLabel value="Employee Name:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.employee.fullName}" />
+
+					<h:outputLabel value="Department:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.employee.department}" />
+
+					<h:outputLabel value="Leave Type:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.leaveType}" />
+
+					<h:outputLabel value="Start Date:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.startDate}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+					<h:outputLabel value="End Date:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.endDate}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+					<h:outputLabel value="Reason:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.reason}" />
+
+					<h:outputLabel value="Status:" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status}" />
+					<!-- Approve Case -->
+					<h:outputLabel value="Approve Reason:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approveReason}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}" />
+
+					<h:outputLabel value="Approve Date:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.approvedDate}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'APPROVED'}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+					<!-- Reject Case -->
+					<h:outputLabel value="Reject Reason:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.rejectReason}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}" />
+
+					<h:outputLabel value="Reject Date:"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}" />
+					<h:outputText
+						value="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.rejectedDate}"
+						rendered="#{ManageLeaveRequestEnquiryActionBean.selectedLeaveRequest.status eq 'REJECTED'}">
+						<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+					</h:outputText>
+
+				</p:panelGrid>
+			</p:dialog>
+		</h:form>
+
+		<!-- Approve Dialog -->
+		<h:form id="approveForm">
+			<p:dialog id="approveDialog" widgetVar="approveDialog"
+				appendTo="@(body)" header="Approve Leave" modal="true" width="400">
+				<h:panelGrid columns="1" cellpadding="5">
+					<h:outputLabel value="Approve Reason:" />
+					<p:inputTextarea id="approveReason" rows="4" cols="30"
+						value="#{ManageLeaveRequestEnquiryActionBean.approveReason}" />
+
+					<h:outputLabel value="Approval Date:" />
+					<p:calendar id="approveDate"
+						value="#{ManageLeaveRequestEnquiryActionBean.approveDate}"
+						pattern="#{ApplicationSetting.dateFormat}" showIcon="true" />
+
+					<p:commandButton value="Confirm Approve"
+						action="#{ManageLeaveRequestEnquiryActionBean.approve}"
+						process="@form"
+						update=":resultForm:leaveTable :globalMessageForm:msgs"
+						oncomplete="PF('approveDialog').hide()"
+						styleClass="ui-button-primary" />
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+
+
+
+		<!-- Reject Dialog -->
+		<h:form id="rejectForm">
+			<p:dialog id="rejectDialog" widgetVar="rejectDialog"
+				appendTo="@(body)" header="Reject Leave" modal="true" width="400">
+				<h:panelGrid columns="1" cellpadding="5">
+					<h:outputLabel value="Reject Reason:" />
+					<p:inputTextarea
+						value="#{ManageLeaveRequestEnquiryActionBean.rejectReason}"
+						rows="4" cols="40" />
+					<h:outputLabel value="Approval Date:" />
+					<p:calendar
+						value="#{ManageLeaveRequestEnquiryActionBean.rejectDate}"
+						pattern="#{ApplicationSetting.dateFormat}" showIcon="true" />
+
+
+					<p:commandButton value="Confirm Reject"
+						actionListener="#{ManageLeaveRequestEnquiryActionBean.reject}"
+						update=":resultForm:leaveTable :globalMessageForm:msgs"
+						oncomplete="PF('rejectDialog').hide()"
+						styleClass="ui-button-primary" />
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

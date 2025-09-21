@@ -46,6 +46,13 @@
     <!-- Exchange Config -->
     <class>org.ace.accounting.system.gainloss.ExchangeConfig</class>
     
+    <class>org.ace.accounting.system.attendance.Attendance</class>
+    <class>org.ace.accounting.system.leaverequest.LeaveRequest</class>
+    <class>org.ace.accounting.system.employee.Employee</class>
+        <class>org.ace.accounting.system.leaverequest.AttachFile</class>
+    
+    
+    
 	
 	 <!-- <class>org.ace.accounting.report.cleanCashReport.CleanCashView</class>
 	<class>org.ace.accounting.report.incomeandexpenditure.IncomeAndExpenditure</class>  -->

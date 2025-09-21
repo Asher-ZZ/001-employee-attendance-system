@@ -1,0 +1,266 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+
+
+	<ui:define name="title">Employee Management</ui:define>
+
+	<ui:define name="content">
+
+
+		<h:form id="globalMessageForm">
+			<p:growl id="msgs" escape="false" globalOnly="true" life="5000"
+				showDetail="true" />
+		</h:form>
+
+
+		<h:form id="employeeForm">
+
+			<p:panel header="Employee Entry" style="margin-bottom:20px;">
+
+				<p:panelGrid id="panelDept" columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-6" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="fullName" />
+						<h:outputLabel for="fullName" value="Full Name:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:inputText id="fullName"
+							value="#{ManageEmployeeActionBean.employee.fullName}"
+							required="true" requiredMessage="Name is required!"
+							maxlength="50"
+							validatorMessage="Name must not exceed 50 characters" />
+
+						<h:outputText value="" />
+						<p:message display="text" for="department" />
+						<h:outputLabel for="department" value="Department:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="department"
+							value="#{ManageEmployeeActionBean.employee.department}"
+							required="true" requiredMessage="Department is required!">
+							<f:selectItem itemLabel="-- Select Department --" itemValue="" />
+							<f:selectItems
+								value="#{ManageEmployeeActionBean.departmentValues}" var="dept"
+								itemLabel="#{dept.department}" itemValue="#{dept}" />
+						</p:selectOneMenu>
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="position" />
+						<h:outputLabel for="position" value="Position:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="position"
+							value="#{ManageEmployeeActionBean.employee.position}"
+							required="true" requiredMessage="Position is required!">
+							<f:selectItem itemLabel="-- Select Position --" itemValue="" />
+							<f:selectItems value="#{ManageEmployeeActionBean.positionValues}"
+								var="pos" itemLabel="#{pos.position}" itemValue="#{pos}" />
+						</p:selectOneMenu>
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="hireDate" />
+						<h:outputLabel for="hireDate" value="Hire Date:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:datePicker id="hireDate"
+							value="#{ManageEmployeeActionBean.employee.hireDate}"
+							required="true" requiredMessage="Hire Date is required!"
+							pattern="#{ApplicationSetting.dateFormat}"
+							placeholder="Select hire date" showIcon="true" />
+
+						<h:outputText value="" />
+						<p:message display="text" for="dateOfBirth" />
+						<h:outputLabel for="dateOfBirth" value="Date of Birth:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:datePicker id="dateOfBirth"
+							value="#{ManageEmployeeActionBean.employee.dateOfBirth}"
+							required="true" requiredMessage="Date Of Birth is required!"
+							pattern="#{ApplicationSetting.dateFormat}"
+							placeholder="Select date of birth" showIcon="true"
+							mindate="#{ManageEmployeeActionBean.minDateOfBirth}"
+							maxdate="#{ManageEmployeeActionBean.maxDateOfBirth}"
+							yearRange="1950:#{ManageEmployeeActionBean.maxDateOfBirthYear}"
+							showButtonPanel="true" navigator="true" yearNavigator="true"
+							monthNavigator="true"
+							validator="#{ManageEmployeeActionBean.validateAge16}" />
+
+						<h:outputText value="" />
+						<p:message display="text" for="gender" />
+						<h:outputLabel for="gender" value="Gender:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneRadio id="gender" layout="lineDirection"
+							value="#{ManageEmployeeActionBean.employee.gender}"
+							required="true" requiredMessage="Gender is required!">
+							<f:selectItem itemLabel="Male" itemValue="Male" />
+							<f:selectItem itemLabel="Female" itemValue="Female" />
+						</p:selectOneRadio>
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-6" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+
+						<h:outputText value="" />
+						<p:message display="text" for="email" />
+						<h:outputLabel for="email" value="Email:"
+							styleClass="input-label mandatory" escape="false" />
+
+						<p:inputText id="email"
+							value="#{ManageEmployeeActionBean.employee.email}"
+							required="true" placeholder="Enter Email"
+							requiredMessage="Email is required!" maxlength="100">
+							<f:validator validatorId="EmailValidator" />
+						</p:inputText>
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="phone" />
+						<h:outputLabel for="phone" value="Phone No:"
+							styleClass="input-label mandatory" escape="false" />
+
+						<p:inputText id="phone"
+							value="#{ManageEmployeeActionBean.employee.phone}"
+							required="true" placeholder="09XXXXXXXXX" maxlength="20"
+							requiredMessage="Phone is required!">
+							<f:validator validatorId="EmployeeValidator" />
+						</p:inputText>
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="address" />
+						<h:outputLabel for="address" value="Address:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:inputText id="address"
+							value="#{ManageEmployeeActionBean.employee.address}"
+							required="true" placeholder="Enter Address" maxlength="255"
+							requiredMessage="Address is required!" />
+
+
+
+						<h:outputText value="" />
+						<p:message display="text" for="status" />
+						<h:outputLabel for="status" value="Status:"
+							styleClass="input-label mandatory" escape="false" />
+						<p:selectOneMenu id="status"
+							value="#{ManageEmployeeActionBean.employee.status}"
+							required="true" requiredMessage="Status is required!">
+							<f:selectItem itemLabel="-- Select Status --" itemValue="" />
+							<f:selectItem itemLabel="Active" itemValue="Active" />
+							<f:selectItem itemLabel="Inactive" itemValue="Inactive" />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+				</p:panelGrid>
+
+
+
+				<p:commandButton value="Save" icon="pi pi-check"
+					action="#{ManageEmployeeActionBean.save}"
+					update=":employeeForm :employeeTableForm :globalMessageForm:msgs"
+					styleClass="p-button-success p-button-raised" />
+				<p:commandButton value="Reset" icon="pi pi-refresh"
+					action="#{ManageEmployeeActionBean.createNewEmployee}"
+					process="@this" update="employeeForm"
+					styleClass="p-button-secondary p-button-raised" />
+			</p:panel>
+		</h:form>
+
+
+		<h:form id="employeeTableForm">
+			<p:panel header="Employee List">
+				<p:dataTable id="employeeTable"
+					value="#{ManageEmployeeActionBean.employees}" var="emp"
+					paginator="true" rows="5" responsiveLayout="scroll" rowHover="true"
+					styleClass="p-datatable-striped p-datatable-gridlines"
+					filterDelay="500">
+
+					<p:column headerText="Full Name">
+						<h:outputText value="#{emp.fullName}" />
+					</p:column>
+
+					<p:column headerText="Department">
+						<h:outputText value="#{emp.department}" />
+					</p:column>
+
+					<p:column headerText="Position">
+						<h:outputText value="#{emp.position}" />
+					</p:column>
+
+					<p:column headerText="Hire Date">
+						<h:outputText value="#{emp.hireDate}">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Date Of Birth">
+						<h:outputText value="#{emp.dateOfBirth}">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gender">
+						<h:outputText value="#{emp.gender}" />
+					</p:column>
+
+					<p:column headerText="Email">
+						<h:outputText value="#{emp.email}" />
+					</p:column>
+
+					<p:column headerText="Phone">
+						<h:outputText value="#{emp.phone}" />
+					</p:column>
+
+					<p:column headerText="Address">
+						<h:outputText value="#{emp.address}" />
+					</p:column>
+
+					<p:column headerText="Status">
+						<h:outputText value="#{emp.status}" />
+					</p:column>
+
+
+					<p:column headerText="Actions"
+						style="width:60px; text-align:center">
+						<p:commandButton icon="fa fa-pencil" title="Edit"
+							action="#{ManageEmployeeActionBean.prepareUpdateEmployee(emp)}"
+							update=":employeeForm :globalMessageForm:msgs" />
+
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
