@@ -1,6 +1,7 @@
 package org.ace.accounting.web.system;
 
 import org.ace.accounting.common.FileHandler;
+import org.ace.accounting.common.validation.MessageId;
 import org.ace.accounting.system.employee.Employee;
 import org.ace.accounting.system.leaverequest.AttachFile;
 import org.ace.accounting.system.leaverequest.LeaveRequest;
@@ -14,9 +15,12 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,7 +36,7 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private LeaveRequest leaveRequest;
+	private LeaveRequest leaveRequest = new LeaveRequest();
 	private LeaveRequest selectedLeaveRequest;
 	private List<LeaveRequest> leaveRequests;
 	private Employee employee;
@@ -45,7 +49,7 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		this.employee = employee;
 	}
 
-	private final String PROPOSAL_DIR = "/upload/motor-proposal";
+	private final String PROPOSAL_DIR = "/upload/medical-image";
 	private Map<String, String> medicalUploadedFileMap;
 
 	private String temporyDir;
@@ -64,29 +68,52 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		leaveRequests = leaveRequestService.findAllLeaveRequest();
 		temporyDir = "/temp/" + System.currentTimeMillis() + "/";
 		medicalUploadedFileMap = new HashMap<String, String>();
-		String srcPath = getUploadPath() + PROPOSAL_DIR + "hello";
-		String destPath = getUploadPath() + temporyDir + "hello";
+		String srcPath = getUploadPath() + PROPOSAL_DIR;
+		String destPath = getUploadPath() + temporyDir;
 		try {
 			FileHandler.copyDirectory(srcPath, destPath);
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		String filePath = null;
+
+		for (AttachFile attachFile : leaveRequest.getAttachFiles()) {
+			filePath = attachFile.getFilePath();
+			filePath = filePath.replaceAll("/upload/medical-image/", temporyDir);
+		}
+
 		for (AttachFile attFile : leaveRequest.getAttachFiles()) {
 			medicalUploadedFileMap.put(attFile.getName(), attFile.getFilePath());
+		}
+		reset();
+	}
+
+	public void onLeaveTypeChange() {
+		if (!"MEDICAL".equals(leaveRequest.getLeaveType())) {
+			medicalUploadedFileMap.clear();
 		}
 	}
 
 	public void handleProposalAttachment(FileUploadEvent event) {
 		UploadedFile uploadedFile = event.getFile();
 		String fileName = uploadedFile.getFileName().replaceAll("\\s", "_");
-		String filePath = temporyDir  + fileName;
-		createFile(new File(filePath), uploadedFile.getContents());
-		//medicalUploadedFileMap.put(fileName, filePath);
-		//createFile(new File(getUploadPath() + filePath), uploadedFile.getContents());
-	    String webPath = "/uploads/" + fileName;  // adjust to match your servlet context mapping
-	    medicalUploadedFileMap.put(fileName, webPath);
+		String filePath = temporyDir + "/" + fileName;
+		medicalUploadedFileMap.put(fileName, filePath);
+		createFile(new File(getUploadPath() + filePath), uploadedFile.getContents());
+		// medicalUploadedFileMap.put(fileName, filePath);
+		// createFile(new File(getUploadPath() + filePath), uploadedFile.getContents());
+//		String webPath = "/uploads/" + fileName; // adjust to match your servlet context mapping
+//		medicalUploadedFileMap.put(fileName, webPath);
 	}
-	
+
+	private void moveUploadedFiles() {
+		try {
+			FileHandler.moveFiles(getUploadPath(), temporyDir, PROPOSAL_DIR);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public List<String> getProposalAttachmentList() {
 		return new ArrayList<String>(medicalUploadedFileMap.values());
 	}
@@ -128,6 +155,10 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		}
 	}
 
+	public boolean isImageFile(String fileName) {
+		return fileName.toLowerCase().matches(".*\\.(jpg|jpeg|png|gif)$");
+	}
+
 	public boolean isPdfFile(String filePath) {
 		return filePath.toLowerCase().endsWith(".pdf");
 	}
@@ -143,31 +174,30 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 	private void loadAttachment() {
 		List<AttachFile> proposalAttachmentList = new ArrayList<>();
 		for (String fileNameString : medicalUploadedFileMap.keySet()) {
-			String filePath = PROPOSAL_DIR + employee.getId() + "/" + fileNameString;
+			String filePath = PROPOSAL_DIR + "/" + fileNameString;
 			proposalAttachmentList.add(new AttachFile(fileNameString, filePath));
 		}
 		leaveRequest.setAttachFiles(proposalAttachmentList);
 	}
 
-	private void moveUploadedFiles() {
-		try {
-			FileHandler.moveFiles(getUploadPath(), temporyDir + "hello", PROPOSAL_DIR + "hello");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void save() {
 		try {
-			// Always set status to Pending on submit
+			// Validate employee selection
+			if (leaveRequest == null || leaveRequest.getEmployee() == null) {
+				addErrorMessage("Please select an Employee before saving.");
+				return;
+			}
 			leaveRequest.setStatus("PENDING");
 			loadAttachment();
-			moveUploadedFiles();
 			leaveRequestService.addNewLeaveRequest(leaveRequest);
-			addInfoMessage("Success", "Leave Request Saved Successfully (Status: Pending)");
+			moveUploadedFiles();
+			addInfoMessage(null, MessageId.INSERT_SUCCESS, leaveRequest.getEmployee().getFullName());
 			reset();
+
 		} catch (Exception e) {
-			addErrorMessage("Error saving LeaveRequest:", e.getMessage());
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error saving LeaveRequest:",
+					e.getMessage());
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 			e.printStackTrace();
 		}
 	}
@@ -176,11 +206,13 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		reset();
 	}
 
-	private void reset() {
+	public void reset() {
 		leaveRequest = new LeaveRequest();
+		employee = new Employee();
 		getProposalAttachmentList().clear();
 		leaveRequest.setAttachFiles(new ArrayList<>());
 		medicalUploadedFileMap.clear();
+		leaveRequests = leaveRequestService.findAllLeaveRequest();
 		/*
 		 * leaveRequest.setAttachFiles(new ArrayList<>());
 		 * medicalUploadedFileMap.clear(); employee = null;
@@ -241,10 +273,8 @@ public class ManageLeaveRequestActionBean extends BaseBean implements Serializab
 		return temporyDir;
 	}
 
-	public void setTemporyDir(String temporyDir) { 
+	public void setTemporyDir(String temporyDir) {
 		this.temporyDir = temporyDir;
 	}
-	
-	
 
 }

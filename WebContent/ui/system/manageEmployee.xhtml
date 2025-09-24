@@ -73,8 +73,11 @@
 						<p:datePicker id="hireDate"
 							value="#{ManageEmployeeActionBean.employee.hireDate}"
 							required="true" requiredMessage="Hire Date is required!"
-							pattern="#{ApplicationSetting.dateFormat}"
-							placeholder="Select hire date" showIcon="true" />
+							pattern="dd-mm-yyyy" placeholder="Select hire date"
+							showIcon="true">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
+						</p:datePicker>
 
 						<h:outputText value="" />
 						<p:message display="text" for="dateOfBirth" />
@@ -90,7 +93,10 @@
 							yearRange="1950:#{ManageEmployeeActionBean.maxDateOfBirthYear}"
 							showButtonPanel="true" navigator="true" yearNavigator="true"
 							monthNavigator="true"
-							validator="#{ManageEmployeeActionBean.validateAge16}" />
+							validator="#{ManageEmployeeActionBean.validateAge16}">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
+						</p:datePicker>
 
 						<h:outputText value="" />
 						<p:message display="text" for="gender" />
@@ -167,7 +173,7 @@
 					action="#{ManageEmployeeActionBean.save}"
 					update=":employeeForm :employeeTableForm :globalMessageForm:msgs"
 					styleClass="p-button-success p-button-raised" />
-				<p:commandButton value="Reset" icon="pi pi-refresh"
+				<p:commandButton value="Cancel" icon="pi pi-refresh"
 					action="#{ManageEmployeeActionBean.createNewEmployee}"
 					process="@this" update="employeeForm"
 					styleClass="p-button-secondary p-button-raised" />
@@ -197,13 +203,15 @@
 
 					<p:column headerText="Hire Date">
 						<h:outputText value="#{emp.hireDate}">
-							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Date Of Birth">
 						<h:outputText value="#{emp.dateOfBirth}">
-							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 

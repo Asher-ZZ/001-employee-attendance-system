@@ -19,6 +19,7 @@ public class AttachFile implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ATTACHFILE_GEN")
 	private String id;
+	
 	private String name;
 	private String filePath;
 	

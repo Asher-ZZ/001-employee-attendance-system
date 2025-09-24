@@ -26,7 +26,6 @@ public class ManageAttendanceActionBean extends BaseBean {
 	private List<Attendance> attendanceList;
 	private Employee employee;
 
-	
 	public Employee getEmployee() {
 		return employee;
 	}
@@ -55,6 +54,11 @@ public class ManageAttendanceActionBean extends BaseBean {
 	}
 
 	public void save() {
+		if (attendance == null || attendance.getEmployee() == null) {
+			addErrorMessage("Please select an Employee");
+			return;
+		}
+
 		try {
 			// Duplicate check before DB operation
 			boolean exists = attendanceService.existsByEmployeeAndDate(attendance.getEmployee(), attendance.getDate(),
@@ -62,7 +66,8 @@ public class ManageAttendanceActionBean extends BaseBean {
 
 			if (exists) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Error", "Employee already has attendance for this date." + attendance.getEmployee()));
+						"Error",
+						"Employee already has attendance for this date: " + attendance.getEmployee().getFullName()));
 				return;
 			}
 
@@ -70,11 +75,11 @@ public class ManageAttendanceActionBean extends BaseBean {
 			if (attendance.getId() == null) {
 				attendanceService.addNewAttendance(attendance);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Success", "Attendance added successfully" + attendance.getEmployee()));
+						"Success", "Attendance added successfully: " + attendance.getEmployee().getFullName()));
 			} else {
 				attendanceService.updateAttendance(attendance);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Success", "Attendance updated successfully" + attendance.getEmployee()));
+						"Success", "Attendance updated successfully: " + attendance.getEmployee().getFullName()));
 			}
 
 			// Refresh list after DB operation
@@ -84,8 +89,8 @@ public class ManageAttendanceActionBean extends BaseBean {
 			reset();
 
 		} catch (SystemException e) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-					"Error saving attendance: " + e.getMessage()));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error saving attendance"));
 		}
 	}
 

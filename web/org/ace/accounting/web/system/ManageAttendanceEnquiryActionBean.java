@@ -61,9 +61,14 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 	@PostConstruct
 	public void init() {
 		resultList = new ArrayList<>();
-		toDate = new Date();
+		setDefaultDates();
+
+	}
+
+	private void setDefaultDates() {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(toDate);
+		cal.setTime(new Date());
+		toDate = cal.getTime();
 		cal.add(Calendar.DAY_OF_MONTH, -7);
 		fromDate = cal.getTime();
 	}
@@ -112,6 +117,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		searchEmployee = null;
 		searchDepartment = null;
 		resultList = new ArrayList<>();
+		setDefaultDates();
 	}
 
 	public static String getTotalHours(Attendance att) {
@@ -169,7 +175,7 @@ public class ManageAttendanceEnquiryActionBean extends BaseBean implements Seria
 		int minutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
 		return minutes < OFFICE_END_HOUR * 60;
 	}
-
+ 
 	public void exportExcel() {
 		try {
 			ExcelExport.exportToExcel(resultList); // filePath မလိုတော့ပါ

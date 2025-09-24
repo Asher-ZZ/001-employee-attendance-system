@@ -64,15 +64,7 @@ public class LeaveRequestService implements ILeaveRequestService {
 	public List<LeaveRequest> searchLeaveRequests(String employeeName, String leaveType, String status) {
 		return leaveRequestDAO.searchLeaveRequests(employeeName, leaveType, status);
 	}
-
-	/*
-	 * public String getFirstMedicalRecordImage(LeaveRequest leaveRequest) { try {
-	 * if (leaveRequest.getAttachFiles() != null &&
-	 * !leaveRequest.getAttachFiles().isEmpty()) { String base64Data =
-	 * leaveRequest.getAttachFiles().get(0).getFileData(); String contentType =
-	 * leaveRequest.getAttachFiles().get(0).getContentType(); // e.g., "image/png"
-	 * if (base64Data != null && !base64Data.isEmpty()) { // Return data URI return
-	 * "data:" + contentType + ";base64," + base64Data; } } } catch (Exception e) {
-	 * e.printStackTrace(); } return null; // fallback }
-	 */
+	
+	
+	
 }

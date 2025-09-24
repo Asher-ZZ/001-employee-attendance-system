@@ -25,22 +25,32 @@
 					layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
 					<p:panelGrid columns="2">
 						<!-- Employee Select -->
+
 						<h:outputText value="" />
-						<p:message display="text" for="employeeId" />
+
+						<!-- Error message for employee selection -->
+						<p:message for="employeeId" display="text" />
+
 						<h:outputLabel for="employeeId" value="Employee:" />
 						<p:panelGrid styleClass="ui-panelgrid-blank">
 							<div class="ui-g ui-fluid">
 								<div class="ui-inputgroup ui-g-12 ui-lg-12">
+									<!-- Search employee button -->
 									<p:commandButton styleClass="green-button" icon="fa fa-search"
-								 		actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
+										actionListener="#{ManageLeaveRequestActionBean.selectEmployee}"
 										id="selectEmployeeDialogLink" process="@this">
 										<p:ajax event="dialogReturn"
 											listener="#{ManageLeaveRequestActionBean.returnEmployee}"
 											update="employeeId" />
 									</p:commandButton>
+
+									<!-- Read-only employee field -->
 									<p:inputText id="employeeId"
-										value="#{ManageLeaveRequestActionBean.leaveRequest.employee == null ? '' : ManageLeaveRequestActionBean.leaveRequest.employee.fullName}"
-										readonly="true" />
+										value="#{ManageLeaveRequestActionBean.leaveRequest.employee.fullName}"
+										readonly="true" required="true"
+										requiredMessage="Employee is required." />
+
+									<!-- Clear employee button -->
 									<p:commandButton styleClass="red-button" icon="fa fa-times"
 										action="#{ManageLeaveRequestActionBean.leaveRequest.setEmployee(null)}"
 										process="@this" update="employeeId" />
@@ -48,19 +58,23 @@
 							</div>
 						</p:panelGrid>
 
+
+
 						<!-- Leave Type -->
 						<h:outputText value="" />
 						<p:message display="text" for="leaveType" />
-						<h:outputLabel for="leaveType" value="Leave Type:"
-							styleClass="input-label mandatory" />
+						<h:outputLabel for="leaveType" value="Leave Type"
+							styleClass="input-label mandatory" escape="false" />
 						<p:selectOneMenu id="leaveType"
 							value="#{ManageLeaveRequestActionBean.leaveRequest.leaveType}"
 							required="true" filter="true">
 							<f:selectItem itemLabel="-- Select Leave Type --" itemValue="" />
 							<f:selectItem itemLabel="Casual Leave" itemValue="CASUAL" />
 							<f:selectItem itemLabel="Medical Leave" itemValue="MEDICAL" />
+							<p:ajax event="change"
+								listener="#{ManageLeaveRequestActionBean.onLeaveTypeChange}"
+								process="@this" update="medicalAttachmentsWrapper" />
 						</p:selectOneMenu>
-
 						<!-- Start Date -->
 						<h:outputText value="" />
 						<p:message display="text" for="startDate" />
@@ -70,7 +84,10 @@
 							value="#{ManageLeaveRequestActionBean.leaveRequest.startDate}"
 							required="true" requiredMessage="Start Date is required!"
 							pattern="#{ApplicationSetting.dateFormat}"
-							placeholder="Select start date" showIcon="true" />
+							placeholder="Select start date" showIcon="true">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
+						</p:calendar>
 
 
 
@@ -83,7 +100,10 @@
 							value="#{ManageLeaveRequestActionBean.leaveRequest.endDate}"
 							required="true" requiredMessage=" End is required!"
 							pattern="#{ApplicationSetting.dateFormat}"
-							placeholder="Select end date" showIcon="true" />
+							placeholder="Select end date" showIcon="true">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
+						</p:calendar>
 
 						<!-- Reason -->
 						<h:outputText value="" />
@@ -95,17 +115,55 @@
 							rows="4" autoResize="true" required="true"
 							placeholder="Enter reason for leave..." />
 
-						<!-- <p:outputLabel
-				rendered="#{FlexiHealthProposalActionBean.insuredPersonInfoDTO.idType eq 'STILL_APPLYING'}"
-				style="color:red;" value="* - mandatory fields" /> -->
 
-						<!-- image -->
-						
+						<h:outputText value="" />
+						<p:message display="text" for="proposalAttachment" />
+						<h:outputLabel for="proposalAttachment"
+							value="Medical Attachment :"/>
+						<p:outputPanel id="medicalAttachmentsWrapper">
+							<p:outputPanel style="margin:10px;"
+								rendered="#{ManageLeaveRequestActionBean.leaveRequest.leaveType eq 'MEDICAL'}">
+ 
+								<p:fieldset legend="Medical Attachment">
+									<p:panelGrid columns="1"
+										styleClass="ui-panelgrid-blank ui-fluid">
+										<p:fileUpload allowTypes="/(\.|\/)(pdf|gif|jpe?g|png)$/"
+											fileUploadListener="#{ManageLeaveRequestActionBean.handleProposalAttachment}"
+											id="proposalAttachment" mode="advanced" multiple="true"
+											sizeLimit="31457280" update="proposalImageGrid" />
+										<p:dataGrid columns="2" id="proposalImageGrid"
+											paginator="true" paginatorPosition="bottom" rows="8"
+											rowsPerPageTemplate="8"
+											paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+											value="#{ManageLeaveRequestActionBean.proposalAttachmentList}"
+											var="image">
+											<p:panel>
+												<h:outputLink
+													onclick="window.open('/employee-attendance/image/#{image}');return false;">
+													<pe:documentViewer width="104%" height="250"
+														url="#{uploadRootPath}#{image}"
+														rendered="#{ManageLeaveRequestActionBean.isPdfFile(image)}" />
+													<p:graphicImage style="width:120px;height:120px;"
+														value="/employee-attendance/image/#{image}"
+														rendered="#{ManageLeaveRequestActionBean.isImageFile(image)}" />
+												</h:outputLink>
+												<br />
+												<p:commandLink
+													action="#{ManageLeaveRequestActionBean.removeProposalUploadedFile(image)}"
+													id="deleteGroupLink" update="proposalImageGrid">
+													<p:graphicImage
+														styleClass="#{ApplicationSetting.deleteStyleClass}"
+														value="#{ApplicationSetting.deleteIcon}" />
+												</p:commandLink>
+											</p:panel>
+										</p:dataGrid>
+									</p:panelGrid>
+								</p:fieldset>
+							</p:outputPanel>
+						</p:outputPanel>
 
-					</p:panelGrid>
-				</p:panelGrid>
-				
-				<p:outputPanel style="margin:10px;">
+
+						<!-- 	<p:outputPanel style="margin:10px;" id="medicalAttachmentsWrapper">
 							<p:fieldset legend="Proposal Attachment">
 								<p:panelGrid columns="1"
 									styleClass="ui-panelgrid-blank ui-fluid">
@@ -140,19 +198,27 @@
 									</p:dataGrid>
 								</p:panelGrid>
 							</p:fieldset>
-						</p:outputPanel>
+						</p:outputPanel> -->
+
+
+
+					</p:panelGrid>
+				</p:panelGrid>
 
 				<!-- Buttons -->
+				<p:separator />
 				<p:commandButton value="Submit" icon="pi pi-check"
 					styleClass="p-button-success p-button-raised"
 					action="#{ManageLeaveRequestActionBean.save()}" process="@form"
-					update=":leaveForm :listForm" />
+					update=":leaveForm :listForm :globalMessageForm:msgs" />
 
-				<p:commandButton value="Reset" type="reset" icon="pi pi-refresh"
-					action="#{ManageLeaveRequestActionBean.reset()}"
-					update=":leaveForm" process="@this"
+
+				<p:commandButton value="Cancel" icon="pi pi-refresh"
+					action="#{ManageLeaveRequestActionBean.reset}" update=":leaveForm"
 					styleClass="ui-button-secondary p-px-4 p-py-2" />
+
 			</p:panel>
+
 		</h:form>
 
 		<!-- Existing Leave Requests Table -->
@@ -173,13 +239,15 @@
 
 					<p:column headerText="Start Date">
 						<h:outputText value="#{leave.startDate}">
-							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="End Date">
 						<h:outputText value="#{leave.endDate}">
-							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 
@@ -196,13 +264,13 @@
 					<p:column headerText="Status">
 						<h:outputText value="#{leave.status}" />
 					</p:column>
-
+					<!-- 
 					<p:column headerText="Details" style="text-align:center;"
 						exportable="false">
 						<h:panelGroup style="text-align:center; display:block;">
-							<!-- Button မှာ select method ခေါ် -->
+							Button မှာ select method ခေါ်
 							<p:commandButton value="Details"
-								actionListener="#{ManageAttendanceEnquiryActionBean.selectAttendance(att)}"
+								actionListener="#{ManageLeaveRequestActionBean.selectedLeaveRequest(leave)}"
 								oncomplete="PF('attendanceDialog').show()"
 								update=":detailForm:attendanceDialog" icon="fa fa-eye"
 								styleClass="ui-button-info" />
@@ -227,7 +295,7 @@
 								message="Are you sure you want to delete this leave request?"
 								icon="pi pi-exclamation-triangle" />
 						</p:commandButton>
-					</p:column>
+					</p:column> -->
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -259,7 +327,7 @@
 								value="#{ManageLeaveRequestActionBean.leaveRequest.attachFiles}"
 								var="image">
 								<h:outputLink
-								onclick="window.open('/employee-attendance/image/#{image}');return false;">
+									onclick="window.open('/employee-attendance/image/#{image}');return false;">
 									<pe:documentViewer width="104%" height="250"
 										url="#{uploadRootPath}#{image.filePath}"
 										rendered="#{ManageLeaveRequestActionBean.isPdfFile(image.name)}" />

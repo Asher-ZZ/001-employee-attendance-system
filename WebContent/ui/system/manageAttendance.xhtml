@@ -19,10 +19,14 @@
 					styleClass="ui-panelgrid-blank ui-fluid">
 					<p:panelGrid columns="2">
 
+						<!-- Validation message -->
+					
 						<h:outputLabel for="employeeId" value="Employee:" />
 						<p:panelGrid styleClass="ui-panelgrid-blank">
 							<div class="ui-g ui-fluid">
 								<div class="ui-inputgroup ui-g-12 ui-lg-12">
+
+									<!-- Search employee -->
 									<p:commandButton styleClass="green-button" icon="fa fa-search"
 										actionListener="#{ManageAttendanceActionBean.selectEmployee}"
 										id="selectEmployeeDialogLink" process="@this">
@@ -31,10 +35,13 @@
 											update="employeeId" />
 									</p:commandButton>
 
+									<!-- Employee field -->
 									<p:inputText id="employeeId"
-										value="#{ManageAttendanceActionBean.attendance.employee == null ? '' : ManageAttendanceActionBean.attendance.employee.fullName}"
-										readonly="true" />
+										value="#{ManageAttendanceActionBean.attendance.employee.fullName}"
+										readonly="true" required="true"
+										requiredMessage="Employee is required." />
 
+									<!-- Clear employee -->
 									<p:commandButton styleClass="red-button" icon="fa fa-times"
 										action="#{ManageAttendanceActionBean.attendance.setEmployee(null)}"
 										process="@this" update="employeeId" />
@@ -42,12 +49,18 @@
 							</div>
 						</p:panelGrid>
 
+
+
+
 						<!-- Date -->
 						<h:outputLabel for="date" value="Date:" />
 						<p:calendar id="date"
 							value="#{ManageAttendanceActionBean.attendance.date}"
 							pattern="#{ApplicationSetting.dateFormat}" showButtonPanel="true"
-							navigator="true" required="true" />
+							navigator="true" required="true">
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
+						</p:calendar>
 
 						<!-- Arrival Time -->
 						<h:outputText value="" />
@@ -88,12 +101,12 @@
 				<p:separator />
 				<p:commandButton value="Save"
 					action="#{ManageAttendanceActionBean.save}"
-					update=":attendanceForm :attendanceTable :msgs" icon="fa fa-save"
+					update=":attendanceForm :attendanceTable :msgs" icon="pi pi-save"
 					styleClass="ui-button-success" />
 
 				<p:commandButton value="Clear"
 					action="#{ManageAttendanceActionBean.reset}" process="@this"
-					update="attendanceForm" icon="fa fa-refresh"
+					update="attendanceForm" icon="pi pi-refresh"
 					styleClass="ui-button-secondary" />
 			</p:panel>
 		</h:form>
@@ -111,7 +124,8 @@
 
 					<p:column headerText="Date">
 						<h:outputText value="#{att.date}">
-							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}" />
+							<f:convertDateTime pattern="#{ApplicationSetting.dateFormat}"
+								timeZone="#{ApplicationSetting.timeZone}" />
 						</h:outputText>
 					</p:column>
 

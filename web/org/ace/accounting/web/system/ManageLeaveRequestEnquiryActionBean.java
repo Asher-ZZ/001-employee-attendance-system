@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.ace.accounting.system.leaverequest.LeaveRequest;
 import org.ace.accounting.system.leaverequest.service.interfaces.ILeaveRequestService;
@@ -27,8 +28,6 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 	private LeaveRequest selectedLeaveRequest;
 
 	// For Approve/Reject
-	private String approveReason;
-	private String rejectReason;
 	private Date approveDate;
 	private Date rejectDate;
 
@@ -60,23 +59,23 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 	// Approve dialog
 	public void prepareApprove(LeaveRequest leave) {
 		this.selectedLeaveRequest = leave;
-		this.approveReason = null;
+		// this.approveReason = null;
 		this.approveDate = new Date();
 	}
 
 	// Reject dialog
 	public void prepareReject(LeaveRequest leave) {
 		this.selectedLeaveRequest = leave;
-		this.rejectReason = null;
+		// this.rejectReason = null;
 		this.rejectDate = new Date();
 	}
 
 	// Approve method
 	public void approve() {
 		try {
-  			if (selectedLeaveRequest != null) {
+			if (selectedLeaveRequest != null) {
 				selectedLeaveRequest.setStatus("APPROVED");
-				selectedLeaveRequest.setApproveReason(approveReason);      
+				// selectedLeaveRequest.setApproveReason(approveReason);
 				selectedLeaveRequest.setApprovedDate(approveDate);
 				leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
 				search();
@@ -93,8 +92,9 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 		try {
 			if (selectedLeaveRequest != null) {
 				selectedLeaveRequest.setStatus("REJECTED");
-				selectedLeaveRequest.setRejectReason(rejectReason);
+				// selectedLeaveRequest.setRejectReason(rejectReason.trim());
 				selectedLeaveRequest.setRejectedDate(rejectDate);
+
 				leaveRequestService.updateLeaveRequest(selectedLeaveRequest);
 				search();
 				addInfoMessage("Success", "Leave Request Rejected Successfully");
@@ -116,6 +116,7 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 
 	// Reset search fields
 	public void reset() {
+		setEmployeeName(null);
 		employeeName = null;
 		leaveType = null;
 		status = null;
@@ -150,22 +151,6 @@ public class ManageLeaveRequestEnquiryActionBean extends BaseBean implements Ser
 
 	public void setSelectedLeaveRequest(LeaveRequest selectedLeaveRequest) {
 		this.selectedLeaveRequest = selectedLeaveRequest;
-	}
-
-	public String getApproveReason() {
-		return approveReason;
-	}
-
-	public void setApproveReason(String approveReason) {
-		this.approveReason = approveReason;
-	}
-
-	public String getRejectReason() {
-		return rejectReason;
-	}
-
-	public void setRejectReason(String rejectReason) {
-		this.rejectReason = rejectReason;
 	}
 
 	public Date getApproveDate() {

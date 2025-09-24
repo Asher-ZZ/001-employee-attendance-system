@@ -39,11 +39,8 @@ public class Employee implements Serializable {
 	private String id;
 
 	private String fullName;
-
-	@Temporal(TemporalType.DATE)
 	private Date hireDate;
 	private String status;
-	@Temporal(TemporalType.DATE)
 	private Date dateOfBirth;
 	private String gender;
 	private String email;
